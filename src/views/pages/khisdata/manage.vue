@@ -265,12 +265,12 @@ export default {
     };
   },
   created() {
-    setInterval(() => {
-      if (this.stoped) {
-        this.upadtearray();
-      }
-    }, 5000);
-    this.upadtearray();
+    // setInterval(() => {
+    //   if (this.stoped) {
+    //     this.upadtearray();
+    //   }
+    // }, 5000);
+    // this.upadtearray();
   },
   computed: {
     /**
@@ -283,7 +283,7 @@ export default {
   watch: {},
   mounted() {
     // Set the initial number of items
-    this.upadtearray();
+    //this.upadtearray();
     this.totalRows = this.items.length;
   },
   methods: {
