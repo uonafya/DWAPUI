@@ -438,7 +438,7 @@ export default {
                       ></countTo>
                     </span>
                   </h4>
-                  <p class="text-muted mb-0">Synched</p>
+                  <p class="text-muted mb-0">Synced</p>
                 </div>
                 <p class="text-muted mt-3 mb-0">
                   <span
@@ -609,6 +609,39 @@ export default {
         </div>
       </div>
       <!-- End search -->
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-4">
+        <div id="tickets-table-date-picker" class="dataTables_length">
+          <label class="d-inline-flex align-items-center fw-normal">
+            From&nbsp;
+            <b-form-datepicker
+              v-model="perPage"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-datepicker
+            >
+          </label>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-4">
+          <div id="tickets-table-date-picker" class="dataTables_length">
+          <label class="d-inline-flex align-items-center fw-normal">
+            To&nbsp;
+            <b-form-datepicker
+              v-model="perPage"
+              size="sm"
+              :options="pageOptions"
+            ></b-form-datepicker>
+          </label>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-4">
+          <b-button variant="outline-primary">Synchronize</b-button>
+        </div>
+        
+     
     </div>
     <!-- Table -->
     <div class="table-responsive mb-0">
