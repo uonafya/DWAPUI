@@ -54,6 +54,8 @@ export default {
       contid: "",
       id: "",
       myindex: "",
+      from: "",
+      to: "",
       patientId: 657578,
       patientName: "test1",
       patientDiagnosis: "testing",
@@ -612,36 +614,28 @@ export default {
     </div>
 
     <div class="row">
-      <div class="col-sm-12 col-md-4">
+      <div class="col-sm-8 col-md-2">
         <div id="tickets-table-date-picker" class="dataTables_length">
           <label class="d-inline-flex align-items-center fw-normal">
             From&nbsp;
-            <b-form-datepicker
-              v-model="perPage"
-              size="sm"
-              :options="pageOptions"
-            ></b-form-datepicker
-            >
+            <b-form-datepicker v-model="from" size="sm"></b-form-datepicker>
           </label>
         </div>
       </div>
-      <div class="col-sm-12 col-md-4">
-          <div id="tickets-table-date-picker" class="dataTables_length">
+      <div class="col-sm-8 col-md-2">
+        <div id="tickets-table-date-picker" class="dataTables_length">
           <label class="d-inline-flex align-items-center fw-normal">
             To&nbsp;
-            <b-form-datepicker
-              v-model="perPage"
-              size="sm"
-              :options="pageOptions"
-            ></b-form-datepicker>
+            <b-form-datepicker v-model="to" size="sm"></b-form-datepicker>
           </label>
-          </div>
         </div>
-        <div class="col-sm-12 col-md-4">
-          <b-button variant="outline-primary">Synchronize</b-button>
-        </div>
-        
-     
+      </div>
+      <div class="col-sm-8 col-md-2 m-auto">
+        <b-button variant="outline-primary" type="submit">Synchronize</b-button>
+      </div>
+      <div class="col-sm-8 col-md-2 m-auto">
+        <b-button variant="outline-primary" type="submit">Schedule</b-button>
+      </div>
     </div>
     <!-- Table -->
     <div class="table-responsive mb-0">
