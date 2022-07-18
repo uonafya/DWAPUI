@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 //import VueGoogleAutocomplete from "vue-google-autocomplete";
 import axios from "axios";
 import countTo from "vue-count-to";
+import DatePicker from "vue2-datepicker";
 /**
  * Invoice-list component
  */
@@ -19,7 +20,7 @@ export default {
       },
     ],
   },
-  components: { Layout, PageHeader, countTo },
+  components: { Layout, PageHeader, countTo, DatePicker },
   data() {
     return {
       stoped: true,
@@ -54,20 +55,28 @@ export default {
       contid: "",
       id: "",
       myindex: "",
-      from: "",
-      to: "",
-      patientId: 657578,
+      from: new Date(),
+      to: new Date(),
+      time: new Date().getTime(),
       patientName: "test1",
       patientDiagnosis: "testing",
       homeCounty: "kisumu",
       delete_status: 0,
+      date_range: "",
       exported: 0,
       status: "0",
       records: [
         {
           id: "#MN0131",
           patienId: "#2536",
-          status: "Available",
+          status: "0",
+        },
+      ],
+      records1: [
+        {
+          id: "#MN2131",
+          patienId: "#236",
+          status: 1,
         },
       ],
       series: [
@@ -212,6 +221,7 @@ export default {
         },
       },
       totalRows: 1,
+      totalrecords: 0,
       currentPage: 1,
       perPage: 10,
       pageOptions: [
@@ -241,25 +251,28 @@ export default {
           key: "check",
           label: "#",
         },
+        {
+          key: "id",
+          label: "Indicator ID",
+          sortable: true,
+        },
+        {
+          key: "name",
+          sortable: true,
+        },
+        {
+          key: "displayName",
+          sortable: true,
+        },
+        {
+          key: "lastUpdated",
+          sortable: true,
+        },
+        {
+          key: "created",
+          sortable: true,
+        },
 
-        {
-          key: "patientId",
-          label: "#Record Id",
-          sortable: true,
-        },
-        {
-          key: "exported",
-          sortable: true,
-        },
-        {
-          key: "status",
-          label: "Status",
-          sortable: true,
-        },
-        {
-          key: "download",
-          label: "Download Pdf",
-        },
         {
           key: "action",
         },
@@ -285,7 +298,7 @@ export default {
   watch: {},
   mounted() {
     // Set the initial number of items
-    //this.upadtearray();
+    this.upadtearray();
     this.totalRows = this.items.length;
   },
   methods: {
@@ -299,35 +312,22 @@ export default {
     },
     upadtearray() {
       axios
-        .get(window.$http + "Patients", {
+        .get(window.$http + "indicators/" + this.perPage, {
           headers: window.$headers,
         })
         .then((res) => {
           console.log(res.data);
           this.records = res.data;
-          axios
-            .get(
-              window.$http + "Patients/search?exported=1&limit=" + this.perPage,
-              {
-                headers: window.$headers,
-              }
-            )
-            .then((res) => {
-              console.log(res.data);
-              this.synched = res.data.length;
-            });
         })
         .then(() => {
           axios
-            .get(
-              window.$http + "Patients/search?exported=0&limit=" + this.perPage,
-              {
-                headers: window.$headers,
-              }
-            )
+            .get(window.$http + "indicatorscount/", {
+              headers: window.$headers,
+            })
             .then((res) => {
               console.log(res.data);
-              this.waiting = res.data.length;
+              this.synched = Number(res.data.total);
+              this.totalrecords = Number(res.data.total);
             });
         })
         .catch((e) => {
@@ -370,7 +370,7 @@ export default {
         });
     },
     edit(id, index, name, pid, city, diag) {
-      this.modaltitle = "Record Details";
+      this.modaltitle = "Schedule Sync Activity";
       this.editmode = true;
       this.id = id;
       this.patientName = name;
@@ -455,7 +455,7 @@ export default {
                         'mdi mdi-arrow-up-bold': waiting < synched,
                       }"
                     ></i
-                    >{{ ((synched / rows) * 100).toFixed(2) }}%
+                    >{{ ((synched / totalrecords) * 100).toFixed(2) }}%
                   </span>
                   since last week
                 </p>
@@ -501,7 +501,7 @@ export default {
                         'mdi mdi-arrow-up-bold': waiting > synched,
                       }"
                     ></i
-                    >{{ ((waiting / rows) * 100).toFixed(2) }}%
+                    >{{ ((waiting / totalrecords) * 100).toFixed(2) }}%
                   </span>
                   since last week
                 </p>
@@ -614,146 +614,315 @@ export default {
     </div>
 
     <div class="row">
-      <div class="col-sm-8 col-md-2">
+      <div class="col-sm-6 col-md-2">
         <div id="tickets-table-date-picker" class="dataTables_length">
           <label class="d-inline-flex align-items-center fw-normal">
             From&nbsp;
-            <b-form-datepicker v-model="from" size="sm"></b-form-datepicker>
+            <date-picker v-model="from" type="date"></date-picker>
           </label>
         </div>
       </div>
-      <div class="col-sm-8 col-md-2">
+      <div class="col-sm-6 col-md-2">
         <div id="tickets-table-date-picker" class="dataTables_length">
           <label class="d-inline-flex align-items-center fw-normal">
             To&nbsp;
-            <b-form-datepicker v-model="to" size="sm"></b-form-datepicker>
+            <date-picker v-model="to" type="date"></date-picker>
           </label>
         </div>
       </div>
-      <div class="col-sm-8 col-md-2 m-auto">
-        <b-button variant="outline-primary" type="submit">Synchronize</b-button>
+      <div class="col-sm-6 col-md-2">
+        <div id="tickets-table-date-picker" class="dataTables_length">
+          <label class="d-inline-flex align-items-center fw-normal">
+            Range&nbsp;
+            <date-picker v-model="time_range" range></date-picker>
+          </label>
+        </div>
       </div>
-      <div class="col-sm-8 col-md-2 m-auto">
-        <b-button variant="outline-primary" type="submit">Schedule</b-button>
+      <div class="col-sm-6 col-md-2">
+        <div id="tickets-table-date-picker" class="dataTables_length">
+          <label class="d-inline-flex align-items-center fw-normal">
+            <button class="btn btn-info" @click="search()">Search</button>
+          </label>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-2">
+        <b-button
+          variant="outline-primary bg-primary text-white"
+          @click="Sync()"
+          >Sync</b-button
+        >
+        <b-button variant="outline-danger bg-danger text-white" @click="Stop()"
+          >Stop</b-button
+        >
+      </div>
+      <div class="col-sm-6 col-md-2">
+        <b-button
+          variant="outline-primary"
+          class="btn btn-primary waves-effect waves-light uil-focus-add text-white"
+          v-b-modal.add-ground
+          >&nbsp;Schedule</b-button
+        >
       </div>
     </div>
-    <!-- Table -->
-    <div class="table-responsive mb-0">
-      <b-table
-        table-class="table table-centered datatable table-card-list"
-        thead-tr-class="bg-transparent"
-        :items="records"
-        :fields="fields"
-        responsive="sm"
-        :per-page="perPage"
-        :current-page="currentPage"
-        :sort-by.sync="sortBy"
-        :sort-desc.sync="sortDesc"
-        :filter="filter"
-        :filter-included-fields="filterOn"
-        @filtered="onFiltered"
-      >
-        <template v-slot:cell(check)="data">
-          <div class="custom-control custom-checkbox text-center">
-            <input
-              type="checkbox"
-              class="custom-control-input"
-              :id="`contacusercheck${data.item.id}`"
-            />
-            <label
-              class="custom-control-label"
-              :for="`contacusercheck${data.item.id}`"
-            ></label>
-          </div>
-        </template>
-        <template v-slot:cell(id)="data">
-          <a href="javascript: void(0);" class="text-dark fw-bold">
-            {{ data.item.id }}
-          </a>
-        </template>
+    <div ref="content">
+      <div class="card">
+        <div class="card-body">
+          <form @submit.prevent="handleSubmit">
+            <div class="card">
+              <div class="card-body">
+                <div class="row justify-content-between">
+                  <div class="col-sm-6">
+                    <button
+                      class="
+                        btn btn-primary
+                        waves-effect waves-light
+                        uil-export
+                      "
+                      @click="getrpt(p_excel)"
+                    >
+                      Export to CSV
+                    </button>
+                  </div>
 
-        <template v-slot:cell(status)="data">
-          <div class="custom-control custom-checkbox">
-            <label
-              class="custom-control-label badge rounded-pill bg-soft-success font-size-12"
-              :for="`contacusercheck${data.item.status}`"
-              v-show="data.item.status == 'S'"
-            >
-              Synched&nbsp;
-            </label>
-            <label
-              class="custom-control-label badge rounded-pill bg-soft-warning font-size-12"
-              :for="`contacusercheck${data.item.status}`"
-              v-show="data.item.status == 'F'"
-            >
-              Failed&nbsp;
-            </label>
-            <label
-              class="custom-control-label badge rounded-pill bg-soft-info font-size-12"
-              :for="`contacusercheck${data.item.status}`"
-              v-show="data.item.status == '0'"
-            >
-              Waiting...&nbsp;
-            </label>
-            <input
-              type="checkbox"
-              class="custom-control-input "
-              :id="`contacusercheck${data.item.status}`"
-              :checked="data.item.status == 'S' ? true : false"
-            />
-          </div>
-        </template>
+                  <div class="col-sm-2">
+                    <button
+                      @click="printpdf('p', p_pdf)"
+                      v-b-modal.modal-Print
+                      class="
+                        btn btn-primary
+                        waves-effect waves-light
+                        mdi-file-pdf
+                      "
+                    >
+                      Print PDF
+                    </button>
+                  </div>
+                  <div class="col-sm-2">
+                    <button
+                      v-b-modal.modal-Edit
+                      class="
+                        btn btn-primary
+                        waves-effect waves-light
+                        uil-focus-add
+                      "
+                      @click="clearvalues()"
+                    >
+                      Match
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="card">
+                  <div class="card-body changebg">
+                    <div class="row" id="print">
+                      <div class="col-12">
+                        <div>
+                          <div class="float-end">
+                            <form class="d-inline-flex mb-3"></form>
+                          </div>
+                        </div>
+                        <div
+                          class="
+                            table table-centered
+                            datatable
+                            dt-responsive
+                            nowrap
+                            table-card-list
+                            dataTable
+                            no-footer
+                            dtr-inline
+                          "
+                        >
+                          <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                              <div
+                                id="tickets-table_length"
+                                class="dataTables_length"
+                              >
+                                <label
+                                  class="
+                                    d-inline-flex
+                                    align-items-center
+                                    fw-normal
+                                  "
+                                >
+                                  Show&nbsp;
+                                  <b-form-select
+                                    v-model="perPage"
+                                    size="sm"
+                                    :options="pageOptions"
+                                  ></b-form-select
+                                  >&nbsp;entries
+                                </label>
+                              </div>
+                            </div>
+                            <!-- Search -->
+                            <div class="col-sm-12 col-md-6">
+                              <div
+                                id="tickets-table_filter"
+                                class="dataTables_filter text-md-end"
+                              >
+                                <label
+                                  class="
+                                    d-inline-flex
+                                    align-items-center
+                                    fw-normal
+                                  "
+                                >
+                                  Search:
+                                  <b-form-input
+                                    v-model="filter"
+                                    type="search"
+                                    placeholder="Search..."
+                                    class="form-control form-control-sm ms-2"
+                                  ></b-form-input>
+                                </label>
+                              </div>
+                            </div>
+                            <!-- End search -->
+                          </div>
+                          <!-- Table -->
 
-        <template v-slot:cell(name)="data">
-          <a href="#" class="text-body">{{ data.item.name }}</a>
-        </template>
-        <template v-slot:cell(download)>
-          <div>
-            <button class="btn btn-light btn-sm w-xs">
-              Pdf
-              <i class="uil uil-download-alt ms-2"></i>
-            </button>
-          </div>
-        </template>
-        <template v-slot:cell(action)="data">
-          <ul class="list-inline mb-0">
-            <li class="list-inline-item">
-              <a
-                href="javascript:void(0);"
-                class="px-2 text-primary"
-                v-b-tooltip.hover
-                title="Edit"
-                @click="
-                  edit(
-                    data.item.id,
-                    data.index,
-                    data.item.patientName,
-                    data.item.patientId,
-                    data.item.homeCounty,
-                    data.item.patientDiagnosis
-                  )
-                "
-                v-b-modal.add-ground
-              >
-                <i class="uil uil-eye font-size-18"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a
-                href="javascript:void(0);"
-                class="px-2 text-danger"
-                v-b-tooltip.hover
-                title="Delete"
-                @click="
-                  deleterec(data.item.id, data.item.index, data.item.patientId)
-                "
-              >
-                <i class="uil uil-trash-alt font-size-18"></i>
-              </a>
-            </li>
-          </ul>
-        </template>
-      </b-table>
+                          <b-table
+                            table-class="table table-centered datatable table-card-list"
+                            thead-tr-class="bg-transparent"
+                            :items="records"
+                            :fields="fields"
+                            responsive="sm"
+                            :per-page="perPage"
+                            :current-page="currentPage"
+                            :sort-by.sync="sortBy"
+                            :sort-desc.sync="sortDesc"
+                            :filter="filter"
+                            :filter-included-fields="filterOn"
+                            @filtered="onFiltered"
+                          >
+                            <template v-slot:cell(cargo)="data">
+                              <a
+                                href="javascript: void(0);"
+                                class="text-dark fw-bold"
+                                v-for="cargo in data.item.cargo_name"
+                                :key="cargo"
+                                >{{ cargo }} <br
+                              /></a>
+                            </template>
+                            <!----
+                          <template v-slot:cell(check)="data">
+                            <div class="">
+                              <input
+                                type="button"
+                                class="custom-control-input"
+                                :id="`contacusercheck${data.item.id}`"
+                                value="Submit"
+                              />
+                              <label
+                                class="custom-control-label"
+                                :for="`contacusercheck${data.item.id}`"
+                              ></label>
+                            </div>
+                          </template>
+                          <template v-slot:cell(id)="data">
+                            <a
+                              href="javascript: void(0);"
+                              class="text-dark fw-bold"
+                              >{{ data.item.id }}</a
+                            >
+                          </template>
+
+                          <template v-slot:cell(name)="data">
+                            <a href="#" class="text-body">{{
+                              data.item.name
+                            }}</a>
+                          </template>
+                          <template v-slot:cell(status)="data">
+                            <div
+                              class="badge bg-pill bg-soft-success font-size-12"
+                              :class="{
+                                'bg-soft-danger':
+                                  data.item.status === 'Chargeback',
+                                'bg-soft-warning':
+                                  data.item.status === 'unpaid',
+                              }"
+                            >
+                              {{ data.item.status }}
+                            </div>
+                          </template>
+                          --->
+                            <template v-slot:cell(action)="data">
+                              <ul class="list-inline mb-0">
+                                <li class="list-inline-item">
+                                  <a
+                                    href="javascript:void(0);"
+                                    class="px-2 text-primary"
+                                    v-b-tooltip.hover
+                                    title="Edit"
+                                    v-b-modal.modal-Edit
+                                    @click="
+                                      edit(
+                                        data.index,
+                                        data.item.id,
+                                        data.item.cargo_name
+                                      )
+                                    "
+                                  >
+                                    <i class="uil uil-pen font-size-18"></i>
+                                  </a>
+                                </li>
+                                <li class="list-inline-item">
+                                  <a
+                                    href="javascript:void(0);"
+                                    class="px-2 text-danger"
+                                    v-b-tooltip.hover
+                                    title="Delete"
+                                    @click="
+                                      deleterec(
+                                        data.index,
+                                        data.item.id,
+                                        data.item.cargo_name
+                                      )
+                                    "
+                                  >
+                                    <i
+                                      class="uil uil-trash-alt font-size-18"
+                                    ></i>
+                                  </a>
+                                </li>
+                              </ul>
+                            </template>
+                          </b-table>
+                        </div>
+                        <div class="row">
+                          <div class="col">
+                            <div
+                              class="
+                                dataTables_paginate
+                                paging_simple_numbers
+                                float-end
+                              "
+                            >
+                              <ul class="pagination pagination-rounded">
+                                <!-- pagination -->
+                                <b-pagination
+                                  v-model="currentPage"
+                                  :total-rows="rows"
+                                  :per-page="perPage"
+                                ></b-pagination>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
     <!--modals-->
     <b-modal id="add-ground" size="xl" :title="modaltitle">
@@ -766,66 +935,43 @@ export default {
                   <div class="mt-4">
                     <h5 class="font-size-14 mb-4">
                       <i class="mdi mdi-arrow-right text-primary me-1"></i>
-                      {{ title }}
+                      Schedule Data Sync Activity
                     </h5>
                     <form @submit.prevent="add()">
                       <div class="row">
                         <div class="col-md-6">
                           <b-form-group
-                            label="ID Number"
-                            label-for="formrow-name-input"
+                            label="Schedule Time:"
+                            label-for="formrow-time-input"
                             class="mb-3"
                           >
                             <b-form-input
-                              id="formrow-idno-input"
+                              id="formrow-time-input"
                               type="number"
-                              placeholder="patientId"
-                              v-model="patientId"
+                              :placeholder="new Date()"
+                              v-model="time"
                             >
                             </b-form-input>
                           </b-form-group>
                         </div>
                         <div class="col-md-6">
                           <b-form-group
-                            label="Full Name"
+                            label="Indicator Group:"
                             label-for="formrow-idno-input"
                             class="mb-3"
                           >
                             <b-form-input
                               id="formrow-idno-input"
                               type="text"
-                              placeholder="20"
-                              v-model="patientName"
+                              placeholder="XTUW_3yG"
+                              v-model="indicatorgroup"
                             ></b-form-input>
                           </b-form-group>
                         </div>
-                        <div class="col-md-6">
-                          <b-form-group
-                            label="Diagnosis"
-                            label-for="formrow-diag-input"
-                            class="mb-3"
+                        <div class="mt-4">
+                          <b-button type="submit" variant="primary"
+                            ><i class="fa fa-plus"></i> Add Schedule</b-button
                           >
-                            <b-form-input
-                              id="formrow-diag-input"
-                              type="text"
-                              v-model="patientDiagnosis"
-                              :placeholder="patientDiagnosis"
-                            />
-                          </b-form-group>
-                        </div>
-                        <div class="col-md-6">
-                          <b-form-group
-                            label="Home County"
-                            label-for="formrow-city-input"
-                            class="mb-3"
-                          >
-                            <b-form-input
-                              id="formrow-city-input"
-                              type="text"
-                              v-model="homeCounty"
-                              :placeholder="homeCounty"
-                            />
-                          </b-form-group>
                         </div>
                       </div>
                     </form>

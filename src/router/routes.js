@@ -92,13 +92,13 @@ export default [{
             import ('../views/pages/dashboard/index')
     },
     {
-        path: '/patients',
+        path: '/indicators',
         name: 'patients',
         meta: {
             authRequired: true,
         },
         component: () =>
-            import ('../views/pages/khisdata/patients')
+            import ('../views/pages/khisdata/indicators')
     },
     {
         path: '/manage',
@@ -110,13 +110,13 @@ export default [{
             import ('../views/pages/khisdata/manage')
     },
     {
-        path: '/reserve',
+        path: '/indicator_groups',
         name: 'reserve',
         meta: {
             authRequired: true,
         },
         component: () =>
-            import ('../views/pages/khisdata/reserved')
+            import ('../views/pages/khisdata/indicator_groups')
     },
     {
         path: '/income',

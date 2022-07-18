@@ -6,16 +6,6 @@ export const menuItems = [{
     },
     {
         id: 2,
-        label: 'Manage Patients',
-        icon: 'uil-users-alt',
-        subItems: [{
-            id: 1,
-            label: 'Patients',
-            link: '/patients'
-        }, ]
-    },
-    {
-        id: 2,
         label: 'Data Sync',
         icon: 'uil-books',
         subItems: [{
@@ -23,23 +13,17 @@ export const menuItems = [{
                 label: 'Manage',
                 link: '/manage'
             },
-
-        ]
-    },
-    {
-        id: 2,
-        label: 'Revenue',
-        icon: 'uil-apps',
-        subItems: [{
-                id: 1,
-                label: 'Income',
-                link: '/income'
-            },
             {
                 id: 2,
-                label: 'Expenses',
-                link: '/expenses'
+                label: 'Indicators',
+                link: '/indicators'
             },
+            {
+                id: 3,
+                label: 'Indicators Groups',
+                link: '/indicator_groups'
+            },
+
         ]
     },
     {

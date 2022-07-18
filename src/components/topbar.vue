@@ -313,7 +313,7 @@ export default {
                     class="avatar-title bg-primary rounded-circle font-size-16"
                   >
                     <i class="uil-shopping-basket"></i>
-                  </span>       
+                  </span>
                 </div>
                 <div class="media-body">
                   <h6 class="mt-0 mb-1">
@@ -358,7 +358,7 @@ export default {
               <div class="media">
                 <div class="avatar-xs me-3">
                   <span
-                    class="avatar-title bg-success rounded-circle font-size-16"
+                    class="avatar-title bg-light rounded-circle font-size-16"
                   >
                     <i class="uil-truck"></i>
                   </span>
@@ -469,10 +469,7 @@ export default {
               $t("navbar.dropdown.marcus.list.lockscreen")
             }}</span>
           </a>
-          <a
-            class="dropdown-item"
-            href="/logout"
-          >
+          <a class="dropdown-item" href="/logout">
             <i
               class="uil uil-sign-out-alt font-size-18 align-middle me-1 text-muted"
             ></i>

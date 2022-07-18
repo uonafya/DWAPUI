@@ -9,6 +9,8 @@ import VueSlideBar from 'vue-slide-bar'
 import Vuelidate from 'vuelidate'
 import i18n from './i18n'
 import store from '@/state/store'
+import DatePicker from 'vue2-datepicker';
+import 'vue2-datepicker/index.css';
 
 import App from './App.vue'
 // As a plugin
@@ -20,7 +22,7 @@ import Lightbox from 'vue-easy-lightbox'
 import Axios from 'axios'
 Vue.prototype.$axios = Axios
 
-window.$http = "http://localhost:44356/api/"; //api/Patients
+window.$http = "http://127.0.0.1:8000/api/"; //api/indicators
 var CryptoJS = require("crypto-js");
 var tokenString = "";
 
@@ -40,7 +42,7 @@ window.$tokenString = tokenString;
 window.$headers = {
     Authorization: `Bearer ${window.$tokenString}`,
 };
-window.$headers = { Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjliMmIxZDlkLTc0MzgtNGM3Yy05NjkyLTcyNTYxNDE4YTYwMiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwic3ViIjoiYWRtaW5AYWRtaW4uY29tIiwianRpIjoiMWVkZWUzMzUtYjAxZS00YTM0LTg4ZTgtNTRkZjY0ZTM0MGMzIiwibmJmIjoxNjU1MDIwMzY0LCJleHAiOjE2NTUwNjM1NjQsImlhdCI6MTY1NTAyMDM2NH0.PQ_aG9N2CVY9LfVnZaaoHf9vNIX9SKU_hMwALicaLxU", };
+window.$headers = { Authorization: "Token add521e79d9e1a4b5ed0dd875fac39127f4b4993", };
 Vue.use(Lightbox)
 Vue.use(VueGoogleMaps, {
     load: {
@@ -75,6 +77,7 @@ import '@/assets/scss/app.scss'
 
 Vue.component('VueSlideBar', VueSlideBar)
 Vue.use(BootstrapVue)
+Vue.use(DatePicker)
 Vue.use(vco)
 Vue.component('apexchart', VueApexCharts)
 Vue.use(Vuelidate)

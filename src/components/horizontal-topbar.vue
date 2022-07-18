@@ -283,8 +283,8 @@ export default {
         <div class="navbar-brand-box">
           <router-link to="/" class="logo logo-dark">
             <span class="logo-xl col">
-                <img src="@/assets/parking-3.png" alt="" class="" height="50" />
-              </span>
+              <img src="@/assets/parking-3.png" alt="" class="" height="50" />
+            </span>
             <span class="logo-lg">
               <img src="@/assets/images/logo-dark.png" alt height="20" />
             </span>
@@ -313,7 +313,7 @@ export default {
         </button>
 
         <!-- App Search-->
-        <form class="app-search d-none" >
+        <form class="app-search d-none">
           <div class="position-relative">
             <input
               type="text"
@@ -531,7 +531,7 @@ export default {
               <div class="media">
                 <div class="avatar-xs me-3">
                   <span
-                    class="avatar-title bg-success rounded-circle font-size-16"
+                    class="avatar-title bg-light rounded-circle font-size-16"
                   >
                     <i class="uil-truck"></i>
                   </span>
@@ -669,8 +669,8 @@ export default {
       </div>
     </div>
 
-    <div class="container-fluid bg-success">
-      <div class="topnav bg-success text-white">
+    <div class="container-fluid bg-secondary">
+      <div class="topnav bg-light text-white">
         <nav class="navbar navbar-light navbar-expand-lg topnav-menu">
           <div
             class="collapse navbar-collapse text-white"

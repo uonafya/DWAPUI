@@ -13,7 +13,7 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 export default {
   components: { Layout, PageHeader },
   page: {
-    title: "Patients",
+    title: "Indicators",
     meta: [
       {
         name: "description",
@@ -23,84 +23,29 @@ export default {
   },
   data() {
     return {
-      stoped: true,
-      title: "KHIS Data",
+      title: "Indicator Groups",
       modaltitle: "Add New",
       items: [
         {
-          text: "KHIS Data",
+          text: "Indicators Groups",
         },
         {
-          text: "Patient Details",
+          text: "Indicators Groups",
           active: true,
         },
       ],
       id: "",
       myindex: "",
-      patientId: 657578,
-      patientName: "test1",
-      patientDiagnosis: "testing",
-      homeCounty: "kisumu",
-      delete_status: 0,
-      exported: 0,
-      status: "0",
-      id_snapshot: "",
-      patients: [
-        {
-          id: 1,
-          patientId: 657578,
-          patientName: "test1",
-          patientDiagnosis: "testing",
-          homeCounty: "kisumu",
-          delete_status: 0,
-          exported: 1,
-          status: "S",
-        },
-        {
-          id: 2,
-          patientId: 654578,
-          patientName: "test123",
-          patientDiagnosis: "testing",
-          homeCounty: "kisumu",
-          delete_status: 0,
-          exported: -1,
-          status: "F",
-        },
-        {
-          id: 3,
-          patientId: 1127578,
-          patientName: "test2199",
-          patientDiagnosis: "testing",
-          homeCounty: "kisumu",
-          delete_status: 0,
-          exported: 0,
-          status: "0",
-        },
-      ],
+      name: "",
+
+      ind_groups: [],
       totalRows: 1,
       currentPage: 1,
-      perPage: 100,
-      pageOptions: [
-        10,
-        25,
-        50,
-        100,
-        500,
-        1000,
-        1500,
-        2000,
-        2500,
-        3000,
-        3500,
-        4000,
-        4500,
-        5000,
-        5500,
-        6000,
-      ],
+      perPage: 10,
+      pageOptions: [10, 25, 50, 100, 200, 500, 1000],
       filter: null,
       filterOn: [],
-      sortBy: "age",
+      sortBy: "id",
       sortDesc: false,
       dropzoneOptions: {
         url: "https://httpbin.org/post",
@@ -117,55 +62,36 @@ export default {
           sortable: true,
         },
         {
-          key: "patientId",
-          label: "Patient ID",
+          key: "id",
           sortable: true,
         },
         {
-          key: "patientName",
-          lable: "Full Name",
+          key: "name",
           sortable: true,
         },
         {
-          key: "patientDiagnosis",
-          label: "Diagnosis",
+          key: "created",
           sortable: true,
         },
         {
-          key: "homeCounty",
-          sortable: true,
-        },
-        {
-          key: "exported",
-          sortable: true,
-        },
-        {
-          key: "status",
+          key: "lastUpdated",
           sortable: true,
         },
         "action",
       ],
     };
   },
-  created() {
-    // setInterval(() => {
-    //   if (this.stoped) {
-    //     this.upadtearray();
-    //   }
-    // }, 5000);
-    // this.upadtearray();
-  },
   computed: {
     /**
      * Total no. of records
      */
     rows() {
-      return this.patients.length;
+      return this.ind_groups.length;
     },
   },
   mounted() {
     // Set the initial number of items
-    //this.upadtearray();
+    this.upadtearray();
     this.totalRows = this.items.length;
   },
   methods: {
@@ -179,12 +105,12 @@ export default {
     },
     upadtearray() {
       axios
-        .get(window.$http + "Patients", {
+        .get(window.$http + "listindicator_groups/", {
           headers: window.$headers,
         })
         .then((res) => {
           console.log(res.data);
-          this.patients = res.data;
+          this.ind_groups = res.data;
         })
         .catch((e) => {
           console.log(e);
@@ -198,105 +124,9 @@ export default {
           });
         });
     },
-    add() {
-      //var orderid = this.patients.length + 1;
-      const data = {
-        patientName: this.patientName,
-        patientDiagnosis: this.patientDiagnosis,
-        patientId: this.patientId,
-        homeCounty: this.homeCounty,
-        exported: 0,
-        status: "0",
-      };
-      axios
-        .post(window.$http + "Patients/", data, { headers: window.$headers })
-        .then((res) => {
-          console.log(res.data);
-          this.patients.push(res.data);
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Your work has been saved",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-        })
-        .catch((e) => {
-          console.log(e);
-          Swal.fire({
-            position: "center",
-            icon: "warning",
-            title: "Error!",
-            html: "" + e,
-            showConfirmButton: true,
-            timer: 3000,
-          });
-        });
-    },
-    editrec() {
-      // JSON responses are automatically parsed.
-      this.patients[this.myindex].id = this.id;
-      this.patients[this.myindex].patientName = this.patientName;
-      this.patients[this.myindex].patientId = this.patientId;
-      this.patients[this.myindex].patientDiagnosis = this.patientDiagnosis;
-      this.patients[this.myindex].homeCounty = this.homeCounty;
-      this.patients[this.myindex].exported = this.exported;
-      this.patients[this.myindex].status = this.status;
-
-      if (this.patients[this.myindex].id != "") {
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "Your work has been saved",
-          showConfirmButton: false,
-          timer: 3000,
-        });
-      }
-
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Your work has been saved",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-    },
-    edit(id, index, pid, name, city, diag) {
-      this.modaltitle = "Edit Record";
-      this.editmode = true;
-      this.id = id;
-      this.patientName = name;
-      this.patientId = pid;
-      this.homeCounty = city;
-      this.patientDiagnosis = diag;
-      this.myindex = index;
-    },
-    deleterec(myid, index, name, pid) {
-      this.id = myid;
-      this.patientName = name;
-      this.patientId = pid;
-      Swal.fire({
-        title:
-          "Are you sure, you want to delete " +
-          this.patientName +
-          " from  the system?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#000000",
-        cancelButtonColor: "#f46a6a",
-        confirmButtonText: "Yes, delete it!",
-      }).then((result) => {
-        if (result.value) {
-          this.patients.splice(index, 1);
-          Swal.fire(
-            this.patientName + " Deleted!",
-            "Your record has been deleted.",
-            "success"
-          );
-        }
-      });
-    },
+    editrec() {},
+    edit() {},
+    deleterec() {},
   },
   middleware: "authentication",
 };
@@ -311,16 +141,7 @@ export default {
         <div class="card">
           <div class="card-body">
             <div class="row">
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <a
-                    href="javascript:void(0);"
-                    class="btn btn-success"
-                    v-b-modal.add-slot
-                    ><i class="mdi mdi-plus me-2"></i> Add New</a
-                  >
-                </div>
-              </div>
+              <div class="col-md-6"></div>
             </div>
             <div class="row mt-4">
               <div class="col-sm-12 col-md-6">
@@ -358,7 +179,7 @@ export default {
             <div class="table-responsive mb-0">
               <b-table
                 class="table table-centered table-nowrap"
-                :items="patients"
+                :items="ind_groups"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -382,41 +203,6 @@ export default {
                     ></label>
                   </div>
                 </template>
-                <template v-slot:cell(status)="data">
-                  <div class="custom-control custom-checkbox">
-                    <label
-                      class="custom-control-label badge rounded-pill bg-soft-success font-size-12"
-                      :for="`contacusercheck${data.item.status}`"
-                      v-show="data.item.exported == 1"
-                    >
-                      Synched&nbsp;
-                    </label>
-                    <label
-                      class="custom-control-label badge rounded-pill bg-soft-warning font-size-12"
-                      :for="`contacusercheck${data.item.status}`"
-                      v-show="data.item.exported == -1"
-                    >
-                      Failed&nbsp;
-                    </label>
-                    <label
-                      class="custom-control-label badge rounded-pill bg-soft-info font-size-12"
-                      :for="`contacusercheck${data.item.status}`"
-                      v-show="data.item.exported == 0"
-                    >
-                      Waiting...&nbsp;
-                    </label>
-                    <input
-                      type="checkbox"
-                      class="custom-control-input "
-                      :id="`contacusercheck${data.item.status}`"
-                      :checked="
-                        data.item.status == 'S' || data.item.exported == 1
-                          ? true
-                          : false
-                      "
-                    />
-                  </div>
-                </template>
                 <template v-slot:cell(name)="data">
                   <img
                     v-if="data.item.profile"
@@ -434,8 +220,17 @@ export default {
                       <i class="mdi mdi-account-circle m-0"></i>
                     </div>
                   </div>
-                  <a href="#" class="text-body">{{ data.item.patientName }}</a>
+                  <a href="#" class="text-body">{{ data.item.name }}</a>
                 </template>
+                <template v-slot:cell(paid)="data">
+                  <div
+                    class="badge rounded-pill bg-soft-success font-size-12"
+                    :class="{ 'bg-soft-warning': data.item.paid === 'Pending' }"
+                  >
+                    {{ data.item.paid }}
+                  </div>
+                </template>
+
                 <template v-slot:cell(action)="data">
                   <ul class="list-inline mb-0">
                     <li class="list-inline-item">
@@ -448,12 +243,13 @@ export default {
                           edit(
                             data.item.id,
                             data.index,
-                            data.item.patientId,
-                            data.item.patientName,
-                            data.item.patientDiagnosis,
-                            data.item.homeCounty,
-                            data.item.exported,
-                            data.item.status
+                            data.item.name,
+                            data.item.capacity,
+                            data.item.remaining,
+                            data.item.hours,
+                            data.item.paid,
+                            data.item.location,
+                            data.item.date
                           )
                         "
                         v-b-modal.add-slot
@@ -471,10 +267,13 @@ export default {
                           deleterec(
                             data.item.id,
                             data.index,
-                            data.item.patientName,
-                            data.item.patientId,
-                            data.item.patientDiagnosis,
-                            data.item.homeCounty
+                            data.item.name,
+                            data.item.capacity,
+                            data.item.remaining,
+                            data.item.hours,
+                            data.item.paid,
+                            data.item.location,
+                            data.item.date
                           )
                         "
                       >
@@ -512,63 +311,91 @@ export default {
                               <i
                                 class="mdi mdi-arrow-right text-primary me-1"
                               ></i>
-                              New Record
+                              {{ title }}
                             </h5>
                             <form @submit.prevent="add()">
                               <div class="row">
                                 <div class="col-md-6">
                                   <b-form-group
-                                    label="ID Number"
-                                    label-for="formrow-idno-input"
-                                    class="mb-3"
-                                  >
-                                    <b-form-input
-                                      id="formrow-idno-input"
-                                      type="number"
-                                      :placeholder="patientId"
-                                      v-model="patientId"
-                                    ></b-form-input>
-                                  </b-form-group>
-                                </div>
-                                <div class="col-md-6">
-                                  <b-form-group
-                                    label="Full Name"
-                                    label-for="formrow-idno-input"
+                                    label="Name"
+                                    label-for="formrow-name-input"
                                     class="mb-3"
                                   >
                                     <b-form-input
                                       id="formrow-name-input"
                                       type="text"
-                                      :placeholder="patientName"
-                                      v-model="patientName"
+                                      placeholder="Mercus Ryles"
+                                      v-model="name"
                                     ></b-form-input>
                                   </b-form-group>
                                 </div>
                                 <div class="col-md-6">
                                   <b-form-group
-                                    label="Home County"
-                                    label-for="formrow-county-input"
+                                    label="Capacity"
+                                    label-for="formrow-idno-input"
                                     class="mb-3"
                                   >
                                     <b-form-input
-                                      id="formrow-county-input"
+                                      id="formrow-idno-input"
                                       type="text"
-                                      v-model="homeCounty"
-                                      :placeholder="homeCounty"
+                                      placeholder="64848494"
+                                      v-model="capacity"
                                     ></b-form-input>
                                   </b-form-group>
                                 </div>
                                 <div class="col-md-6">
                                   <b-form-group
-                                    label="Diagnosis"
-                                    label-for="formrow-diag-input"
+                                    label="Remaining"
+                                    label-for="formrow-address-input"
                                     class="mb-3"
                                   >
                                     <b-form-input
-                                      id="formrow-diag-input"
+                                      id="formrow-address-input"
                                       type="text"
-                                      v-model="patientDiagnosis"
-                                      :placeholder="patientDiagnosis"
+                                      v-model="remaining"
+                                      placeholder="2"
+                                    ></b-form-input>
+                                  </b-form-group>
+                                </div>
+                                <div class="col-md-6">
+                                  <b-form-group
+                                    label="Hours"
+                                    label-for="formrow-idno-input"
+                                    class="mb-3"
+                                  >
+                                    <b-form-input
+                                      id="formrow-idno-input"
+                                      type="text"
+                                      placeholder="2"
+                                      v-model="hours"
+                                    ></b-form-input>
+                                  </b-form-group>
+                                </div>
+                                <div class="col-md-6">
+                                  <b-form-group
+                                    label="Location"
+                                    label-for="formrow-phone-input"
+                                    class="mb-3"
+                                  >
+                                    <b-form-input
+                                      id="formrow-phone-input"
+                                      type="text"
+                                      v-model="location"
+                                      placeholder="Nyayo Stadium"
+                                    ></b-form-input>
+                                  </b-form-group>
+                                </div>
+                                <div class="col-md-6">
+                                  <b-form-group
+                                    label="Date"
+                                    label-for="formrow-phone-input"
+                                    class="mb-3"
+                                  >
+                                    <b-form-input
+                                      id="formrow-phone-input"
+                                      type="datetime-local"
+                                      v-model="date"
+                                      placeholder="5/17/2022"
                                     ></b-form-input>
                                   </b-form-group>
                                 </div>
