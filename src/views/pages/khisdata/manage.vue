@@ -342,64 +342,50 @@ export default {
           });
         });
     },
-    add() {
-      var orderid = this.devicelist.length + 1;
-      var data = {
-        id: orderid,
-        name: this.name,
-        capacity: this.capacity,
-        avslots: this.capacity,
-        status: this.status,
-        location: this.location,
-      };
-      this.devicelist.push(data);
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Your work has been saved",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+    formatDate(date) {
+      var d = new Date(date),
+        month = "" + (d.getMonth() + 1),
+        day = "" + d.getDate(),
+        year = d.getFullYear();
+
+      if (month.length < 2) month = "0" + month;
+      if (day.length < 2) day = "0" + day;
+
+      return [year, month, day].join("-");
+    },
+    search(fromdate, todate) {
+      fromdate = this.formatDate(this.from);
+      todate = this.formatDate(this.to);
       axios
-        .post(window.$http + "parkinginfo", data, { headers: window.$headers })
-        .then((response) => {
-          console.log(response.data);
+        .get(
+          window.$http +
+            "indicators/filter/" +
+            fromdate +
+            "/" +
+            todate +
+            "/" +
+            this.perPage,
+          {
+            headers: window.$headers,
+          }
+        )
+        .then((res) => {
+          console.log(res.data);
+          this.records = res.data;
+          this.synched = Number(res.data.length);
+          this.totalrecords = Number(res.data.length);
         })
         .catch((e) => {
           console.log(e);
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Error!",
+            html: "" + e,
+            showConfirmButton: true,
+            timer: 3000,
+          });
         });
-    },
-    edit(id, index, name, pid, city, diag) {
-      this.modaltitle = "Schedule Sync Activity";
-      this.editmode = true;
-      this.id = id;
-      this.patientName = name;
-      this.patienId = pid;
-      this.homeCounty = city;
-      this.patientDiagnosis = diag;
-      this.myindex = index;
-    },
-    deleterec(myid, index, name) {
-      this.id = myid;
-      this.name = name;
-      Swal.fire({
-        title: "Are you sure, you want to delete " + this.name + "?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#000000",
-        cancelButtonColor: "#f46a6a",
-        confirmButtonText: "Yes, delete it!",
-      }).then((result) => {
-        if (result.value) {
-          this.records.splice(index, 1);
-          Swal.fire(
-            this.name + " Deleted!",
-            "Your record has been deleted.",
-            "success"
-          );
-        }
-      });
     },
   },
   middleware: "authentication",
