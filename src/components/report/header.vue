@@ -17,19 +17,44 @@
     </div>
     <!----@click="position(), $bvModal.hide('modal-1') --->
     <div class="row">
-      <div class="col-sm-9 mb-2">
-        <b-button
-          variant="dark"
-          @click="generatePDF('Excel'), $bvModal.hide('modal-1')"
-          >Print Excel
-        </b-button>
+      <div class="col-sm-12 mb-2 d-flex flex-row">
+        <div class="col-sm-3 mb-2">
+          <b-button
+            variant="dark"
+            @click="generatePDF('Excel'), $bvModal.hide('modal-1')"
+            >Print Excel
+          </b-button>
+        </div>
+        <div class="col-sm-3 mb-2">
+          <b-button
+            variant="dark"
+            @click="generatePDF('pdf'), $bvModal.hide('modal-1')"
+            >Print PDF
+          </b-button>
+        </div>
       </div>
-      <div class="col-sm-3 mb-2">
-        <b-button
-          variant="dark"
-          @click="generatePDF('pdf'), $bvModal.hide('modal-1')"
-          >Print PDF
-        </b-button>
+      <div class="col-sm-6 mb-2">
+        <p class="text-dark fw-bold text-decoration-underline">
+          PDF page options
+        </p>
+        <div class="d-flex flex-row">
+          <b-form-checkbox
+            id="checkbox-1"
+            v-model="pagelayout"
+            name="checkbox-1"
+            value="l"
+            unchecked-value="p"
+            >&nbsp; Landscape </b-form-checkbox
+          >&nbsp;
+          <b-form-checkbox
+            id="checkbox-2"
+            v-model="pagelayout"
+            name="checkbox-2"
+            value="p"
+            unchecked-value="p"
+            >&nbsp; Potrait
+          </b-form-checkbox>
+        </div>
       </div>
     </div>
   </div>
@@ -55,6 +80,11 @@ export default {
     uniqueCars: Object,
     showme: Boolean,
     printedpdf: Boolean,
+  },
+  data() {
+    return {
+      pagelayout: "p",
+    };
   },
   methods: {
     makepdf() {
@@ -97,7 +127,7 @@ export default {
         "-" +
         msec;
 
-      var doc = new jsPDF(this.pl);
+      var doc = new jsPDF(this.pagelayout);
 
       doc.setFillColor(255, 255, 255);
       doc.roundedRect(5, 5, 200, 30, 1, 1, "FD");
@@ -215,7 +245,7 @@ export default {
         //page numbering
         var height = 190;
         var width = 290;
-        if (this.pl == "l") {
+        if (this.pagelayout == "l") {
           height = 190;
           width = 200;
         }

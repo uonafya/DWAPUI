@@ -842,7 +842,12 @@ export default {
       <div class="col-sm-6 col-md-2">
         <div id="tickets-table-date-picker" class="dataTables_length">
           <label class="d-inline-flex align-items-center fw-normal">
-            <button class="btn btn-info" @click="search()">Search</button>
+            <button
+              class="btn btn-info waves-effect waves-light uil-search-alt text-white"
+              @click="search()"
+            >
+              Search
+            </button>
           </label>
         </div>
       </div>
@@ -863,7 +868,7 @@ export default {
       <div class="col-sm-6 col-md-2">
         <b-button
           variant="outline-primary"
-          class="btn btn-primary waves-effect waves-light uil-focus-add text-white"
+          class="btn btn-success waves-effect waves-light uil-focus-add text-white"
           v-b-modal.add-ground
           >&nbsp;Schedule</b-button
         >
@@ -878,7 +883,7 @@ export default {
                 <div class="row justify-content-between">
                   <div class="col-sm-6">
                     <button
-                      class="btn btn-primary waves-effect waves-light uil-export"
+                      class="btn btn-success waves-effect waves-light uil-export"
                       @click="getrpt()"
                     >
                       Export to CSV
@@ -889,7 +894,7 @@ export default {
                     <button
                       @click="printpdf('p')"
                       v-b-modal.modal-Print
-                      class="btn btn-primary waves-effect waves-light mdi-file-pdf"
+                      class="btn btn-success waves-effect waves-light uil-file-alt"
                     >
                       Print PDF
                     </button>
@@ -897,10 +902,10 @@ export default {
                   <div class="col-sm-2">
                     <button
                       v-b-modal.modal-Edit
-                      class="btn btn-primary waves-effect waves-light uil-focus-add"
+                      class="btn btn-success waves-effect waves-light uil-database-alt"
                       @click="clearvalues()"
                     >
-                      Match
+                      Indicator Mapping
                     </button>
                   </div>
                 </div>
