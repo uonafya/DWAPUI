@@ -203,34 +203,6 @@ export default {
                     ></label>
                   </div>
                 </template>
-                <template v-slot:cell(name)="data">
-                  <img
-                    v-if="data.item.profile"
-                    :src="data.item.profile"
-                    alt
-                    class="avatar-xs rounded-circle me-2"
-                  />
-                  <div
-                    v-if="!data.item.profile"
-                    class="avatar-xs d-inline-block me-2"
-                  >
-                    <div
-                      class="avatar-title bg-soft-primary rounded-circle text-primary"
-                    >
-                      <i class="mdi mdi-account-circle m-0"></i>
-                    </div>
-                  </div>
-                  <a href="#" class="text-body">{{ data.item.name }}</a>
-                </template>
-                <template v-slot:cell(paid)="data">
-                  <div
-                    class="badge rounded-pill bg-soft-success font-size-12"
-                    :class="{ 'bg-soft-warning': data.item.paid === 'Pending' }"
-                  >
-                    {{ data.item.paid }}
-                  </div>
-                </template>
-
                 <template v-slot:cell(action)="data">
                   <ul class="list-inline mb-0">
                     <li class="list-inline-item">

@@ -7,6 +7,8 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import countTo from "vue-count-to";
 import DatePicker from "vue2-datepicker";
+import reportdet from "@/components/report/header";
+
 /**
  * Invoice-list component
  */
@@ -20,10 +22,11 @@ export default {
       },
     ],
   },
-  components: { Layout, PageHeader, countTo, DatePicker },
+  components: { Layout, PageHeader, countTo, DatePicker, reportdet },
   data() {
     return {
       stoped: true,
+      showme: true,
       synched: 0,
       waiting: 0,
       failed: 0,
@@ -72,13 +75,6 @@ export default {
           status: "0",
         },
       ],
-      records1: [
-        {
-          id: "#MN2131",
-          patienId: "#236",
-          status: 1,
-        },
-      ],
       series: [
         {
           data: [25, 66, 41, 89, 63, 25, 44, 20, 36, 40, 54],
@@ -114,7 +110,7 @@ export default {
           },
           y: {
             title: {
-              formatter: function() {
+              formatter: function () {
                 return "";
               },
             },
@@ -154,7 +150,7 @@ export default {
           },
           y: {
             title: {
-              formatter: function() {
+              formatter: function () {
                 return "";
               },
             },
@@ -223,25 +219,12 @@ export default {
       totalRows: 1,
       totalrecords: 0,
       currentPage: 1,
-      perPage: 10,
+      perPage: 100,
       pageOptions: [
-        10,
-        25,
-        50,
-        100,
-        500,
-        1000,
-        1500,
-        2000,
-        2500,
-        3000,
-        3500,
-        4000,
-        4500,
-        5000,
-        5500,
-        6000,
+        10, 25, 50, 100, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500,
+        5000, 5500, 6000,
       ],
+      showsync: true,
       filter: null,
       filterOn: [],
       sortBy: "age",
@@ -261,7 +244,7 @@ export default {
           sortable: true,
         },
         {
-          key: "displayName",
+          key: "shortName",
           sortable: true,
         },
         {
@@ -280,12 +263,12 @@ export default {
     };
   },
   created() {
-    // setInterval(() => {
-    //   if (this.stoped) {
-    //     this.upadtearray();
-    //   }
-    // }, 5000);
-    // this.upadtearray();
+    setInterval(() => {
+      if (this.stoped && !this.showsync) {
+        this.upadtearray();
+      }
+    }, 5000);
+    //this.upadtearray();
   },
   computed: {
     /**
@@ -299,6 +282,7 @@ export default {
   mounted() {
     // Set the initial number of items
     this.upadtearray();
+    this.updateDataSync();
     this.totalRows = this.items.length;
   },
   methods: {
@@ -309,6 +293,139 @@ export default {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
+    },
+    printpdf(pl) {
+      this.pl = pl;
+      const data = this.records.map((row) => ({
+        "MOH Indicator ID": row.id,
+        "MOH Indicator Name": row.name,
+        "Short Name": row.shortName,
+      }));
+
+      //get headers
+      const headers = Object.keys(data[0]);
+      const cars = [];
+      Object.entries(data).forEach((val) => {
+        const [key] = val;
+        // console.log(key, value);
+        cars.push(Object.values(data[key]));
+      });
+
+      const uniqueCars = Array.from(new Set(cars));
+      this.headers = headers;
+      this.uniqueCars = uniqueCars;
+      this.records = data;
+      //alert(headers);
+    },
+    getrpt() {
+      const d = new Date();
+      const year = d.getFullYear();
+      const month = d.getMonth();
+      const date = d.getDate();
+
+      const hour = d.getHours();
+      const min = d.getMinutes();
+      const sec = d.getSeconds();
+      const msec = d.getMilliseconds();
+      const filename =
+        year +
+        "-" +
+        month +
+        "-" +
+        date +
+        "-" +
+        hour +
+        "-" +
+        min +
+        "-" +
+        sec +
+        "-" +
+        msec;
+      //alert(filename);
+      const data = this.records.map((row) => ({
+        "DATIM Indicator Category": "HTS_TST",
+        "DATIM Indicator ID": "",
+        DATIM_Disag_Name: "",
+        DATIM_Disag_ID: "",
+        Operation: "",
+        "MOH Indicator Name": row.name,
+        MOH_Indicator_ID: row.id,
+        MOH_Disag_Name: "",
+        MOH_Disag_ID: "",
+        "Disaggregation Type": "Coarse",
+      }));
+      //alert("");
+      const csvRows = [];
+      //get headers
+      const headers = Object.keys(data[0]);
+
+      csvRows.push(headers.join(","));
+      //alert(csvRows);
+      //loop over the headers
+      for (const row of data) {
+        const values = headers.map((header) => {
+          const escaped = ("" + row[header]).replace(/"/g, '\\"');
+          // alert(escaped);
+          return '"' + escaped + '"'; //'" + escaped + "';
+        });
+        csvRows.push(values.join(","));
+      }
+      //alert(csvData);
+      const csvData = csvRows.join("\n");
+      //alert(csvData);
+
+      const blob = new Blob([csvData], { type: "textcsv" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.setAttribute("hidden", "");
+      a.setAttribute("href", url);
+      a.setAttribute("download", this.title + filename + ".csv");
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    },
+    getmonth(d) {
+      const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      return monthNames[d];
+    },
+    getcurrentdate(mydate) {
+      let d = new Date(mydate);
+      let year = d.getFullYear();
+      let month = this.getmonth(d.getMonth());
+      let date = d.getDate();
+      date = this.getv(date);
+      //month = this.getv(month);
+
+      let hour = d.getHours();
+      let min = d.getMinutes();
+      let sec = d.getSeconds();
+      hour = this.getv(hour);
+      min = this.getv(min);
+      sec = this.getv(sec);
+
+      //const msec = d.getMilliseconds();
+      const datetime =
+        date + "/" + month + "/" + year + " " + hour + ":" + min + ":" + sec;
+      return datetime;
+    },
+    getv(val) {
+      if (val < 10) {
+        val = "0" + val;
+      }
+      return val;
     },
     upadtearray() {
       axios
@@ -342,6 +459,27 @@ export default {
           });
         });
     },
+    updateDataSync() {
+      axios
+        .get(window.$http + "listmiddleware_settings/1/", {
+          headers: window.$headers,
+        })
+        .then((res) => {
+          console.log(res.data);
+          this.showsync = res.data.syncdata;
+        })
+        .catch((e) => {
+          console.log(e);
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Error!",
+            html: "" + e,
+            showConfirmButton: true,
+            timer: 3000,
+          });
+        });
+    },
     formatDate(date) {
       var d = new Date(date),
         month = "" + (d.getMonth() + 1),
@@ -352,6 +490,82 @@ export default {
       if (day.length < 2) day = "0" + day;
 
       return [year, month, day].join("-");
+    },
+    Sync() {
+      this.stoped = true;
+      this.showsync = false;
+      axios
+        .put(
+          window.$http + "listmiddleware_settings/1/",
+          {
+            id: 1,
+            syncdata: true,
+            client_url: "https://test.hiskenya.org/dhiske/",
+          },
+          {
+            headers: window.$headers,
+          }
+        )
+        .then((res) => {
+          console.log(res.data);
+          Swal.fire({
+            position: "center",
+            icon: "info",
+            title: "Success!",
+            html: "Data Sync triggered!",
+            showConfirmButton: false,
+            timer: 3000,
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Error!",
+            html: "" + e,
+            showConfirmButton: true,
+            timer: 3000,
+          });
+        });
+    },
+    Stop() {
+      this.stoped = false;
+      this.showsync = true;
+      axios
+        .put(
+          window.$http + "listmiddleware_settings/1/",
+          {
+            id: 1,
+            syncdata: false,
+            client_url: "https://test.hiskenya.org/dhiske/",
+          },
+          {
+            headers: window.$headers,
+          }
+        )
+        .then((res) => {
+          console.log(res.data);
+          Swal.fire({
+            position: "center",
+            icon: "info",
+            title: "Success!",
+            html: "Data Sync stopped!",
+            showConfirmButton: false,
+            timer: 3000,
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Error!",
+            html: "" + e,
+            showConfirmButton: true,
+            timer: 3000,
+          });
+        });
     },
     search(fromdate, todate) {
       fromdate = this.formatDate(this.from);
@@ -374,6 +588,7 @@ export default {
           this.records = res.data;
           this.synched = Number(res.data.length);
           this.totalrecords = Number(res.data.length);
+          this.stoped = true;
         })
         .catch((e) => {
           console.log(e);
@@ -635,10 +850,14 @@ export default {
         <b-button
           variant="outline-primary bg-primary text-white"
           @click="Sync()"
-          >Sync</b-button
+          v-show="showsync"
+          >Sync Data</b-button
         >
-        <b-button variant="outline-danger bg-danger text-white" @click="Stop()"
-          >Stop</b-button
+        <b-button
+          variant="outline-danger bg-danger text-white"
+          @click="Stop()"
+          v-show="!showsync"
+          >Stop Sync</b-button
         >
       </div>
       <div class="col-sm-6 col-md-2">
@@ -659,12 +878,8 @@ export default {
                 <div class="row justify-content-between">
                   <div class="col-sm-6">
                     <button
-                      class="
-                        btn btn-primary
-                        waves-effect waves-light
-                        uil-export
-                      "
-                      @click="getrpt(p_excel)"
+                      class="btn btn-primary waves-effect waves-light uil-export"
+                      @click="getrpt()"
                     >
                       Export to CSV
                     </button>
@@ -672,13 +887,9 @@ export default {
 
                   <div class="col-sm-2">
                     <button
-                      @click="printpdf('p', p_pdf)"
+                      @click="printpdf('p')"
                       v-b-modal.modal-Print
-                      class="
-                        btn btn-primary
-                        waves-effect waves-light
-                        mdi-file-pdf
-                      "
+                      class="btn btn-primary waves-effect waves-light mdi-file-pdf"
                     >
                       Print PDF
                     </button>
@@ -686,11 +897,7 @@ export default {
                   <div class="col-sm-2">
                     <button
                       v-b-modal.modal-Edit
-                      class="
-                        btn btn-primary
-                        waves-effect waves-light
-                        uil-focus-add
-                      "
+                      class="btn btn-primary waves-effect waves-light uil-focus-add"
                       @click="clearvalues()"
                     >
                       Match
@@ -711,16 +918,7 @@ export default {
                           </div>
                         </div>
                         <div
-                          class="
-                            table table-centered
-                            datatable
-                            dt-responsive
-                            nowrap
-                            table-card-list
-                            dataTable
-                            no-footer
-                            dtr-inline
-                          "
+                          class="table table-centered datatable dt-responsive nowrap table-card-list dataTable no-footer dtr-inline"
                         >
                           <div class="row">
                             <div class="col-sm-12 col-md-6">
@@ -729,11 +927,7 @@ export default {
                                 class="dataTables_length"
                               >
                                 <label
-                                  class="
-                                    d-inline-flex
-                                    align-items-center
-                                    fw-normal
-                                  "
+                                  class="d-inline-flex align-items-center fw-normal"
                                 >
                                   Show&nbsp;
                                   <b-form-select
@@ -752,11 +946,7 @@ export default {
                                 class="dataTables_filter text-md-end"
                               >
                                 <label
-                                  class="
-                                    d-inline-flex
-                                    align-items-center
-                                    fw-normal
-                                  "
+                                  class="d-inline-flex align-items-center fw-normal"
                                 >
                                   Search:
                                   <b-form-input
@@ -795,48 +985,6 @@ export default {
                                 >{{ cargo }} <br
                               /></a>
                             </template>
-                            <!----
-                          <template v-slot:cell(check)="data">
-                            <div class="">
-                              <input
-                                type="button"
-                                class="custom-control-input"
-                                :id="`contacusercheck${data.item.id}`"
-                                value="Submit"
-                              />
-                              <label
-                                class="custom-control-label"
-                                :for="`contacusercheck${data.item.id}`"
-                              ></label>
-                            </div>
-                          </template>
-                          <template v-slot:cell(id)="data">
-                            <a
-                              href="javascript: void(0);"
-                              class="text-dark fw-bold"
-                              >{{ data.item.id }}</a
-                            >
-                          </template>
-
-                          <template v-slot:cell(name)="data">
-                            <a href="#" class="text-body">{{
-                              data.item.name
-                            }}</a>
-                          </template>
-                          <template v-slot:cell(status)="data">
-                            <div
-                              class="badge bg-pill bg-soft-success font-size-12"
-                              :class="{
-                                'bg-soft-danger':
-                                  data.item.status === 'Chargeback',
-                                'bg-soft-warning':
-                                  data.item.status === 'unpaid',
-                              }"
-                            >
-                              {{ data.item.status }}
-                            </div>
-                          </template>
-                          --->
                             <template v-slot:cell(action)="data">
                               <ul class="list-inline mb-0">
                                 <li class="list-inline-item">
@@ -883,11 +1031,7 @@ export default {
                         <div class="row">
                           <div class="col">
                             <div
-                              class="
-                                dataTables_paginate
-                                paging_simple_numbers
-                                float-end
-                              "
+                              class="dataTables_paginate paging_simple_numbers float-end"
                             >
                               <ul class="pagination pagination-rounded">
                                 <!-- pagination -->
@@ -969,47 +1113,16 @@ export default {
         </div>
       </div>
     </b-modal>
-    <b-modal id="lock-device" size="lg" title="Lock/Unlock Device">
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="card">
-            <div class="card-body">
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="mt-4">
-                    <h5 class="font-size-14 mb-4">
-                      <i class="mdi mdi-arrow-right text-primary me-1"></i>
-                      {{ title }}
-                    </h5>
-                    <form @submit.prevent="addrec()">
-                      <div class="row">
-                        <div class="col-md-12">
-                          <b-form-group
-                            label="Reason"
-                            label-for="formrow-reason-input"
-                            class="mb-3"
-                          >
-                            <b-textarea
-                              id="formrow-reason-input"
-                              type="text"
-                              placeholder="Payments made"
-                            ></b-textarea>
-                          </b-form-group>
-                        </div>
-                      </div>
-                      <div class="mt-4">
-                        <b-button type="submit" variant="primary"
-                          >Apply</b-button
-                        >
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <b-modal id="modal-Print" title="Print PDF" hide-footer size="bg" centered>
+      <reportdet
+        :title="title"
+        :records="records"
+        :pl="pl"
+        :headers="headers"
+        :uniqueCars="uniqueCars"
+        :shome="showme"
+        v-show="showme"
+      ></reportdet>
     </b-modal>
     <!--end modals-->
     <div class="row">

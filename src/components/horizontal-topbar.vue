@@ -295,8 +295,8 @@ export default {
               <span class="logo-xl col">
                 <img src="@/assets/parking-3.png" alt="" class="" height="50" />
               </span>
-              <span class="logo-lg text-white col">
-                <h1 class="logo-lg text-white mt-4">KHIS</h1>
+              <span class="logo-lg text-white row">
+                <h1 class="logo-lg text-white mt-4">DHIS2-DATIM DATA PULL</h1>
               </span>
             </div>
           </router-link>

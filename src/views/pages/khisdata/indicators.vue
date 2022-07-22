@@ -24,6 +24,7 @@ export default {
   data() {
     return {
       stoped: true,
+      showsync: true,
       title: "KHIS Data",
       modaltitle: "Add New",
       items: [
@@ -150,7 +151,7 @@ export default {
         this.upadtearray();
       }
     }, 5000);
-    this.upadtearray();
+    //this.upadtearray();
   },
   computed: {
     /**
