@@ -143,18 +143,18 @@ export default {
           <div class="col-lg-12">
             <div class="text-center">
               <router-link to="/" class="mb-5 d-block auth-logo">
-                <h1>Betahood Khis</h1>
+                <h1>HealthIT DM-IL</h1>
               </router-link>
             </div>
           </div>
         </div>
-        <div class="row align-items-center justify-content-center ">
+        <div class="row align-items-center justify-content-center">
           <div class="col-md-8 col-lg-6 col-xl-5">
             <div class="card">
               <div class="card-body p-4 bg-success bg-gradient">
                 <div class="text-center mt-2">
                   <h5 class="text-primary">Register Account</h5>
-                  <p class="text-muted">Get your free Khis account now.</p>
+                  <p class="text-muted">Get your free DM-IL account now.</p>
                 </div>
                 <div class="p-2 mt-4">
                   <div
@@ -307,8 +307,8 @@ export default {
             </div>
             <div class="mt-5 text-center">
               <p>
-                © {{ new Date().getFullYear() }} Betahood. Crafted with
-                <i class="mdi mdi-heart text-danger"></i> by BetahoodAfrica
+                © {{ new Date().getFullYear() }} TDBSoft. Crafted with
+                <i class="mdi mdi-heart text-danger"></i> by TDBSoft
               </p>
             </div>
           </div>

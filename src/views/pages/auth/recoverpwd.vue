@@ -101,8 +101,8 @@ export default {
               </div>
               <div class="mt-5 text-center">
                 <p>
-                  © {{ new Date().getFullYear() }} Minible. Crafted with
-                  <i class="mdi mdi-heart text-danger"></i> by Themesbrand
+                  © {{ new Date().getFullYear() }} TDBSoft. Crafted with
+                  <i class="mdi mdi-heart text-danger"></i> by TDBSoft
                 </p>
               </div>
             </div>

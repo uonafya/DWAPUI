@@ -296,7 +296,7 @@ export default {
                 <img src="@/assets/parking-3.png" alt="" class="" height="50" />
               </span>
               <span class="logo-lg text-white row">
-                <h1 class="logo-lg text-white mt-4">DHIS2-DATIM DATA PULL</h1>
+                <h1 class="logo-lg text-white mt-4">DHIS2 DM-IL</h1>
               </span>
             </div>
           </router-link>
@@ -678,8 +678,7 @@ export default {
           >
             <ul class="navbar-nav text-white">
               <li
-                class="nav-item dropdown text-white
-                \"
+                class="nav-item dropdown text-white \"
                 v-for="(item, index) of menuItems"
                 :key="index"
               >

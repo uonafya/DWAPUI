@@ -6,18 +6,13 @@ export default {};
   <footer class="footer">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-6">
-          {{ new Date().getFullYear() }} © BetahoodAfrica.
-        </div>
+        <div class="col-sm-6">{{ new Date().getFullYear() }} © TDBSoft.</div>
         <div class="col-sm-6">
           <div class="text-sm-end d-none d-sm-block">
             Crafted with
             <i class="mdi mdi-heart text-danger"></i> by
-            <a
-              href="https://betahoodafrica.com/"
-              target="_blank"
-              class="text-reset"
-              >BetahoodAfrica</a
+            <a href="https://tdbsoft.co.ke/" target="_blank" class="text-reset"
+              >TDBSoft</a
             >
           </div>
         </div>

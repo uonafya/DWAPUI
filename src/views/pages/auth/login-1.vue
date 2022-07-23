@@ -60,7 +60,7 @@ export default {
               <div class="card-body p-4">
                 <div class="text-center mt-2">
                   <h5 class="text-primary">Welcome Back !</h5>
-                  <p class="text-muted">Sign in to continue to ParkCity.</p>
+                  <p class="text-muted">Sign in to continue to DM-IL.</p>
                 </div>
                 <div class="p-2 mt-4">
                   <form>
@@ -160,8 +160,8 @@ export default {
 
             <div class="mt-5 text-center">
               <p>
-                © {{ new Date().getFullYear() }} Minible. Crafted with
-                <i class="mdi mdi-heart text-danger"></i> by Themesbrand
+                © {{ new Date().getFullYear() }} TDBSoft. Crafted with
+                <i class="mdi mdi-heart text-danger"></i> by TDBSoft
               </p>
             </div>
           </div>

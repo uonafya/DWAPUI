@@ -9,7 +9,8 @@ import countTo from "vue-count-to";
 import DatePicker from "vue2-datepicker";
 import reportdet from "@/components/report/header";
 import Multiselect from "vue-multiselect";
-
+import vue2Dropzone from "vue2-dropzone";
+import "vue2-dropzone/dist/vue2Dropzone.min.css";
 /**
  * Invoice-list component
  */
@@ -30,6 +31,7 @@ export default {
     DatePicker,
     reportdet,
     Multiselect,
+    vueDropzone: vue2Dropzone,
   },
   data() {
     return {
@@ -40,7 +42,14 @@ export default {
       failed: 0,
       scheduled: 0,
       title: "KHIS Data",
-
+      dropzoneOptions: {
+        url: "https://httpbin.org/post",
+        thumbnailWidth: 150,
+        maxFilesize: 10.5,
+        headers: {
+          "My-Awesome-Header": "header value",
+        },
+      },
       items: [
         {
           text: "KHIS Data",
@@ -1204,7 +1213,7 @@ export default {
                   </div>
                   <div class="col-sm-2">
                     <button
-                      v-b-modal.modal-Edit
+                      v-b-modal.data-mapping
                       class="btn btn-success waves-effect waves-light uil-database-alt"
                       @click="clearvalues()"
                     >
@@ -1630,6 +1639,182 @@ export default {
         :shome="showme"
         v-show="showme"
       ></reportdet>
+    </b-modal>
+    <b-modal
+      id="data-mapping"
+      title="Data Mapping"
+      header-class="bg-secondary bg-gradient bg-opacity-50"
+      hide-footer
+      modal-class=""
+      size="xl"
+      centered
+    >
+      <div>
+        <!-- <PageHeader :title="title" :items="items" /> -->
+        <div class="row mb-4">
+          <div class="col-xl-4">
+            <div class="card h-100">
+              <div class="card-body bg-secondary bg-gradient bg-opacity-75">
+                <div class="text-center">
+                  <div>
+                    <img
+                      src="@/assets/images/datamapping.png"
+                      alt
+                      class="img-fluid m-auto"
+                    />
+                  </div>
+                </div>
+
+                <div class="text-muted"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-8">
+            <div class="card mb-0">
+              <b-tabs content-class="p-4" justified class="nav-tabs-custom">
+                <b-tab active>
+                  <template v-slot:title class="">
+                    <i class="uil uil-file-alt font-size-20"></i>
+                    <span class="d-none d-sm-block">Upload File</span>
+                  </template>
+                  <div>
+                    <div>
+                      <div class="row d-flex flex-row">
+                        <div class="col-lg-6">
+                          <div class="border-top">
+                            <vue-dropzone
+                              id="dropzone"
+                              ref="myVueDropzone"
+                              :use-custom-slot="true"
+                              :options="dropzoneOptions"
+                            >
+                              <div class="dropzone-custom-content">
+                                <i
+                                  class="display-4 text-muted bx bxs-cloud-upload"
+                                ></i>
+                                <h4>
+                                  Drop mapping file here or click to upload.
+                                </h4>
+                              </div>
+                            </vue-dropzone>
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="border-top">
+                            <div class="mt-lg-5">
+                              <b-button
+                                type="submit"
+                                variant="dark"
+                                class="uil uil-download-alt m-4"
+                                >Finish Upload</b-button
+                              >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </b-tab>
+                <b-tab>
+                  <template v-slot:title class="">
+                    <i class="uil uil-database-alt font-size-20"></i>
+                    <span class="d-none d-sm-block">Mapping</span>
+                  </template>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="border-top">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="card">
+                              <div class="card-body">
+                                <div class="row">
+                                  <div
+                                    class="input-group-text col-sm-12 m-auto"
+                                  >
+                                    Proceed to Map Data
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-sm-6 mb-2">
+                                      <div class="border-top">
+                                        <div class="mt-lg-5">
+                                          <b-button
+                                            type="submit"
+                                            variant="dark"
+                                            class="uil uil-database-alt"
+                                            >Initiate Data Mapping</b-button
+                                          >
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </b-tab>
+                <b-tab>
+                  <template v-slot:title class="">
+                    <i class="uil uil-download-alt font-size-20"></i>
+                    <span class="d-none d-sm-block">Download Mapped File</span>
+                  </template>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="border-top">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="card">
+                              <div class="card-body">
+                                <div class="row">
+                                  <div class="input-group-text col-sm-12">
+                                    Generate Final PDF | CSV document for Mapped
+                                    File
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!----@click="position(), $bvModal.hide('modal-1') --->
+                            <div class="row">
+                              <div class="col-sm-12 mb-2 d-flex flex-row">
+                                <div class="col-sm-3 mb-2">
+                                  <b-button
+                                    variant="dark"
+                                    @click="
+                                      generatePDF('Excel'),
+                                        $bvModal.hide('modal-1')
+                                    "
+                                    >Print Excel
+                                  </b-button>
+                                </div>
+                                <div class="col-sm-3 mb-2">
+                                  <b-button
+                                    variant="dark"
+                                    @click="
+                                      generatePDF('pdf'),
+                                        $bvModal.hide('modal-1')
+                                    "
+                                    >Print PDF
+                                  </b-button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </b-tab>
+              </b-tabs>
+              <!-- Nav tabs -->
+              <!-- Tab content -->
+            </div>
+          </div>
+        </div>
+        <!-- end row -->
+      </div>
     </b-modal>
     <!--end modals-->
     <div class="row">

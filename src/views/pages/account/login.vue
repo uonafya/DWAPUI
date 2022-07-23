@@ -106,7 +106,7 @@ export default {
           <div class="col-lg-12">
             <div class="text-center">
               <router-link to="/" class="mb-5 d-block auth-logo">
-                <h1>Betahood KHIS</h1>
+                <h1>HealthIT DM-IL</h1>
               </router-link>
             </div>
           </div>
@@ -117,7 +117,7 @@ export default {
               <div class="card-body p-4 bg-success bg-gradient">
                 <div class="text-center mt-2">
                   <h5 class="text-primary">Welcome Back !</h5>
-                  <p class="text-muted">Sign in to continue to KHIS.</p>
+                  <p class="text-muted">Sign in to continue to DM-IL.</p>
                 </div>
                 <div class="p-2 mt-4">
                   <b-alert
@@ -253,8 +253,8 @@ export default {
             </div>
             <div class="mt-5 text-center">
               <p>
-                © {{ new Date().getFullYear() }} BetahoodAfrica. Crafted with
-                <i class="mdi mdi-heart text-danger"></i> by BetahoodAfrica
+                © {{ new Date().getFullYear() }} TDBSoft. Crafted with
+                <i class="mdi mdi-heart text-danger"></i> by TDBSoft
               </p>
             </div>
             <!-- end row -->
