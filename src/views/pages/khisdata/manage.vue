@@ -8,6 +8,7 @@ import axios from "axios";
 import countTo from "vue-count-to";
 import DatePicker from "vue2-datepicker";
 import reportdet from "@/components/report/header";
+import Multiselect from "vue-multiselect";
 
 /**
  * Invoice-list component
@@ -22,7 +23,14 @@ export default {
       },
     ],
   },
-  components: { Layout, PageHeader, countTo, DatePicker, reportdet },
+  components: {
+    Layout,
+    PageHeader,
+    countTo,
+    DatePicker,
+    reportdet,
+    Multiselect,
+  },
   data() {
     return {
       stoped: true,
@@ -32,6 +40,7 @@ export default {
       failed: 0,
       scheduled: 0,
       title: "KHIS Data",
+
       items: [
         {
           text: "KHIS Data",
@@ -68,12 +77,27 @@ export default {
       date_range: "",
       exported: 0,
       status: "0",
-      records: [
-        {
-          id: "#MN0131",
-          patienId: "#2536",
-          status: "0",
-        },
+      totalrecords: 0,
+      records: [],
+      sheduledesc: "Weekly data sync",
+      scheduleTime: new Date().getTime(),
+      weekdays: false,
+      sync_m: 0,
+      sync_t: 0,
+      sync_w: 0,
+      sync_th: 0,
+      sync_f: 0,
+      sync_s: 0,
+      sync_su: 0,
+      scheduleday: "Monday",
+      Days: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
       ],
       series: [
         {
@@ -217,7 +241,7 @@ export default {
         },
       },
       totalRows: 1,
-      totalrecords: 0,
+      total: 0,
       currentPage: 1,
       perPage: 100,
       pageOptions: [
@@ -227,8 +251,37 @@ export default {
       showsync: true,
       filter: null,
       filterOn: [],
-      sortBy: "age",
+      sortBy: "id",
       sortDesc: false,
+      schedules: [],
+      editmode: false,
+      modaltitle: "Schedules",
+      schedulefields: [
+        {
+          key: "check",
+          label: "#",
+          sortable: true,
+        },
+        {
+          key: "id",
+          sortable: true,
+        },
+        {
+          key: "shedule_description",
+          label: "Description",
+          sortable: true,
+        },
+        {
+          key: "sync_time",
+          label: "Time",
+          sortable: true,
+        },
+        {
+          key: "days",
+          sortable: true,
+        },
+        "action",
+      ],
       fields: [
         {
           key: "check",
@@ -277,11 +330,15 @@ export default {
     rows() {
       return this.records.length;
     },
+    srows() {
+      return this.schedules.length;
+    },
   },
   watch: {},
   mounted() {
     // Set the initial number of items
     this.upadtearray();
+    this.getTotalRecords();
     this.updateDataSync();
     this.totalRows = this.items.length;
   },
@@ -427,6 +484,28 @@ export default {
       }
       return val;
     },
+    getTotalRecords() {
+      axios
+        .get(window.$http + "total_records_count/", {
+          headers: window.$headers,
+        })
+        .then((res) => {
+          console.log(res.data);
+          this.totalrecords = Number(res.data.totalrecords);
+          this.waiting = Number(this.totalrecords - this.synched);
+        })
+        .catch((e) => {
+          console.log(e);
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Error!",
+            html: "" + e,
+            showConfirmButton: true,
+            timer: 3000,
+          });
+        });
+    },
     upadtearray() {
       axios
         .get(window.$http + "indicators/" + this.perPage, {
@@ -444,7 +523,17 @@ export default {
             .then((res) => {
               console.log(res.data);
               this.synched = Number(res.data.total);
-              this.totalrecords = Number(res.data.total);
+              this.waiting = Number(this.totalrecords - this.synched);
+            })
+            .then(() => {
+              axios
+                .get(window.$http + "listschedules/", {
+                  headers: window.$headers,
+                })
+                .then((res) => {
+                  console.log(res.data);
+                  this.schedules = res.data;
+                });
             });
         })
         .catch((e) => {
@@ -567,6 +656,219 @@ export default {
           });
         });
     },
+    schedule() {
+      this.modaltitle = "Add Schedule";
+      console.log(this.scheduleTime);
+      if (this.weekdays) {
+        this.sync_m = 1;
+        this.sync_t = 1;
+        this.sync_w = 1;
+        this.sync_th = 1;
+        this.sync_f = 1;
+        this.sync_s = 1;
+        this.sync_su = 1;
+      } else {
+        if (this.scheduleday.includes("Monday")) {
+          this.sync_m = 1;
+        } else {
+          this.sync_m = 0;
+        }
+        if (this.scheduleday.includes("Tuesday")) {
+          this.sync_t = 1;
+        } else {
+          this.sync_t = 0;
+        }
+        if (this.scheduleday.includes("Wednesday")) {
+          this.sync_w = 1;
+        } else {
+          this.sync_w = 0;
+        }
+        if (this.scheduleday.includes("Thursday")) {
+          this.sync_th = 1;
+        } else {
+          this.sync_th = 0;
+        }
+        if (this.scheduleday.includes("Friday")) {
+          this.sync_f = 1;
+        } else {
+          this.sync_f = 0;
+        }
+        if (this.scheduleday.includes("Saturday")) {
+          this.sync_s = 1;
+        } else {
+          this.sync_s = 0;
+        }
+        if (this.scheduleday.includes("Sunday")) {
+          this.sync_su = 1;
+        } else {
+          this.sync_su = 0;
+        }
+      }
+      var data = {
+        shedule_description: this.sheduledesc,
+        sync_time: this.scheduleTime,
+        sync_m: this.sync_m,
+        sync_t: this.sync_t,
+        sync_w: this.sync_w,
+        sync_th: this.sync_th,
+        sync_f: this.sync_f,
+        sync_s: this.sync_s,
+        sync_su: this.sync_su,
+      };
+      console.log(data);
+      axios
+        .post(window.$http + "listschedules/", data, {
+          headers: window.$headers,
+        })
+        .then((response) => {
+          console.log(response.data);
+          Swal.fire({
+            title: "Success!",
+            html: "Your work has been saved!",
+            icon: "success",
+            showCancelButton: true,
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+          Swal.fire({
+            position: "center",
+            icon: "danger",
+            title: "Error!",
+            html: e,
+            showConfirmButton: true,
+          });
+        });
+    },
+    handleSubmit() {
+      console.log("Errot on submit");
+    },
+    edit(index, id, shedule_description, sync_time) {
+      this.modaltitle = "Edit Schedule";
+      this.editmode = true;
+      this.id = id;
+      this.scheduledesc = shedule_description;
+      this.scheduleTime = sync_time;
+    },
+    editrec() {
+      if (this.weekdays) {
+        this.sync_m = 1;
+        this.sync_t = 1;
+        this.sync_w = 1;
+        this.sync_th = 1;
+        this.sync_f = 1;
+        this.sync_s = 1;
+        this.sync_su = 1;
+      } else {
+        if (this.scheduleday.includes("Monday")) {
+          this.sync_m = 1;
+        } else {
+          this.sync_m = 0;
+        }
+        if (this.scheduleday.includes("Tuesday")) {
+          this.sync_t = 1;
+        } else {
+          this.sync_t = 0;
+        }
+        if (this.scheduleday.includes("Wednesday")) {
+          this.sync_w = 1;
+        } else {
+          this.sync_w = 0;
+        }
+        if (this.scheduleday.includes("Thursday")) {
+          this.sync_th = 1;
+        } else {
+          this.sync_th = 0;
+        }
+        if (this.scheduleday.includes("Friday")) {
+          this.sync_f = 1;
+        } else {
+          this.sync_f = 0;
+        }
+        if (this.scheduleday.includes("Saturday")) {
+          this.sync_s = 1;
+        } else {
+          this.sync_s = 0;
+        }
+        if (this.scheduleday.includes("Sunday")) {
+          this.sync_su = 1;
+        } else {
+          this.sync_su = 0;
+        }
+      }
+      var data = {
+        shedule_description: this.sheduledesc,
+        sync_time: this.scheduleTime,
+        sync_m: this.sync_m,
+        sync_t: this.sync_t,
+        sync_w: this.sync_w,
+        sync_th: this.sync_th,
+        sync_f: this.sync_f,
+        sync_s: this.sync_s,
+        sync_su: this.sync_su,
+      };
+      axios
+        .put(window.$http + "listschedules/" + this.id + "/", data, {
+          headers: window.$headers,
+        })
+        .then((res) => {
+          console.log(res.data);
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Your work has been saved",
+            showConfirmButton: true,
+            timer: 3000,
+          });
+          this.$bvModal.hide("modal-schedule");
+        })
+        .catch((e) => {
+          console.log(e);
+          Swal.fire({
+            position: "center",
+            icon: "danger",
+            title: "Error!",
+            html: e,
+            showConfirmButton: true,
+          });
+        });
+    },
+    deleterec(index, id, desc) {
+      //alert(rolename);
+      this.id = id;
+      Swal.fire({
+        title:
+          "Are you sure, you want to delete " + desc + "#id:" + this.id + "?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#000000",
+        cancelButtonColor: "#f46a6a",
+        confirmButtonText: "Yes, delete it!",
+      })
+        .then((result) => {
+          if (result.value) {
+            axios.delete(
+              window.$http + "listschedules/" + this.id,
+              { delete_status: 1 },
+              { headers: window.$headers }
+            );
+            this.orderData.splice(index, 1);
+            //this.$delete(this.orderData, this.id - 1);
+            Swal.fire("Deleted!", this.desc + " has been deleted.", "success");
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+          Swal.fire({
+            position: "center",
+            icon: "danger",
+            title: "Error!",
+            html: e,
+            showConfirmButton: true,
+          });
+        });
+    },
     search(fromdate, todate) {
       fromdate = this.formatDate(this.from);
       todate = this.formatDate(this.to);
@@ -587,8 +889,8 @@ export default {
           console.log(res.data);
           this.records = res.data;
           this.synched = Number(res.data.length);
-          this.totalrecords = Number(res.data.length);
           this.stoped = true;
+          this.getTotalRecords();
         })
         .catch((e) => {
           console.log(e);
@@ -869,7 +1171,8 @@ export default {
         <b-button
           variant="outline-primary"
           class="btn btn-success waves-effect waves-light uil-focus-add text-white"
-          v-b-modal.add-ground
+          v-b-modal.modal-schedule
+          @click="[(editmode = false), (modaltitle = 'Add Schedule')]"
           >&nbsp;Schedule</b-button
         >
       </div>
@@ -981,16 +1284,7 @@ export default {
                             :filter-included-fields="filterOn"
                             @filtered="onFiltered"
                           >
-                            <template v-slot:cell(cargo)="data">
-                              <a
-                                href="javascript: void(0);"
-                                class="text-dark fw-bold"
-                                v-for="cargo in data.item.cargo_name"
-                                :key="cargo"
-                                >{{ cargo }} <br
-                              /></a>
-                            </template>
-                            <template v-slot:cell(action)="data">
+                            <template v-slot:cell(action)>
                               <ul class="list-inline mb-0">
                                 <li class="list-inline-item">
                                   <a
@@ -999,13 +1293,6 @@ export default {
                                     v-b-tooltip.hover
                                     title="Edit"
                                     v-b-modal.modal-Edit
-                                    @click="
-                                      edit(
-                                        data.index,
-                                        data.item.id,
-                                        data.item.cargo_name
-                                      )
-                                    "
                                   >
                                     <i class="uil uil-pen font-size-18"></i>
                                   </a>
@@ -1016,13 +1303,6 @@ export default {
                                     class="px-2 text-danger"
                                     v-b-tooltip.hover
                                     title="Delete"
-                                    @click="
-                                      deleterec(
-                                        data.index,
-                                        data.item.id,
-                                        data.item.cargo_name
-                                      )
-                                    "
                                   >
                                     <i
                                       class="uil uil-trash-alt font-size-18"
@@ -1060,61 +1340,283 @@ export default {
       </div>
     </div>
     <!--modals-->
-    <b-modal id="add-ground" size="xl" :title="modaltitle">
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="card">
-            <div class="card-body">
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="mt-4">
-                    <h5 class="font-size-14 mb-4">
-                      <i class="mdi mdi-arrow-right text-primary me-1"></i>
-                      Schedule Data Sync Activity
-                    </h5>
-                    <form @submit.prevent="add()">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <b-form-group
-                            label="Schedule Time:"
-                            label-for="formrow-time-input"
-                            class="mb-3"
-                          >
-                            <b-form-input
-                              id="formrow-time-input"
-                              type="number"
-                              :placeholder="new Date()"
-                              v-model="time"
-                            >
-                            </b-form-input>
-                          </b-form-group>
-                        </div>
-                        <div class="col-md-6">
-                          <b-form-group
-                            label="Indicator Group:"
-                            label-for="formrow-idno-input"
-                            class="mb-3"
-                          >
-                            <b-form-input
-                              id="formrow-idno-input"
-                              type="text"
-                              placeholder="XTUW_3yG"
-                              v-model="indicatorgroup"
-                            ></b-form-input>
-                          </b-form-group>
-                        </div>
-                        <div class="mt-4">
-                          <b-button type="submit" variant="primary"
-                            ><i class="fa fa-plus"></i> Add Schedule</b-button
-                          >
+    <b-modal
+      id="modal-schedule-table"
+      title="Manage Schedule"
+      hide-footer
+      size="xl"
+      centered
+    >
+      <div class="col-xl-12">
+        <div class="card mb-0">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="card">
+                <div class="card-body changebg">
+                  <div class="row" id="print">
+                    <div class="col-12">
+                      <div>
+                        <div class="float-end">
+                          <form class="d-inline-flex mb-3"></form>
                         </div>
                       </div>
-                    </form>
+                      <div
+                        class="table table-centered datatable dt-responsive nowrap table-card-list dataTable no-footer dtr-inline"
+                      >
+                        <div class="row">
+                          <div class="col-sm-12 col-md-6">
+                            <div
+                              id="tickets-table_length"
+                              class="dataTables_length"
+                            >
+                              <label
+                                class="d-inline-flex align-items-center fw-normal"
+                              >
+                                Show&nbsp;
+                                <b-form-select
+                                  v-model="perPage"
+                                  size="sm"
+                                  :options="pageOptions"
+                                ></b-form-select
+                                >&nbsp;entries
+                              </label>
+                            </div>
+                          </div>
+                          <!-- Search -->
+                          <div class="col-sm-12 col-md-6">
+                            <div
+                              id="tickets-table_filter"
+                              class="dataTables_filter text-md-end"
+                            >
+                              <label
+                                class="d-inline-flex align-items-center fw-normal"
+                              >
+                                Search:
+                                <b-form-input
+                                  v-model="filter"
+                                  type="search"
+                                  placeholder="Search..."
+                                  class="form-control form-control-sm ms-2"
+                                ></b-form-input>
+                              </label>
+                            </div>
+                          </div>
+                          <!-- End search -->
+                        </div>
+                        <!-- Table -->
+
+                        <b-table
+                          table-class="table table-centered datatable table-card-list"
+                          thead-tr-class="bg-transparent"
+                          :items="schedules"
+                          :fields="schedulefields"
+                          responsive="sm"
+                          :per-page="perPage"
+                          :current-page="currentPage"
+                          :sort-by.sync="sortBy"
+                          :sort-desc.sync="sortDesc"
+                          :filter="filter"
+                          :filter-included-fields="filterOn"
+                          @filtered="onFiltered"
+                        >
+                          <template v-slot:cell(check)="data">
+                            <div class="custom-control custom-checkbox">
+                              <input
+                                type="checkbox"
+                                class="custom-control-input"
+                                :id="`contacusercheck${data.item.id}`"
+                              />
+                              <label
+                                class="custom-control-label"
+                                :for="`contacusercheck${data.item.id}`"
+                              ></label>
+                            </div>
+                          </template>
+                          <template v-slot:cell(days)="data">
+                            <a
+                              href="javascript: void(0);"
+                              class="text-dark fw-bold"
+                              ><span v-if="data.item.sync_m == 1"
+                                >{{ "M" }},</span
+                              ><span v-if="data.item.sync_t == 1"
+                                >{{ "T" }},</span
+                              ><span v-if="data.item.sync_w == 1"
+                                >{{ "W" }},</span
+                              ><span v-if="data.item.sync_th == 1"
+                                >{{ "TH" }},</span
+                              ><span v-if="data.item.sync_f == 1"
+                                >{{ "F" }},</span
+                              ><span v-if="data.item.sync_s == 1"
+                                >{{ "S" }},</span
+                              ><span v-if="data.item.sync_su == 1">{{
+                                "SU"
+                              }}</span>
+                            </a>
+                          </template>
+                          <template v-slot:cell(action)="data">
+                            <ul class="list-inline mb-0">
+                              <li class="list-inline-item">
+                                <a
+                                  href="javascript:void(0);"
+                                  class="px-2 text-primary"
+                                  v-b-tooltip.hover
+                                  title="Edit"
+                                  v-b-modal.modal-schedule
+                                  @click="
+                                    edit(
+                                      data.index,
+                                      data.item.id,
+                                      data.item.shedule_description,
+                                      data.item.sync_time,
+                                      data.item.sync_m,
+                                      data.item.sync_t,
+                                      data.item.sync_w,
+                                      data.item.sync_th,
+                                      data.item.sync_f,
+                                      data.item.sync_s,
+                                      data.item.sync_su
+                                    )
+                                  "
+                                >
+                                  <i class="uil uil-pen font-size-18"></i>
+                                </a>
+                              </li>
+                              <li class="list-inline-item">
+                                <a
+                                  href="javascript:void(0);"
+                                  class="px-2 text-danger"
+                                  v-b-tooltip.hover
+                                  title="Delete"
+                                  @click="
+                                    deleterec(
+                                      data.index,
+                                      data.item.id,
+                                      data.item.shedule_description
+                                    )
+                                  "
+                                >
+                                  <i class="uil uil-trash-alt font-size-18"></i>
+                                </a>
+                              </li>
+                            </ul>
+                          </template>
+                        </b-table>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <div
+                            class="dataTables_paginate paging_simple_numbers float-end"
+                          >
+                            <ul class="pagination pagination-rounded">
+                              <!-- pagination -->
+                              <b-pagination
+                                v-model="currentPage"
+                                :total-rows="srows"
+                                :per-page="perPage"
+                              ></b-pagination>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </b-modal>
+    <b-modal
+      id="modal-schedule"
+      :title="modaltitle"
+      hide-footer
+      size="lg"
+      centered
+    >
+      <div class="col-xl-8">
+        <div class="card mb-0">
+          <b-tabs content-class="p-4" justified class="nav-tabs-custom">
+            <b-tab active>
+              <form @submit.prevent="handleSubmit">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <b-form-group
+                      class="mb-3"
+                      label="Schedule Description"
+                      label-for="desc-input"
+                    >
+                      <input
+                        class="form-control"
+                        type="text"
+                        :placeholder="sheduledesc"
+                        v-model="sheduledesc"
+                      />
+                    </b-form-group>
+                  </div>
+                  <div class="col-sm-6 pt-4">
+                    <b-form-checkbox
+                      id="checkbox-1"
+                      name="checkbox-1"
+                      v-model="weekdays"
+                      unchecked-value="false"
+                      >&nbsp; Week Days
+                    </b-form-checkbox>
+                  </div>
+                  <div class="col-sm-6">
+                    <b-form-group
+                      class="mb-3"
+                      label="Schedule Time"
+                      label-for="backupTime-input"
+                    >
+                      <b-form-timepicker
+                        v-model="scheduleTime"
+                        locale="en"
+                      ></b-form-timepicker>
+                    </b-form-group>
+                  </div>
+                  <div class="col-sm-6" v-show="weekdays">
+                    <span v-show="weekdays">M,T,W,TH,S,SU</span>
+                  </div>
+                  <div class="col-sm-6" v-show="!weekdays">
+                    <b-form-group
+                      class="mb-3"
+                      label="Schedule Days"
+                      label-for="ScheduleDay-input"
+                    >
+                      <multiselect
+                        v-model="scheduleday"
+                        :options="Days"
+                        placeholder="Monday"
+                        :multiple="true"
+                        :editable="true"
+                      ></multiselect>
+                    </b-form-group>
+                  </div>
+                </div>
+              </form>
+            </b-tab>
+          </b-tabs>
+          <!-- Nav tabs -->
+          <!-- Tab content -->
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-0 mb-2 mt-2"></div>
+        <div class="col-sm-0 mb-2">
+          <b-button v-show="!editmode" variant="dark" @click="schedule()"
+            >Add Schedule</b-button
+          >&nbsp;
+          <b-button
+            variant="dark"
+            v-b-modal.modal-schedule-table
+            @click="$bvModal.hide('modal-schedule')"
+            v-show="!editmode"
+            >Manage Schedule</b-button
+          >
+          <b-button v-show="editmode" variant="dark" @click="editrec()"
+            >Edit Schedule</b-button
+          >
         </div>
       </div>
     </b-modal>
