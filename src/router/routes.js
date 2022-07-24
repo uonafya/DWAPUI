@@ -11,7 +11,7 @@ export default [{
                 if (store.getters['auth/loggedIn']) {
                     // Redirect to the home page instead
                     next({
-                        name: 'home'
+                        name: 'manage'
                     })
                 } else {
                     // Continue to the login page
@@ -31,7 +31,7 @@ export default [{
                 if (store.getters['auth/loggedIn']) {
                     // Redirect to the home page instead
                     next({
-                        name: 'home'
+                        name: 'manage'
                     })
                 } else {
                     // Continue to the login page
@@ -51,7 +51,7 @@ export default [{
                 if (store.getters['auth/loggedIn']) {
                     // Redirect to the home page instead
                     next({
-                        name: 'home'
+                        name: 'manage'
                     })
                 } else {
                     // Continue to the login page
@@ -76,7 +76,7 @@ export default [{
                     )
                     // Navigate back to previous page, or home as a fallback
                 next(authRequiredOnPreviousRoute ? {
-                    name: 'home'
+                    name: 'manage'
                 } : {
                     ...routeFrom
                 })
@@ -93,7 +93,7 @@ export default [{
     },
     {
         path: '/indicators',
-        name: 'patients',
+        name: 'indicators',
         meta: {
             authRequired: true,
         },

@@ -1154,7 +1154,7 @@ export default {
         <div id="tickets-table-date-picker" class="dataTables_length">
           <label class="d-inline-flex align-items-center fw-normal">
             <button
-              class="btn btn-info waves-effect waves-light uil-search-alt text-white"
+              class="btn btn-secondary waves-effect waves-light uil-search-alt text-white outline-dark"
               @click="search()"
             >
               Search
@@ -1164,13 +1164,13 @@ export default {
       </div>
       <div class="col-sm-6 col-md-2">
         <b-button
-          variant="outline-primary bg-primary text-white"
+          variant="outline-dark bg-secondary text-white uil uil-sync"
           @click="Sync()"
           v-show="showsync"
           >Sync Data</b-button
         >
         <b-button
-          variant="outline-danger bg-danger text-white"
+          variant="outline-dark bg-danger text-white uil uil-stop-circle"
           @click="Stop()"
           v-show="!showsync"
           >Stop Sync</b-button
@@ -1178,8 +1178,8 @@ export default {
       </div>
       <div class="col-sm-6 col-md-2">
         <b-button
-          variant="outline-primary"
-          class="btn btn-success waves-effect waves-light uil-focus-add text-white"
+          variant="outline-dark"
+          class="btn btn-secondary waves-effect waves-light uil-clock text-white"
           v-b-modal.modal-schedule
           @click="[(editmode = false), (modaltitle = 'Add Schedule')]"
           >&nbsp;Schedule</b-button
@@ -1195,7 +1195,7 @@ export default {
                 <div class="row justify-content-between">
                   <div class="col-sm-6">
                     <button
-                      class="btn btn-success waves-effect waves-light uil-export"
+                      class="btn btn-secondary waves-effect waves-light uil-export btn-outline-dark"
                       @click="getrpt()"
                     >
                       Export to CSV
@@ -1206,7 +1206,7 @@ export default {
                     <button
                       @click="printpdf('p')"
                       v-b-modal.modal-Print
-                      class="btn btn-success waves-effect waves-light uil-file-alt"
+                      class="btn btn-secondary waves-effect waves-light uil-file-alt outline-dark"
                     >
                       Print PDF
                     </button>
@@ -1214,7 +1214,7 @@ export default {
                   <div class="col-sm-2">
                     <button
                       v-b-modal.data-mapping
-                      class="btn btn-success waves-effect waves-light uil-database-alt"
+                      class="btn btn-secondary waves-effect waves-light uil-database-alt outline-dark"
                       @click="clearvalues()"
                     >
                       Indicator Mapping
