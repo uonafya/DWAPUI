@@ -14,6 +14,8 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 /**
  * Invoice-list component
  */
+const newheaders = window.$headers;
+newheaders["Content-Type"] = "multipart/form-data";
 export default {
   page: {
     title: "Data Sync",
@@ -42,13 +44,15 @@ export default {
       failed: 0,
       scheduled: 0,
       title: "KHIS Data",
+      files: new FormData(),
+      file: "",
       dropzoneOptions: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 150,
-        maxFilesize: 10.5,
-        headers: {
-          "My-Awesome-Header": "header value",
-        },
+        maxFilesize: 1024,
+        includeStyling: true,
+        addRemoveLinks: true,
+        headers: newheaders,
       },
       items: [
         {
@@ -59,14 +63,6 @@ export default {
           active: true,
         },
       ],
-      //parking
-      query: "",
-      capacity: "12",
-      location: window.navigator.lat + "," + window.location.lng,
-      name: "",
-      category: "Available",
-      avslots: "12",
-      cat: ["Available", "Busy"],
       /**
        * When the location found
        *        */
@@ -79,10 +75,6 @@ export default {
       from: new Date(),
       to: new Date(),
       time: new Date().getTime(),
-      patientName: "test1",
-      patientDiagnosis: "testing",
-      homeCounty: "kisumu",
-      delete_status: 0,
       date_range: "",
       exported: 0,
       status: "0",
@@ -265,6 +257,9 @@ export default {
       schedules: [],
       editmode: false,
       modaltitle: "Schedules",
+      tab1: true,
+      tab2: false,
+      tab3: false,
       schedulefields: [
         {
           key: "check",
@@ -355,6 +350,73 @@ export default {
     /**
      * Search the table data with search input
      */
+    handleFileUpload() {
+      //this.file = this.$refs.file.files[0];
+      this.file = event.target.files[0];
+    },
+    vfileAdded() {
+      this.file = this.$refs.myVueDropzone.getAcceptedFiles()[0];
+      console.log(this.$refs.myVueDropzone.getAcceptedFiles()[0]); //your origin image data url
+    },
+    submitFile() {
+      let formData = new FormData();
+      formData.append("file", this.file);
+      axios
+        .post(window.$http + "listfiles/", formData, {
+          headers: newheaders,
+        })
+        .then((response) => {
+          console.log(response.data);
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "File submitted successfully!",
+            html: "Please click on the Mapping tab to initiate data mapping",
+            showConfirmButton: false,
+            timer: 3000,
+          });
+          this.tab2 = true;
+        })
+        .catch((e) => {
+          console.log(e);
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Error!",
+            html: "" + e,
+            showConfirmButton: true,
+            timer: 3000,
+          });
+        });
+    },
+    triggerMapping() {
+      Swal.fire({
+        position: "center",
+        icon: "info",
+        title: "Please wait...",
+        html: "Data mapping in progress..",
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        willOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      setInterval(() => {
+        5000;
+        if (this.tab2 == true) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Done!",
+            html: "Data mapping complete!",
+            showConfirmButton: false,
+            timer: 3000,
+          });
+          this.tab3 = true;
+        }
+      }, 10000);
+      this.tab2 = false;
+    },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
@@ -1672,7 +1734,7 @@ export default {
           <div class="col-xl-8">
             <div class="card mb-0">
               <b-tabs content-class="p-4" justified class="nav-tabs-custom">
-                <b-tab active>
+                <b-tab :active="tab1">
                   <template v-slot:title class="">
                     <i class="uil uil-file-alt font-size-20"></i>
                     <span class="d-none d-sm-block">Upload File</span>
@@ -1680,42 +1742,40 @@ export default {
                   <div>
                     <div>
                       <div class="row d-flex flex-row">
-                        <div class="col-lg-6">
-                          <div class="border-top">
-                            <vue-dropzone
-                              id="dropzone"
-                              ref="myVueDropzone"
-                              :use-custom-slot="true"
-                              :options="dropzoneOptions"
-                            >
-                              <div class="dropzone-custom-content">
-                                <i
-                                  class="display-4 text-muted bx bxs-cloud-upload"
-                                ></i>
-                                <h4>
-                                  Drop mapping file here or click to upload.
-                                </h4>
-                              </div>
-                            </vue-dropzone>
-                          </div>
-                        </div>
-                        <div class="col-lg-6">
-                          <div class="border-top">
-                            <div class="mt-lg-5">
-                              <b-button
-                                type="submit"
-                                variant="dark"
-                                class="uil uil-download-alt m-4"
-                                >Finish Upload</b-button
-                              >
+                        <div class="col-lg-6 col-md-3">
+                          <div class="my-3">Upload Datim Data Mapping File</div>
+                          <vue-dropzone
+                            id="dropzone"
+                            ref="myVueDropzone"
+                            :use-custom-slot="true"
+                            :options="dropzoneOptions"
+                            @vdropzone-file-added="vfileAdded"
+                            @vdropzone-success="vfileAdded"
+                          >
+                            <div class="dropzone-custom-content">
+                              <i
+                                class="display-4 text-muted bx bxs-cloud-upload"
+                              ></i>
+                              <h4>Drop files here or click to upload.</h4>
                             </div>
+                          </vue-dropzone>
+                        </div>
+                        <div class="col-lg-6 m-auto">
+                          <div class="mt-lg-5">
+                            <b-button
+                              type="submit"
+                              variant="dark"
+                              class="uil uil-upload-alt m-4"
+                              @click="submitFile()"
+                              >Finish Upload</b-button
+                            >
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </b-tab>
-                <b-tab>
+                <b-tab :active="tab2">
                   <template v-slot:title class="">
                     <i class="uil uil-database-alt font-size-20"></i>
                     <span class="d-none d-sm-block">Mapping</span>
@@ -1741,6 +1801,7 @@ export default {
                                             type="submit"
                                             variant="dark"
                                             class="uil uil-database-alt"
+                                            @click="triggerMapping()"
                                             >Initiate Data Mapping</b-button
                                           >
                                         </div>
@@ -1756,7 +1817,7 @@ export default {
                     </div>
                   </div>
                 </b-tab>
-                <b-tab>
+                <b-tab :active="tab3">
                   <template v-slot:title class="">
                     <i class="uil uil-download-alt font-size-20"></i>
                     <span class="d-none d-sm-block">Download Mapped File</span>
