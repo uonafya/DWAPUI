@@ -42,7 +42,7 @@ window.$tokenString = tokenString;
 window.$headers = {
     Authorization: `Bearer ${window.$tokenString}`,
 };
-window.$headers = { Authorization: "Token add521e79d9e1a4b5ed0dd875fac39127f4b4993", };
+window.$headers = { Authorization: "Token bca3489064b6cff3147b902661ca5c810d929004", };
 Vue.use(Lightbox)
 Vue.use(VueGoogleMaps, {
     load: {
