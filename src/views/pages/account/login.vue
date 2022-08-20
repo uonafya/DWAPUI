@@ -1,7 +1,8 @@
 <script>
 import { required, email } from "vuelidate/lib/validators";
 import appConfig from "@/app.config";
-
+import axios from "axios";
+import Swal from "sweetalert2";
 /**
  * Login component
  */
@@ -19,6 +20,7 @@ export default {
     return {
       email: "admin@admin.com",
       password: "@Admin123",
+      username: "admin",
       submitted: false,
       authError: null,
       tryingToLogIn: false,
@@ -84,13 +86,56 @@ export default {
               })
           );
         } else if (process.env.VUE_APP_DEFAULT_AUTH === "fakebackend") {
-          const { email, password } = this;
-          if (email && password) {
-            this.$store.dispatch("authfack/login", {
-              email,
-              password,
+          axios
+            .post(
+              window.$http + "login/",
+              { username: this.username, password: this.password },
+              { headers: window.$headers }
+            )
+            .then((res) => {
+              console.log(res.data);
+              // const user = res.data.filter(
+              //   (item) =>
+              //     item.email === this.email && item.password === this.password
+              // );
+              if (res.data.token) {
+                const token = res.data.token;
+                axios.defaults.headers.common["Authorization"] =
+                  "Token " + token;
+                localStorage.setItem("token", token);
+                const email = "admin@admin.com";
+                const password = "@Admin123";
+                if (email && password) {
+                  this.$store.dispatch("authfack/login", {
+                    email,
+                    password,
+                  });
+                }
+              } else {
+                Swal.fire({
+                  position: "center",
+                  icon: "danger",
+                  title: "Failde!",
+                  html: "Wrong Username or Password!",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+              }
+
+              //}
+            })
+            .catch((res) => {
+              console.log(res + ":error submit!!");
+              Swal.fire({
+                position: "center",
+                icon: "warning",
+                title: "Faild!",
+                html: res,
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              return false;
             });
-          }
         }
       }
     },
@@ -144,22 +189,10 @@ export default {
                     >
                       <b-form-input
                         id="input-1"
-                        v-model="email"
+                        v-model="username"
                         type="text"
-                        placeholder="Enter email"
-                        :class="{ 'is-invalid': submitted && $v.email.$error }"
+                        placeholder="Enter username"
                       ></b-form-input>
-                      <div
-                        v-if="submitted && $v.email.$error"
-                        class="invalid-feedback"
-                      >
-                        <span v-if="!$v.email.required"
-                          >Email is required.</span
-                        >
-                        <span v-if="!$v.email.email"
-                          >Please enter valid email.</span
-                        >
-                      </div>
                     </b-form-group>
 
                     <b-form-group id="input-group-2" class="mb-3">

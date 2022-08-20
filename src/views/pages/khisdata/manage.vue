@@ -325,7 +325,7 @@ export default {
       if (this.stoped && !this.showsync) {
         this.upadtearray();
       }
-    }, 5000);
+    }, 3000);
     //this.upadtearray();
   },
   computed: {
@@ -747,7 +747,7 @@ export default {
             title: "Success!",
             html: "Data Sync triggered!",
             showConfirmButton: false,
-            timer: 3000,
+            timer: 2000,
           });
         })
         .catch((e) => {
@@ -785,7 +785,7 @@ export default {
             title: "Success!",
             html: "Data Sync stopped!",
             showConfirmButton: false,
-            timer: 3000,
+            timer: 2000,
           });
         })
         .catch((e) => {
