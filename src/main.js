@@ -43,6 +43,7 @@ window.$headers = {
     Authorization: `Bearer ${window.$tokenString}`,
 };
 const token = localStorage.getItem("token");
+console.log(token)
 window.$headers = { Authorization: "Token " + token, };
 Vue.use(Lightbox)
 Vue.use(VueGoogleMaps, {

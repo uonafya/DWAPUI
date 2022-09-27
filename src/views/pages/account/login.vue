@@ -94,14 +94,9 @@ export default {
             )
             .then((res) => {
               console.log(res.data);
-              // const user = res.data.filter(
-              //   (item) =>
-              //     item.email === this.email && item.password === this.password
-              // );
               if (res.data.token) {
                 const token = res.data.token;
-                axios.defaults.headers.common["Authorization"] =
-                  "Token " + token;
+                axios.defaults.headers.common["Authorization"] = "Token " + token;
                 localStorage.setItem("token", token);
                 const email = "admin@admin.com";
                 const password = "@Admin123";

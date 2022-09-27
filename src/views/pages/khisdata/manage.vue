@@ -3,13 +3,14 @@ import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 import appConfig from "@/app.config";
 import Swal from "sweetalert2";
+import mapping from "../../../components/mapping/mapping.vue";
 //import VueGoogleAutocomplete from "vue-google-autocomplete";
 import axios from "axios";
 import countTo from "vue-count-to";
 import DatePicker from "vue2-datepicker";
 import reportdet from "@/components/report/header";
 import Multiselect from "vue-multiselect";
-import vue2Dropzone from "vue2-dropzone";
+//import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 /**
  * Invoice-list component
@@ -32,8 +33,9 @@ export default {
     countTo,
     DatePicker,
     reportdet,
+    mapping,
     Multiselect,
-    vueDropzone: vue2Dropzone,
+    //vueDropzone: vue2Dropzone,
   },
   data() {
     return {
@@ -44,16 +46,6 @@ export default {
       failed: 0,
       scheduled: 0,
       title: "KHIS Data",
-      files: new FormData(),
-      file: "",
-      dropzoneOptions: {
-        url: "https://httpbin.org/post",
-        thumbnailWidth: 150,
-        maxFilesize: 1024,
-        includeStyling: true,
-        addRemoveLinks: true,
-        headers: newheaders,
-      },
       items: [
         {
           text: "KHIS Data",
@@ -67,8 +59,6 @@ export default {
        * When the location found
        *        */
       //end
-      addressData: {},
-      placeResultData: {},
       contid: "",
       id: "",
       myindex: "",
@@ -257,9 +247,6 @@ export default {
       schedules: [],
       editmode: false,
       modaltitle: "Schedules",
-      tab1: true,
-      tab2: false,
-      tab3: false,
       mappeddata: [],
       index: 1,
       schedulefields: [
@@ -349,48 +336,6 @@ export default {
     this.totalRows = this.items.length;
   },
   methods: {
-    /**
-     * Search the table data with search input
-     */
-    handleFileUpload() {
-      //this.file = this.$refs.file.files[0];
-      this.file = event.target.files[0];
-    },
-    vfileAdded() {
-      this.file = this.$refs.myVueDropzone.getAcceptedFiles()[0];
-      console.log(this.$refs.myVueDropzone.getAcceptedFiles()[0]); //your origin image data url
-    },
-    submitFile() {
-      let formData = new FormData();
-      formData.append("file", this.file);
-      axios
-        .post(window.$http + "listfiles/", formData, {
-          headers: newheaders,
-        })
-        .then((response) => {
-          console.log(response.data);
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "File submitted successfully!",
-            html: "Please click on the Mapping tab to initiate data mapping",
-            showConfirmButton: false,
-            timer: 3000,
-          });
-          this.tab2 = true;
-        })
-        .catch((e) => {
-          console.log(e);
-          Swal.fire({
-            position: "center",
-            icon: "warning",
-            title: "Error!",
-            html: "" + e,
-            showConfirmButton: true,
-            timer: 3000,
-          });
-        });
-    },
     getMappegData() {
       Swal.fire({
         position: "center",
@@ -424,48 +369,7 @@ export default {
           });
         });
     },
-    triggerMapping() {
-      Swal.fire({
-        position: "center",
-        icon: "info",
-        title: "Please wait...",
-        html: "Data mapping in progress..",
-        showConfirmButton: false,
-        allowOutsideClick: false,
-        willOpen: () => {
-          Swal.showLoading();
-        },
-      });
-      axios
-        .get(window.$http + "map_data", {
-          headers: newheaders,
-        })
-        .then((response) => {
-          console.log(response.data);
-          this.tab2 = false;
-          this.tab3 = true;
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Success!",
-            html: "Data Mapping completed successfully!",
-            showConfirmButton: false,
-            timer: 3000,
-          });
-        })
-        .catch((e) => {
-          console.log(e);
-          Swal.fire({
-            position: "center",
-            icon: "warning",
-            title: "Error!",
-            html: "" + e,
-            showConfirmButton: true,
-            timer: 3000,
-          });
-        });
-    },
-    onFiltered(filteredItems) {
+    tered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
@@ -885,7 +789,7 @@ export default {
         });
     },
     handleSubmit() {
-      console.log("Errot on submit");
+      console.log("Error on submit");
     },
     edit(index, id, shedule_description, sync_time) {
       this.modaltitle = "Edit Schedule";
@@ -1784,172 +1688,7 @@ export default {
       size="xl"
       centered
     >
-      <div>
-        <!-- <PageHeader :title="title" :items="items" /> -->
-        <div class="row mb-4">
-          <div class="col-xl-4">
-            <div class="card h-100">
-              <div class="card-body bg-secondary bg-gradient bg-opacity-75">
-                <div class="text-center">
-                  <div>
-                    <img
-                      src="@/assets/images/datamapping.png"
-                      alt
-                      class="img-fluid m-auto"
-                    />
-                  </div>
-                </div>
-
-                <div class="text-muted"></div>
-              </div>
-            </div>
-          </div>
-          <div class="col-xl-8">
-            <div class="card mb-0">
-              <b-tabs content-class="p-4" justified class="nav-tabs-custom">
-                <b-tab :active="tab1">
-                  <template v-slot:title class="">
-                    <i class="uil uil-file-alt font-size-20"></i>
-                    <span class="d-none d-sm-block">Upload File</span>
-                  </template>
-                  <div>
-                    <div>
-                      <div class="row d-flex flex-row">
-                        <div class="col-lg-6 col-md-3">
-                          <div class="my-3">Upload Datim Data Mapping File</div>
-                          <vue-dropzone
-                            id="dropzone"
-                            ref="myVueDropzone"
-                            :use-custom-slot="true"
-                            :options="dropzoneOptions"
-                            @vdropzone-file-added="vfileAdded"
-                            @vdropzone-success="vfileAdded"
-                          >
-                            <div class="dropzone-custom-content">
-                              <i
-                                class="display-4 text-muted bx bxs-cloud-upload"
-                              ></i>
-                              <h4>Drop files here or click to upload.</h4>
-                            </div>
-                          </vue-dropzone>
-                        </div>
-                        <div class="col-lg-6 m-auto">
-                          <div class="mt-lg-5">
-                            <b-button
-                              type="submit"
-                              variant="dark"
-                              class="uil uil-upload-alt m-4"
-                              @click="submitFile()"
-                              >Finish Upload</b-button
-                            >
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </b-tab>
-                <b-tab :active="tab2">
-                  <template v-slot:title class="">
-                    <i class="uil uil-database-alt font-size-20"></i>
-                    <span class="d-none d-sm-block">Mapping</span>
-                  </template>
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <div class="border-top">
-                        <div class="row">
-                          <div class="col-md-12">
-                            <div class="card">
-                              <div class="card-body">
-                                <div class="row">
-                                  <div
-                                    class="input-group-text col-sm-12 m-auto"
-                                  >
-                                    Proceed to Map Data
-                                  </div>
-                                  <div class="row">
-                                    <div class="col-sm-6 mb-2">
-                                      <div class="border-top">
-                                        <div class="mt-lg-5">
-                                          <b-button
-                                            type="submit"
-                                            variant="dark"
-                                            class="uil uil-database-alt"
-                                            @click="triggerMapping()"
-                                            >Initiate Data Mapping</b-button
-                                          >
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </b-tab>
-                <b-tab :active="tab3">
-                  <template v-slot:title class="">
-                    <i class="uil uil-download-alt font-size-20"></i>
-                    <span class="d-none d-sm-block">Download Mapped File</span>
-                  </template>
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <div class="border-top">
-                        <div class="row">
-                          <div class="col-md-12">
-                            <div class="card">
-                              <div class="card-body">
-                                <div class="row">
-                                  <div class="input-group-text col-sm-12">
-                                    Generate Final PDF | CSV document for Mapped
-                                    File
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!----@click="position(), $bvModal.hide('modal-1') --->
-                            <div class="row">
-                              <div class="col-sm-12 mb-2 d-flex flex-row">
-                                <div class="col-sm-3 mb-2">
-                                  <b-button
-                                    variant="dark"
-                                    @click="
-                                      printMappedExcel(),
-                                        $bvModal.hide('modal-1')
-                                    "
-                                    >Print Excel
-                                  </b-button>
-                                </div>
-                                <div class="col-sm-3 mb-2">
-                                  <b-button
-                                    variant="dark"
-                                    @click="
-                                      printMappedPDF('l'),
-                                        $bvModal.hide('modal-1')
-                                    "
-                                    v-b-modal.modal-Print
-                                    >Print PDF
-                                  </b-button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </b-tab>
-              </b-tabs>
-              <!-- Nav tabs -->
-              <!-- Tab content -->
-            </div>
-          </div>
-        </div>
-        <!-- end row -->
-      </div>
+      <mapping />
     </b-modal>
     <!--end modals-->
     <div class="row">
