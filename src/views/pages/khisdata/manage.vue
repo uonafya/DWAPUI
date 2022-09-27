@@ -62,6 +62,7 @@ export default {
       contid: "",
       id: "",
       myindex: "",
+      concodance: 0,
       from: new Date(),
       to: new Date(),
       time: new Date().getTime(),
@@ -249,6 +250,7 @@ export default {
       modaltitle: "Schedules",
       mappeddata: [],
       index: 1,
+      count: 0,
       schedulefields: [
         {
           key: "check",
@@ -332,76 +334,13 @@ export default {
     this.upadtearray();
     this.getTotalRecords();
     this.updateDataSync();
-    this.getMappegData();
     this.totalRows = this.items.length;
   },
   methods: {
-    getMappegData() {
-      Swal.fire({
-        position: "center",
-        icon: "info",
-        title: "Please wait...",
-        html: "Pulling data...",
-        showConfirmButton: false,
-        allowOutsideClick: false,
-        willOpen: () => {
-          Swal.showLoading();
-        },
-      });
-      axios
-        .get(window.$http + "get_mapped_data", {
-          headers: newheaders,
-        })
-        .then((response) => {
-          //console.log(response.data);
-          this.mappeddata = response.data;
-          Swal.close();
-        })
-        .catch((e) => {
-          console.log(e);
-          Swal.fire({
-            position: "center",
-            icon: "warning",
-            title: "Error!",
-            html: "" + e,
-            showConfirmButton: true,
-            timer: 3000,
-          });
-        });
-    },
-    tered(filteredItems) {
+    onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
-    },
-    printMappedPDF(pl) {
-      this.pl = pl;
-      const data = this.mappeddata.map((row) => ({
-        Category: row.DATIM_Indicator_Category,
-        DATIM_Indicator_ID: row.DATIM_Indicator_ID,
-        DATIM_Disag_Name: row.DATIM_Disag_Name,
-        DATIM_Disag_ID: row.DATIM_Disag_ID,
-        Operation: row.Operation,
-        MOH_Indicator_ID: row.MOH_Indicator_ID,
-        MOH_Indicator_Name: row.MOH_Indicator_Name,
-        Disag_Type: row.Disaggregation_Type,
-      }));
-
-      //get headers
-      this.title = "KHIS-DATIM Mapped Data";
-      const headers = Object.keys(data[0]);
-      const cars = [];
-      Object.entries(data).forEach((val) => {
-        const [key] = val;
-        // console.log(key, value);
-        cars.push(Object.values(data[key]));
-      });
-
-      const uniqueCars = Array.from(new Set(cars));
-      this.headers = headers;
-      this.uniqueCars = uniqueCars;
-      this.records = data;
-      //alert(headers);
     },
     printpdf(pl) {
       this.pl = pl;
@@ -409,7 +348,6 @@ export default {
         "S/NO": this.index++,
         MOH_Indicator_ID: row.MOH_Indicator_ID,
         MOH_Indicator_Name: row.MOH_Indicator_Name,
-        "Short Name": row.shortName,
       }));
 
       //get headers
@@ -916,6 +854,21 @@ export default {
             showConfirmButton: true,
           });
         });
+    },
+    increaseCount(n) {
+      this.count += n;
+      console.log(this.count);
+    },
+    myRecs({ records, uniqueCars, headers, title, pl, concodance }) {
+      console.log(records);
+      this.records = records;
+      console.log(uniqueCars);
+      this.uniqueCars = uniqueCars;
+      console.log(headers);
+      this.headers = headers;
+      this.title = title;
+      this.pl = pl;
+      this.concodance = concodance;
     },
     search(fromdate, todate) {
       fromdate = this.formatDate(this.from);
@@ -1677,6 +1630,7 @@ export default {
         :uniqueCars="uniqueCars"
         :shome="showme"
         v-show="showme"
+        :concodance="concodance"
       ></reportdet>
     </b-modal>
     <b-modal
@@ -1688,7 +1642,7 @@ export default {
       size="xl"
       centered
     >
-      <mapping />
+      <mapping @myrecords="myRecs" />
     </b-modal>
     <!--end modals-->
     <div class="row">

@@ -9,6 +9,13 @@ const newheaders = window.$headers;
 newheaders["Content-Type"] = "multipart/form-data";
 export default {
   name: "mapping",
+  props: {
+    title: String,
+    records: Array,
+    pl: String,
+    headers: Object,
+    uniqueCars: Object,
+  },
   components: {
     vueDropzone: vue2Dropzone,
     Multiselect,
@@ -17,6 +24,7 @@ export default {
     return {
       files: new FormData(),
       file: "",
+      concodance: 0,
       dropzoneOptions: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 150,
@@ -34,8 +42,11 @@ export default {
       category: "All",
       data_to_use: "Select a data source",
       data_options: ["api data", "csv data"],
+      report: "Select report",
+      report_options: ["Comparison File", "Mappings File"],
       show_upload_file: false,
       togglequaters: false,
+      selected_report: false,
       qt1: "",
       qt2: "",
       qt3: "",
@@ -43,7 +54,8 @@ export default {
       from: new Date().getFullYear() + "-09-01",
       to: new Date().getFullYear() + "-10-01",
       //quater 1
-      qt1from: new Date().getFullYear() + "-10-01", //"2020-10-01"
+      //qt1from: new Date().getFullYear() + "-10-01",
+      qt1from: "2020-10-01",
       qt1to: new Date().getFullYear() + "-12-31",
       //quater 2
       qt2from: new Date().getFullYear() + "-01-01",
@@ -54,6 +66,8 @@ export default {
       //quater 4
       qt4from: new Date().getFullYear() + "-06-01",
       qt4to: new Date().getFullYear() + "-09-30",
+      comparisondata: [],
+      mappeddata: [],
     };
   },
   mounted() {
@@ -87,19 +101,26 @@ export default {
         });
     },
     getdataStatus() {
-      this.show_upload_file = true;
+      this.show_upload_file = false;
+      this.togglequaters = false;
+      this.selected_report = false;
       if (this.data_to_use == "csv data") {
         this.show_upload_file = true;
-      } else {
+      } else if (
+        this.report != "Mapped File" &&
+        this.report != "Comparison File"
+      ) {
         this.tab2 = true;
       }
-    },
-    showFilter() {
-      this.togglequaters = true;
       if (this.category == "TX_CURR") {
         this.togglequaters = true;
       } else {
         this.togglequaters = false;
+      }
+      if (this.report == "Comparison File") {
+        this.selected_report = true;
+      } else {
+        this.selected_report = false;
       }
     },
     handleFileUpload() {
@@ -230,6 +251,155 @@ export default {
             timer: 3000,
           });
         });
+    },
+    getMappegData() {
+      Swal.fire({
+        position: "center",
+        icon: "info",
+        title: "Please wait...",
+        html: "Pulling data...",
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        willOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      if (this.report == "Comparison File") {
+        var startdate = new Date();
+        var enddate = new Date();
+        if (this.category === "TX_CURR") {
+          if (this.qt1 == true) {
+            startdate = this.qt1from;
+            enddate = this.qt1to;
+          } else if (this.qt2 == true) {
+            startdate = this.qt2from;
+            enddate = this.qt2to;
+          } else if (this.qt3 == true) {
+            startdate = this.qt3from;
+            enddate = this.qt3to;
+          } else if (this.qt4 == true) {
+            startdate = this.qt4from;
+            enddate = this.qt4to;
+          }
+        } else {
+          startdate = this.from;
+          enddate = this.to;
+        }
+        axios
+          .get(
+            window.$http +
+              "get_comparison_data/" +
+              this.county +
+              "/" +
+              this.category +
+              "/" +
+              startdate +
+              "/" +
+              enddate +
+              "/",
+            {
+              headers: newheaders,
+            }
+          )
+          .then((response) => {
+            //console.log(response.data);
+            this.comparisondata = response.data;
+            this.printMappedPDF("l");
+            Swal.close();
+          })
+          .catch((e) => {
+            console.log(e);
+            Swal.fire({
+              position: "center",
+              icon: "warning",
+              title: "Error!",
+              html: "" + e,
+              showConfirmButton: true,
+              timer: 3000,
+            });
+          });
+      } else if (this.report == "Mapped File") {
+        axios
+          .get(window.$http + "get_mapped_data", {
+            headers: newheaders,
+          })
+          .then((response) => {
+            //console.log(response.data);
+            this.mappeddata = response.data;
+            Swal.close();
+          })
+          .catch((e) => {
+            console.log(e);
+            Swal.fire({
+              position: "center",
+              icon: "warning",
+              title: "Error!",
+              html: "" + e,
+              showConfirmButton: true,
+              timer: 3000,
+            });
+          });
+      }
+    },
+    printMappedPDF(pl) {
+      this.pl = pl;
+      var data = [];
+      this.concodance = 0;
+      if (this.report == "Comparison File") {
+        this.comparisondata.forEach((val) => {
+          this.concodance += Number(val["concodance"]);
+        });
+        data = this.comparisondata.map((row) => ({
+          facility: row.facility,
+          ward: row.ward,
+          subcounty: row.subcounty,
+          county: row.county,
+          MOH_UID: row.MOH_FacilityID,
+          DATIM_ID: row.DATIM_Disag_ID,
+          MOH_IndicatorID: row.MOH_IndicatorCode,
+          indicators: row.indicators,
+          DATIM_Name: row.DATIM_Disag_Name,
+          khis_data: row.khis_data,
+          datim_data: row.datim_data,
+          weight: row.weight,
+          "concodance(%)": row.concodance,
+          "khis-datim": row.khis_minus_datim,
+        }));
+      } else {
+        data = this.mappeddata.map((row) => ({
+          Category: row.DATIM_Indicator_Category,
+          DATIM_Indicator_ID: row.DATIM_Indicator_ID,
+          DATIM_Disag_Name: row.DATIM_Disag_Name,
+          DATIM_Disag_ID: row.DATIM_Disag_ID,
+          Operation: row.Operation,
+          MOH_Indicator_ID: row.MOH_Indicator_ID,
+          MOH_Indicator_Name: row.MOH_Indicator_Name,
+          Disag_Type: row.Disaggregation_Type,
+        }));
+      }
+      //get headers
+      this.title = this.report;
+      const headers = Object.keys(data[0]);
+      const cars = [];
+      Object.entries(data).forEach((val) => {
+        const [key] = val;
+        console.log(key, val);
+        cars.push(Object.values(data[key]));
+      });
+
+      const uniqueCars = Array.from(new Set(cars));
+      this.headers = headers;
+      this.uniqueCars = uniqueCars;
+      this.records = data;
+      this.title = this.report;
+      this.$emit("myrecords", {
+        records: this.records,
+        uniqueCars: this.uniqueCars,
+        headers: this.headers,
+        title: this.county + " " + this.category + " " + this.title,
+        pl: this.pl,
+        concodance: this.concodance,
+      });
     },
   },
 };
@@ -413,7 +583,6 @@ export default {
                                                   placeholder="Kisumu County"
                                                   :multiple="false"
                                                   :editable="true"
-                                                  @input="showFilter()"
                                                 ></multiselect>
                                               </b-form-group>
                                             </div>
@@ -429,7 +598,7 @@ export default {
                                                   placeholder="TX_CURR"
                                                   :multiple="false"
                                                   :editable="true"
-                                                  @input="showFilter()"
+                                                  @input="getdataStatus()"
                                                 ></multiselect>
                                               </b-form-group>
                                             </div>
@@ -562,7 +731,6 @@ export default {
                                   </div>
                                 </div>
                               </div>
-                              ]
                             </div>
                           </div>
                         </div>
@@ -584,70 +752,171 @@ export default {
                       <div class="col-md-12">
                         <div class="card">
                           <div class="card-body">
-                            <div class="row">
-                              <div class="input-group-text col-sm-12">
-                                Generate Final PDF | CSV Mapping File
+                            <div class="row d-flex flex-row">
+                              <div class="col-lg-12 col-md-6">
+                                <h3 class="my-3">Generate Report</h3>
+                                <div class="row">
+                                  <div class="col-sm-12 col-md-12">
+                                    <b-form-group
+                                      label="Select report"
+                                      label-for="report-input"
+                                    >
+                                      <multiselect
+                                        class="form-control"
+                                        v-model="report"
+                                        :options="report_options"
+                                        :placeholder="report"
+                                        :multiple="false"
+                                        :editable="true"
+                                        @input="getdataStatus()"
+                                      ></multiselect>
+                                    </b-form-group>
+                                  </div>
+                                  <div class="col-sm-6 col-md-6">
+                                    <b-form-group
+                                      label="County"
+                                      label-for="county-input"
+                                    >
+                                      <multiselect
+                                        class="form-control"
+                                        v-model="county"
+                                        :options="counties"
+                                        placeholder="Kisumu County"
+                                        :multiple="false"
+                                        :editable="true"
+                                      ></multiselect>
+                                    </b-form-group>
+                                  </div>
+                                  <div class="col-sm-6 col-md-6">
+                                    <b-form-group
+                                      label="Category"
+                                      label-for="Category-input"
+                                    >
+                                      <multiselect
+                                        class="form-control"
+                                        v-model="category"
+                                        :options="cats"
+                                        placeholder="TX_CURR"
+                                        :multiple="false"
+                                        :editable="true"
+                                        @input="getdataStatus()"
+                                      ></multiselect>
+                                    </b-form-group>
+                                  </div>
+                                  <div
+                                    class="col-sm-6 col-md-6 mt-2"
+                                    v-show="!togglequaters"
+                                  >
+                                    <div id="tickets-table-date-picker">
+                                      <label>
+                                        From&nbsp;
+                                        <date-picker
+                                          class="form-control"
+                                          v-model="from"
+                                          placeholder="2022-09-27"
+                                          type="date"
+                                        ></date-picker>
+                                      </label>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="col-sm-6 col-md-6 mt-2"
+                                    v-show="!togglequaters"
+                                  >
+                                    <div id="tickets-table-date-picker">
+                                      <label>
+                                        To&nbsp;
+                                        <date-picker
+                                          class="form-control"
+                                          v-model="to"
+                                          placeholder="2022-09-27"
+                                          type="date"
+                                        ></date-picker>
+                                      </label>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="col-sm-6 col-md-6 mt-2"
+                                    v-show="togglequaters"
+                                  >
+                                    <div id="tickets-table-date-picker">
+                                      <label class="d-inline-flex m-2">
+                                        Quater 1 &nbsp;
+                                        <b-form-checkbox
+                                          class="mr-n2"
+                                          v-model="qt1"
+                                        >
+                                        </b-form-checkbox>
+                                      </label>
+                                    </div>
+                                    <div
+                                      id="tickets-table-date-picker"
+                                      v-show="togglequaters"
+                                    >
+                                      <label class="d-inline-flex m-2">
+                                        Quater 2 &nbsp;
+                                        <b-form-checkbox
+                                          class="mr-n2"
+                                          v-model="qt2"
+                                        >
+                                        </b-form-checkbox>
+                                      </label>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="col-sm-6 col-md-6 mt-2"
+                                    v-show="togglequaters"
+                                  >
+                                    <div id="tickets-table-date-picker">
+                                      <label class="d-inline-flex m-2">
+                                        Quater 3 &nbsp;
+                                        <b-form-checkbox
+                                          class="mr-n2"
+                                          v-model="qt3"
+                                        >
+                                        </b-form-checkbox>
+                                      </label>
+                                    </div>
+                                    <div
+                                      id="tickets-table-date-picker"
+                                      class="d-block"
+                                      v-show="togglequaters"
+                                    >
+                                      <label class="d-inline-flex m-2">
+                                        Quater 4 &nbsp;
+                                        <b-form-checkbox
+                                          class="mr-n2"
+                                          v-model="qt4"
+                                        >
+                                        </b-form-checkbox>
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                         <!----@click="position(), $bvModal.hide('modal-1') --->
                         <div class="row">
-                          <div class="col-sm-12 mb-2 d-flex flex-row">
-                            <div class="col-sm-3 mb-2">
-                              <b-button
-                                variant="dark"
-                                @click="
-                                  printMappedExcel(), $bvModal.hide('modal-1')
-                                "
-                                >Print Excel
-                              </b-button>
-                            </div>
-                            <div class="col-sm-3 mb-2">
-                              <b-button
-                                variant="dark"
-                                @click="
-                                  printMappedPDF('l'), $bvModal.hide('modal-1')
-                                "
-                                v-b-modal.modal-Print
-                                >Print PDF
-                              </b-button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-12">
-                        <div class="card">
-                          <div class="card-body">
-                            <div class="row">
-                              <div class="input-group-text col-sm-12">
-                                Generate Final PDF | CSV Comparison File
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <!----@click="position(), $bvModal.hide('modal-1') --->
-                        <div class="row">
-                          <div class="col-sm-12 mb-2 d-flex flex-row">
-                            <div class="col-sm-3 mb-2">
-                              <b-button
-                                variant="dark"
-                                @click="
-                                  printMappedExcel(), $bvModal.hide('modal-1')
-                                "
-                                >Print Excel
-                              </b-button>
-                            </div>
-                            <div class="col-sm-3 mb-2">
-                              <b-button
-                                variant="dark"
-                                @click="
-                                  printMappedPDF('l'), $bvModal.hide('modal-1')
-                                "
-                                v-b-modal.modal-Print
-                                >Print PDF
-                              </b-button>
-                            </div>
+                          <div class="col-sm-10 text-right">{{ report }}</div>
+
+                          <div class="col-sm-2">
+                            <b-button
+                              pill
+                              variant="outline-primary"
+                              @click="
+                                [
+                                  getMappegData(),
+                                  printMappedPDF('l'),
+                                  $bvModal.hide('modal-1'),
+                                ]
+                              "
+                              v-b-modal.modal-Print
+                              style="margin-right: 10px"
+                            >
+                              Generate</b-button
+                            >
                           </div>
                         </div>
                       </div>

@@ -6,8 +6,16 @@
           <div class="card-body">
             <form @submit.prevent="handleSubmit">
               <div class="row">
-                <div class="input-group-text col-sm-12">
-                  Do you want to generate PDF document for {{ title }}
+                <div class="col-sm-12 overflow-auto">
+                  <h5 class="my-4">
+                    Do you want to generate PDF document for {{ title }}
+                  </h5>
+                  <h4
+                    class="my4 d-inline"
+                    :class="{ 'd-none': concodance == 0 }"
+                  >
+                    Concodance:<span class="text-info">{{ concodance }}</span>
+                  </h4>
                 </div>
               </div>
             </form>
@@ -80,10 +88,11 @@ export default {
     uniqueCars: Object,
     showme: Boolean,
     printedpdf: Boolean,
+    concodance: Number,
   },
   data() {
     return {
-      pagelayout: "p",
+      pagelayout: "l",
     };
   },
   methods: {
@@ -142,7 +151,7 @@ export default {
       doc.text(60, 25, "Phone: 0714 667883 | Email: servicedesk@health.go.ke");
       doc.text(150, 30, "Print Date: " + this.getcurrentdate(new Date()));
       //doc.text(10, 40, this.title);
-      doc.text(60, 33, "Facility Name: DHIS 2");
+      doc.text(60, 33, "Facility Name: DATIM-KHIS DATA IL");
       doc.setFontSize(14);
       doc.addFont("Tahoma", "Tahoma", "bold");
 
@@ -158,7 +167,11 @@ export default {
       doc.addImage(imgKLogo, "PNG", 1, 1, 12, 7, 3, 3);
 
       //doc.addImage(img, "PNG", 10, 10);
-      doc.text(10, 40, this.title);
+      doc.text(
+        10,
+        40,
+        this.title + "\t\t\tConcodance: " + this.concodance + " %"
+      );
 
       doc.setFillColor(0, 255, 0);
       doc.addFont("Tahoma", "Tahoma", "bold");
@@ -217,17 +230,17 @@ export default {
           body: body,
           // margin: { left: 5.5, top: 52 },
           startY: 44,
-          margin: { horizontal: 1 },
+          margin: { horizontal: 0 },
           styles: {
             columnWidth: "wrap",
             fontSize: 7,
             overflow: "linebreak",
-            cellWidth: "wrap",
+            cellWidth: "auto",
           },
           columnStyles: {
             2: { cellWidth: "auto" },
-            nil: { halign: "right" },
-            tgl: { halign: "right" },
+            nil: { halign: "left" },
+            tgl: { halign: "left" },
           },
           headerStyles: {
             halign: "center",
