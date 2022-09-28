@@ -14,7 +14,9 @@
                     class="my4 d-inline"
                     :class="{ 'd-none': concodance == 0 }"
                   >
-                    Concodance:<span class="text-info">{{ concodance }}</span>
+                    Concodance:&nbsp;<span class="text-info"
+                      >{{ concodance }}&nbsp;%</span
+                    >
                   </h4>
                 </div>
               </div>

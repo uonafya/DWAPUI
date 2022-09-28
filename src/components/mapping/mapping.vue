@@ -107,6 +107,7 @@ export default {
       if (this.data_to_use == "csv data") {
         this.show_upload_file = true;
       } else if (
+        this.data_to_use == "api data" &&
         this.report != "Mapped File" &&
         this.report != "Comparison File"
       ) {
