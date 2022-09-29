@@ -54,17 +54,17 @@ export default {
       from: new Date().getFullYear() + "-09-01",
       to: new Date().getFullYear() + "-10-01",
       //quater 1
-      //qt1from: new Date().getFullYear() + "-10-01",
-      qt1from: "2020-10-01",
+      qt1from: Number(new Date().getFullYear()) - 1 + "-10-01",
+      //qt1from: "2020-10-01",
       qt1to: new Date().getFullYear() + "-12-31",
       //quater 2
       qt2from: new Date().getFullYear() + "-01-01",
-      qt2to: new Date().getFullYear() + "-03-01",
+      qt2to: new Date().getFullYear() + "-03-31",
       //quater 3
-      qt3from: new Date().getFullYear() + "-03-01",
-      qt3to: new Date().getFullYear() + "-06-01",
+      qt3from: new Date().getFullYear() + "-04-01",
+      qt3to: new Date().getFullYear() + "-06-31",
       //quater 4
-      qt4from: new Date().getFullYear() + "-06-01",
+      qt4from: new Date().getFullYear() + "-07-01",
       qt4to: new Date().getFullYear() + "-09-30",
       comparisondata: [],
       mappeddata: [],
