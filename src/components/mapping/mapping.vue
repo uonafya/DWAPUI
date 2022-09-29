@@ -163,6 +163,94 @@ export default {
           });
         });
     },
+    ///date functions
+    formatDate(date) {
+      var d = new Date(date),
+        month = "" + (d.getMonth() + 1),
+        day = "" + d.getDate(),
+        year = d.getFullYear();
+
+      if (month.length < 2) month = "0" + month;
+      if (day.length < 2) day = "0" + day;
+
+      return [year, month, day].join("-");
+    },
+    mydatenew(d) {
+      let year = d.getFullYear();
+      let month = d.getMonth() + 1;
+      //alert("month" + month);
+      let date = d.getDate();
+      date = this.getv(date);
+      month = this.getv(month);
+
+      //const msec = d.getMilliseconds();
+      const datetime = year + "-" + month + "-" + date;
+      return datetime;
+    },
+    mydate(d, day, mon, yea) {
+      let year = d.getFullYear() - yea;
+      let month = d.getMonth() + 1 - mon;
+      //alert("month" + month);
+      let date = d.getDate() - day;
+      date = this.getv(date);
+      month = this.getv(month);
+
+      //const msec = d.getMilliseconds();
+      const datetime = year + "-" + month + "-" + date;
+      return datetime;
+    },
+    getv(val) {
+      if (val < 10) {
+        val = "0" + val;
+      }
+      return val;
+    },
+    getmydate(mydate) {
+      let d = new Date(mydate);
+      let year = d.getFullYear();
+      let month = this.getmonth(d.getMonth());
+      let date = d.getDate();
+      date = this.getv(date);
+      //month = this.getv(month);
+
+      //const msec = d.getMilliseconds();
+      const datetime = date + "/" + month + "/" + year;
+      return datetime;
+    },
+    getmonth(d) {
+      const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      return monthNames[d];
+    },
+    getdatefilter() {
+      //alert(this.mydate(new Date(), 0, 0, 0));
+      this.todate = new Date(this.mydate(new Date(), 0, 0, 0));
+      if (this.picked == "Day") {
+        this.fromdate = new Date(this.mydate(new Date(), 1, 0, 0));
+      }
+      if (this.picked == "week") {
+        this.fromdate = new Date(this.mydate(new Date(), 7, 0, 0));
+      }
+      if (this.picked == "month") {
+        this.fromdate = new Date(this.mydate(new Date(), 0, 1, 0));
+      }
+      if (this.picked == "year") {
+        this.fromdate = new Date(this.mydate(new Date(), 0, 0, 1));
+      }
+    },
+    ////end date functions
     triggerComparison() {
       Swal.fire({
         position: "center",
@@ -193,8 +281,8 @@ export default {
           enddate = this.qt4to;
         }
       } else {
-        startdate = this.from;
-        enddate = this.to;
+        startdate = this.mydatenew(new Date(this.from));
+        enddate = this.mydatenew(new Date(this.to));
       }
       axios
         .get(
@@ -217,6 +305,7 @@ export default {
         .then((response) => {
           console.log(response.data);
           this.tab2 = false;
+          this.tab1 = false;
           if (response.data.message.includes("Could not find data")) {
             Swal.fire({
               position: "center",
@@ -229,6 +318,18 @@ export default {
               timer: 5000,
             });
             this.tab3 = false;
+          } else if (
+            response.data.message.includes("Could not find datim file")
+          ) {
+            Swal.fire({
+              position: "center",
+              icon: "warning",
+              title: "File Not Found!",
+              html: response.data.message,
+              showConfirmButton: true,
+              timer: 5000,
+            });
+            this.tab1 = true;
           } else {
             Swal.fire({
               position: "center",
@@ -649,7 +750,7 @@ export default {
                                                 <label
                                                   class="d-inline-flex m-2"
                                                 >
-                                                  Quater 1 &nbsp;
+                                                  Quater 1(Oct to Dec) &nbsp;
                                                   <b-form-checkbox
                                                     class="mr-n2"
                                                     v-model="qt1"
@@ -664,7 +765,7 @@ export default {
                                                 <label
                                                   class="d-inline-flex m-2"
                                                 >
-                                                  Quater 2 &nbsp;
+                                                  Quater 2(Jan to Mar)&nbsp;
                                                   <b-form-checkbox
                                                     class="mr-n2"
                                                     v-model="qt2"
@@ -683,7 +784,7 @@ export default {
                                                 <label
                                                   class="d-inline-flex m-2"
                                                 >
-                                                  Quater 3 &nbsp;
+                                                  Quater 3(Apr to Jun) &nbsp;
                                                   <b-form-checkbox
                                                     class="mr-n2"
                                                     v-model="qt3"
@@ -699,7 +800,7 @@ export default {
                                                 <label
                                                   class="d-inline-flex m-2"
                                                 >
-                                                  Quater 4 &nbsp;
+                                                  Quater 4(Jul to Sept) &nbsp;
                                                   <b-form-checkbox
                                                     class="mr-n2"
                                                     v-model="qt4"
@@ -842,7 +943,7 @@ export default {
                                   >
                                     <div id="tickets-table-date-picker">
                                       <label class="d-inline-flex m-2">
-                                        Quater 1 &nbsp;
+                                        Quater 1(Oct to Dec) &nbsp;
                                         <b-form-checkbox
                                           class="mr-n2"
                                           v-model="qt1"
@@ -855,7 +956,7 @@ export default {
                                       v-show="togglequaters"
                                     >
                                       <label class="d-inline-flex m-2">
-                                        Quater 2 &nbsp;
+                                        Quater 2(Jan to Mar) &nbsp;
                                         <b-form-checkbox
                                           class="mr-n2"
                                           v-model="qt2"
@@ -870,7 +971,7 @@ export default {
                                   >
                                     <div id="tickets-table-date-picker">
                                       <label class="d-inline-flex m-2">
-                                        Quater 3 &nbsp;
+                                        Quater 3(Apr to Jun) &nbsp;
                                         <b-form-checkbox
                                           class="mr-n2"
                                           v-model="qt3"
@@ -884,7 +985,7 @@ export default {
                                       v-show="togglequaters"
                                     >
                                       <label class="d-inline-flex m-2">
-                                        Quater 4 &nbsp;
+                                        Quater 4(Jul to Sept) &nbsp;
                                         <b-form-checkbox
                                           class="mr-n2"
                                           v-model="qt4"
