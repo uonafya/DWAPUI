@@ -384,8 +384,8 @@ export default {
             enddate = this.qt4to;
           }
         } else {
-          startdate = this.from;
-          enddate = this.to;
+          startdate = this.mydatenew(new Date(this.from));
+          enddate = this.mydatenew(new Date(this.to));
         }
         axios
           .get(
