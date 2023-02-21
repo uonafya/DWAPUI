@@ -283,7 +283,7 @@ export default {
         <div class="navbar-brand-box">
           <router-link to="/" class="logo logo-dark">
             <span class="logo-xl col">
-              <img src="@/assets/parking-3.png" alt="" class="" height="50" />
+              <img src="@/assets/HealthITLogo.png" alt="" class="" height="50" />
             </span>
             <span class="logo-lg">
               <img src="@/assets/images/logo-dark.png" alt height="20" />
@@ -293,7 +293,7 @@ export default {
           <router-link to="/" class="logo logo-light">
             <div class="container d-flex flex-row">
               <span class="logo-xl col">
-                <img src="@/assets/parking-3.png" alt="" class="" height="50" />
+                <img src="@/assets/HealthITLogo.png" alt="" class="" height="50" />
               </span>
               <span class="logo-lg text-white row">
                 <h1 class="logo-lg text-white mt-4">DHIS2 DM-IL</h1>
@@ -302,49 +302,31 @@ export default {
           </router-link>
         </div>
 
-        <button
-          type="button"
-          class="btn btn-sm px-3 font-size-16 d-lg-none header-item"
-          data-toggle="collapse"
-          data-target="#topnav-menu-content"
-          @click="toggleMenu"
-        >
+        <button type="button" class="btn btn-sm px-3 font-size-16 d-lg-none header-item" data-toggle="collapse"
+          data-target="#topnav-menu-content" @click="toggleMenu">
           <i class="fa fa-fw fa-bars"></i>
         </button>
 
         <!-- App Search-->
         <form class="app-search d-none">
           <div class="position-relative">
-            <input
-              type="text"
-              class="form-control"
-              :placeholder="$t('navbar.search.text')"
-            />
+            <input type="text" class="form-control" :placeholder="$t('navbar.search.text')" />
             <span class="uil-search"></span>
           </div>
         </form>
       </div>
 
       <div class="d-flex">
-        <b-dropdown
-          variant="white"
-          class="d-inline-block d-lg-none ms-2"
-          toggle-class="header-item noti-icon"
-          right
-          menu-class="dropdown-menu-lg p-0"
-        >
+        <b-dropdown variant="white" class="d-inline-block d-lg-none ms-2" toggle-class="header-item noti-icon" right
+          menu-class="dropdown-menu-lg p-0">
           <template v-slot:button-content>
             <i class="uil-search"></i>
           </template>
           <form class="p-3">
             <div class="form-group m-0">
               <div class="input-group">
-                <input
-                  type="text"
-                  class="form-control"
-                  :placeholder="$t('navbar.search.text')"
-                  aria-label="Recipient's username"
-                />
+                <input type="text" class="form-control" :placeholder="$t('navbar.search.text')"
+                  aria-label="Recipient's username" />
                 <div class="input-group-append">
                   <button class="btn btn-primary" type="submit">
                     <i class="mdi mdi-magnify"></i>
@@ -356,35 +338,30 @@ export default {
         </b-dropdown>
 
         <!--  <b-dropdown variant="white" right toggle-class="header-item">
-          <template v-slot:button-content>
-            <img class :src="flag" alt="Header Language" height="16" />
-            {{ text }}
-          </template>
-          <b-dropdown-item
-            class="notify-item"
-            v-for="(entry, i) in languages"
-            :key="`Lang${i}`"
-            :value="entry"
-            @click="setLanguage(entry.language, entry.title, entry.flag)"
-            :link-class="{ active: entry.language === current_language }"
-          >
-            <img
-              :src="`${entry.flag}`"
-              alt="user-image"
-              class="me-1"
-              height="12"
-            />
-            <span class="align-middle">{{ entry.title }}</span>
-          </b-dropdown-item>
-        </b-dropdown> -->
+                <template v-slot:button-content>
+                  <img class :src="flag" alt="Header Language" height="16" />
+                  {{ text }}
+                </template>
+                <b-dropdown-item
+                  class="notify-item"
+                  v-for="(entry, i) in languages"
+                  :key="`Lang${i}`"
+                  :value="entry"
+                  @click="setLanguage(entry.language, entry.title, entry.flag)"
+                  :link-class="{ active: entry.language === current_language }"
+                >
+                  <img
+                    :src="`${entry.flag}`"
+                    alt="user-image"
+                    class="me-1"
+                    height="12"
+                  />
+                  <span class="align-middle">{{ entry.title }}</span>
+                </b-dropdown-item>
+              </b-dropdown> -->
 
-        <b-dropdown
-          variant="white"
-          class="d-none d-lg-inline-block ms-1"
-          toggle-class="header-item noti-icon"
-          right
-          menu-class="dropdown-menu-lg"
-        >
+        <b-dropdown variant="white" class="d-none d-lg-inline-block ms-1" toggle-class="header-item noti-icon" right
+          menu-class="dropdown-menu-lg">
           <template v-slot:button-content>
             <i class="uil-apps"></i>
           </template>
@@ -398,19 +375,13 @@ export default {
               </div>
               <div class="col">
                 <a class="dropdown-icon-item" href="#">
-                  <img
-                    src="@/assets/images/brands/bitbucket.png"
-                    alt="bitbucket"
-                  />
+                  <img src="@/assets/images/brands/bitbucket.png" alt="bitbucket" />
                   <span>{{ $t("navbar.dropdown.site.list.bitbucket") }}</span>
                 </a>
               </div>
               <div class="col">
                 <a class="dropdown-icon-item" href="#">
-                  <img
-                    src="@/assets/images/brands/dribbble.png"
-                    alt="dribbble"
-                  />
+                  <img src="@/assets/images/brands/dribbble.png" alt="dribbble" />
                   <span>{{ $t("navbar.dropdown.site.list.dribbble") }}</span>
                 </a>
               </div>
@@ -425,10 +396,7 @@ export default {
               </div>
               <div class="col">
                 <a class="dropdown-icon-item" href="#">
-                  <img
-                    src="@/assets/images/brands/mail_chimp.png"
-                    alt="mail_chimp"
-                  />
+                  <img src="@/assets/images/brands/mail_chimp.png" alt="mail_chimp" />
                   <span>{{ $t("navbar.dropdown.site.list.mailchimp") }}</span>
                 </a>
               </div>
@@ -443,22 +411,13 @@ export default {
         </b-dropdown>
 
         <div class="dropdown d-none d-lg-inline-block ms-1">
-          <button
-            type="button"
-            class="btn header-item noti-icon waves-effect"
-            data-toggle="fullscreen"
-            @click="initFullScreen"
-          >
+          <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen"
+            @click="initFullScreen">
             <i class="uil-minus-path"></i>
           </button>
         </div>
-        <b-dropdown
-          variant="white"
-          class="dropdown d-inline-block"
-          toggle-class="header-item noti-icon"
-          right
-          menu-class="dropdown-menu-lg p-0 dropdown-menu-end"
-        >
+        <b-dropdown variant="white" class="dropdown d-inline-block" toggle-class="header-item noti-icon" right
+          menu-class="dropdown-menu-lg p-0 dropdown-menu-end">
           <template v-slot:button-content>
             <i class="uil-bell"></i>
             <span class="badge bg-danger rounded-pill">3</span>
@@ -482,9 +441,7 @@ export default {
             <a href class="text-reset notification-item">
               <div class="media">
                 <div class="avatar-xs me-3">
-                  <span
-                    class="avatar-title bg-primary rounded-circle font-size-16"
-                  >
+                  <span class="avatar-title bg-primary rounded-circle font-size-16">
                     <i class="uil-shopping-basket"></i>
                   </span>
                 </div>
@@ -506,11 +463,7 @@ export default {
             </a>
             <a href class="text-reset notification-item">
               <div class="media">
-                <img
-                  src="@/assets/images/users/avatar-3.jpg"
-                  class="me-3 rounded-circle avatar-xs"
-                  alt="user-pic"
-                />
+                <img src="@/assets/images/users/avatar-3.jpg" class="me-3 rounded-circle avatar-xs" alt="user-pic" />
                 <div class="media-body">
                   <h6 class="mt-0 mb-1">
                     {{ $t("navbar.dropdown.notification.james.title") }}
@@ -530,9 +483,7 @@ export default {
             <a href class="text-reset notification-item">
               <div class="media">
                 <div class="avatar-xs me-3">
-                  <span
-                    class="avatar-title bg-light rounded-circle font-size-16"
-                  >
+                  <span class="avatar-title bg-light rounded-circle font-size-16">
                     <i class="uil-truck"></i>
                   </span>
                 </div>
@@ -555,11 +506,7 @@ export default {
 
             <a href class="text-reset notification-item">
               <div class="media">
-                <img
-                  src="@/assets/images/users/avatar-4.jpg"
-                  class="me-3 rounded-circle avatar-xs"
-                  alt="user-pic"
-                />
+                <img src="@/assets/images/users/avatar-4.jpg" class="me-3 rounded-circle avatar-xs" alt="user-pic" />
                 <div class="media-body">
                   <h6 class="mt-0 mb-1">
                     {{ $t("navbar.dropdown.notification.salena.title") }}
@@ -578,79 +525,48 @@ export default {
             </a>
           </simplebar>
           <div class="p-2 border-top">
-            <a
-              class="btn btn-sm btn-link font-size-14 btn-block text-center"
-              href="javascript:void(0)"
-            >
+            <a class="btn btn-sm btn-link font-size-14 btn-block text-center" href="javascript:void(0)">
               <i class="uil-arrow-circle-right me-1"></i>
               {{ $t("navbar.dropdown.notification.button") }}
             </a>
           </div>
         </b-dropdown>
 
-        <b-dropdown
-          class="d-inline-block"
-          toggle-class="header-item"
-          right
-          variant="white"
-        >
+        <b-dropdown class="d-inline-block" toggle-class="header-item" right variant="white">
           <template v-slot:button-content>
-            <img
-              class="rounded-circle header-profile-user"
-              src="@/assets/parking-3.png"
-              alt="Header Avatar"
-            />
-            <span
-              class="d-none d-xl-inline-block ms-1 fw-medium font-size-15"
-              >{{ $t("Admin") }}</span
-            >
+            <img class="rounded-circle header-profile-user" src="@/assets/HealthITLogo.png" alt="Header Avatar" />
+            <span class="d-none d-xl-inline-block ms-1 fw-medium font-size-15">{{ $t("Admin") }}</span>
             <i class="uil-angle-down d-none d-xl-inline-block font-size-15"></i>
           </template>
 
           <!-- item-->
           <a class="dropdown-item" href="#">
-            <i
-              class="uil uil-user-circle font-size-18 align-middle text-muted me-1"
-            ></i>
+            <i class="uil uil-user-circle font-size-18 align-middle text-muted me-1"></i>
             <span class="align-middle">{{
               $t("navbar.dropdown.marcus.list.profile")
             }}</span>
           </a>
           <a class="dropdown-item" href="#">
-            <i
-              class="uil uil-wallet font-size-18 align-middle me-1 text-muted"
-            ></i>
+            <i class="uil uil-wallet font-size-18 align-middle me-1 text-muted"></i>
             <span class="align-middle">{{
               $t("navbar.dropdown.marcus.list.mywallet")
             }}</span>
           </a>
           <a class="dropdown-item d-block" href="#">
-            <i
-              class="uil uil-cog font-size-18 align-middle me-1 text-muted"
-            ></i>
+            <i class="uil uil-cog font-size-18 align-middle me-1 text-muted"></i>
             <span class="align-middle">{{
               $t("navbar.dropdown.marcus.list.settings")
             }}</span>
-            <span class="badge badge-soft-success badge-pill mt-1 ms-2"
-              >03</span
-            >
+            <span class="badge badge-soft-success badge-pill mt-1 ms-2">03</span>
           </a>
           <a class="dropdown-item" href="#">
-            <i
-              class="uil uil-lock-alt font-size-18 align-middle me-1 text-muted"
-            ></i>
+            <i class="uil uil-lock-alt font-size-18 align-middle me-1 text-muted"></i>
             <span class="align-middle">{{
               $t("navbar.dropdown.marcus.list.lockscreen")
             }}</span>
           </a>
-          <a
-            class="dropdown-item"
-            href="javascript: void(0);"
-            @click="logoutUser"
-          >
-            <i
-              class="uil uil-sign-out-alt font-size-18 align-middle me-1 text-muted"
-            ></i>
+          <a class="dropdown-item" href="javascript: void(0);" @click="logoutUser">
+            <i class="uil uil-sign-out-alt font-size-18 align-middle me-1 text-muted"></i>
             <span class="align-middle">{{
               $t("navbar.dropdown.marcus.list.logout")
             }}</span>
@@ -658,11 +574,8 @@ export default {
         </b-dropdown>
 
         <div class="dropdown d-inline-block">
-          <button
-            type="button"
-            class="btn header-item noti-icon right-bar-toggle toggle-right"
-            @click="toggleRightSidebar"
-          >
+          <button type="button" class="btn header-item noti-icon right-bar-toggle toggle-right"
+            @click="toggleRightSidebar">
             <i class="uil-cog toggle-right"></i>
           </button>
         </div>
@@ -672,68 +585,33 @@ export default {
     <div class="container-fluid bg-secondary">
       <div class="topnav bg-light text-white">
         <nav class="navbar navbar-light navbar-expand-lg topnav-menu">
-          <div
-            class="collapse navbar-collapse text-white"
-            id="topnav-menu-content"
-          >
+          <div class="collapse navbar-collapse text-white" id="topnav-menu-content">
             <ul class="navbar-nav text-white">
-              <li
-                class="nav-item dropdown text-white \"
-                v-for="(item, index) of menuItems"
-                :key="index"
-              >
-                <router-link
-                  tag="a"
-                  v-if="!item.subItems"
-                  :to="item.link"
-                  class="nav-link dropdown-toggle arrow-none side-nav-link-ref"
-                >
+              <li class="nav-item dropdown text-white \" v-for="(item, index) of menuItems" :key="index">
+                <router-link tag="a" v-if="!item.subItems" :to="item.link"
+                  class="nav-link dropdown-toggle arrow-none side-nav-link-ref">
                   <i :class="`${item.icon} me-2`"></i>
                   {{ $t(item.label) }}
                 </router-link>
 
-                <a
-                  v-if="item.subItems"
-                  class="nav-link dropdown-toggle arrow-none"
-                  @click="onMenuClick"
-                  href="javascript: void(0);"
-                  id="topnav-components"
-                  role="button"
-                >
+                <a v-if="item.subItems" class="nav-link dropdown-toggle arrow-none" @click="onMenuClick"
+                  href="javascript: void(0);" id="topnav-components" role="button">
                   <i :class="`${item.icon} me-2`"></i>
                   {{ $t(item.label) }}
                   <div class="arrow-down"></div>
                 </a>
-                <div
-                  class="dropdown-menu"
-                  aria-labelledby="topnav-dashboard"
-                  v-if="hasItems(item)"
-                >
+                <div class="dropdown-menu" aria-labelledby="topnav-dashboard" v-if="hasItems(item)">
                   <template v-for="(subitem, index) of item.subItems">
-                    <router-link
-                      :key="index"
-                      class="col dropdown-item side-nav-link-ref"
-                      v-if="!hasItems(subitem)"
-                      :to="subitem.link"
-                      >{{ $t(subitem.label) }}</router-link
-                    >
+                    <router-link :key="index" class="col dropdown-item side-nav-link-ref" v-if="!hasItems(subitem)"
+                      :to="subitem.link">{{ $t(subitem.label) }}</router-link>
                     <div class="dropdown" v-if="hasItems(subitem)" :key="index">
-                      <a
-                        class="dropdown-item"
-                        href="javascript: void(0);"
-                        @click="onMenuClick"
-                      >
+                      <a class="dropdown-item" href="javascript: void(0);" @click="onMenuClick">
                         {{ $t(subitem.label) }}
                         <div class="arrow-down"></div>
                       </a>
                       <div class="dropdown-menu">
-                        <router-link
-                          v-for="(subSubitem, index) of subitem.subItems"
-                          :key="index"
-                          :to="subSubitem.link"
-                          class="dropdown-item side-nav-link-ref"
-                          >{{ $t(subSubitem.label) }}</router-link
-                        >
+                        <router-link v-for="(subSubitem, index) of subitem.subItems" :key="index" :to="subSubitem.link"
+                          class="dropdown-item side-nav-link-ref">{{ $t(subSubitem.label) }}</router-link>
                       </div>
                     </div>
                   </template>

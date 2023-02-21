@@ -66,11 +66,7 @@ export default {
               </div>
               <div class="col-sm-4 bg-primary bg-success bg-gradient">
                 <div class="mt-4 mt-sm-0">
-                  <img
-                    src="@/assets/parking-3.png"
-                    class="img-fluid bg-success bg-gradient"
-                    alt
-                  />
+                  <img src="@/assets/HealthITLogo.png" class="img-fluid bg-success bg-gradient" alt />
                 </div>
               </div>
             </div>

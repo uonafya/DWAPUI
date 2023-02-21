@@ -51,29 +51,49 @@ export default {
       qt2: "",
       qt3: "",
       qt4: "",
+      qtryear: 2022,
       from: new Date().getFullYear() + "-09-01",
       to: new Date().getFullYear() + "-10-01",
       //quater 1
-      qt1from: Number(new Date().getFullYear()) - 1 + "-10-01",
+      qt1from: "",
       //qt1from: "2020-10-01",
-      qt1to: new Date().getFullYear() + "-12-31",
+      qt1to: "",
       //quater 2
-      qt2from: new Date().getFullYear() + "-01-01",
-      qt2to: new Date().getFullYear() + "-03-31",
+      qt2from: "",
+      qt2to: "",
       //quater 3
-      qt3from: new Date().getFullYear() + "-04-01",
-      qt3to: new Date().getFullYear() + "-06-31",
+      qt3from: "",
+      qt3to: "",
       //quater 4
-      qt4from: new Date().getFullYear() + "-07-01",
-      qt4to: new Date().getFullYear() + "-09-30",
+      qt4from: "",
+      qt4to: "",
       comparisondata: [],
       mappeddata: [],
     };
   },
   mounted() {
     this.updatefilters();
+    //preload date
+    this.updateDates();
   },
   methods: {
+    updateDates() {
+      this.from = this.qtryear + "-09-01";
+      this.to = this.qtryear + "-10-01";
+      //quater 1
+      this.qt1from = this.qtryear - 1 + "-10-01";
+      //qt1from: "2020-10-01",
+      this.qt1to = this.qtryear + "-12-31";
+      //quater 2
+      this.qt2from = this.qtryear + "-01-01";
+      this.qt2to = this.qtryear + "-03-31";
+      //quater 3
+      this.qt3from = this.qtryear + "-04-01";
+      this.qt3to = this.qtryear + "-06-31";
+      //quater 4
+      this.qt4from = this.qtryear + "-07-01";
+      this.qt4to = this.qtryear + "-09-30";
+    },
     updatefilters() {
       axios
         .get(window.$http + "listscategories", { headers: window.$headers })
@@ -663,12 +683,20 @@ export default {
                                               <div id="tickets-table-date-picker">
                                                 <label>
                                                   To&nbsp;
-                                                  <date-picker class="form-control" v-model="to"
-                                                    placeholder="2022-09-27" type="date"></date-picker>
+                                                  <date-picker class="form-control" v-model="to" placeholder="2022-09-27"
+                                                    type="date"></date-picker>
                                                 </label>
                                               </div>
                                             </div>
                                             <div class="col-sm-6 col-md-6 mt-2" v-show="togglequaters">
+                                              <div id="tickets-table">
+                                                <label class="d-inline-flex m-2">
+                                                  Year-{{ qtryear
+                                                  }}&nbsp;
+                                                  <b-form-input type="number" class="mr-n2" v-model="qtryear">
+                                                  </b-form-input>
+                                                </label>
+                                              </div>
                                               <div id="tickets-table-date-picker">
                                                 <label class="d-inline-flex m-2">
                                                   Quater 1(Oct to Dec) &nbsp;
@@ -692,8 +720,7 @@ export default {
                                                   </b-form-checkbox>
                                                 </label>
                                               </div>
-                                              <div id="tickets-table-date-picker" class="d-block"
-                                                v-show="togglequaters">
+                                              <div id="tickets-table-date-picker" class="d-block" v-show="togglequaters">
                                                 <label class="d-inline-flex m-2">
                                                   Quater 4(Jul to Sept) &nbsp;
                                                   <b-form-checkbox class="mr-n2" v-model="qt4">{{ qt4 }}
@@ -748,8 +775,8 @@ export default {
                                   <div class="col-sm-12 col-md-12">
                                     <b-form-group label="Select report" label-for="report-input">
                                       <multiselect class="form-control" v-model="report" :options="report_options"
-                                        :placeholder="report" :multiple="false" :editable="true"
-                                        @input="getdataStatus()"></multiselect>
+                                        :placeholder="report" :multiple="false" :editable="true" @input="getdataStatus()">
+                                      </multiselect>
                                     </b-form-group>
                                   </div>
                                   <div class="col-sm-6 col-md-6">
@@ -761,8 +788,8 @@ export default {
                                   <div class="col-sm-6 col-md-6">
                                     <b-form-group label="Category" label-for="Category-input">
                                       <multiselect class="form-control" v-model="category" :options="cats"
-                                        placeholder="TX_CURR" :multiple="false" :editable="true"
-                                        @input="getdataStatus()"></multiselect>
+                                        placeholder="TX_CURR" :multiple="false" :editable="true" @input="getdataStatus()">
+                                      </multiselect>
                                     </b-form-group>
                                   </div>
                                   <div class="col-sm-6 col-md-6 mt-2" v-show="!togglequaters">
@@ -826,11 +853,11 @@ export default {
 
                           <div class="col-sm-2">
                             <b-button pill variant="outline-primary" @click="
-  [
-    getMappegData(),
-    printMappedPDF('l'),
-    $bvModal.hide('modal-1'),
-  ]
+                              [
+                                getMappegData(),
+                                printMappedPDF('l'),
+                                $bvModal.hide('modal-1'),
+                              ]
                             " v-b-modal.modal-Print style="margin-right: 10px">
                               Generate</b-button>
                           </div>
