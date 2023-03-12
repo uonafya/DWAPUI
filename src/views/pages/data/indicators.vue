@@ -3,7 +3,7 @@ import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 import appConfig from "@/app.config";
 import Swal from "sweetalert2";
-import axios from "axios";
+import axios from '../../../Axiosconfig';
 //import vue2Dropzone from "vue2-dropzone";
 
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
@@ -131,7 +131,7 @@ export default {
   created() {
     setInterval(() => {
       if (this.stoped) {
-        this.upadtearray();
+        //this.upadtearray();
       }
     }, 5000);
     //this.upadtearray();
@@ -160,9 +160,7 @@ export default {
     },
     upadtearray() {
       axios
-        .get(window.$http + "indicators/" + this.perPage, {
-          headers: window.$headers,
-        })
+        .get("indicators/" + this.perPage)
         .then((res) => {
           console.log(res.data);
           this.indicators = res.data;
@@ -179,8 +177,8 @@ export default {
           });
         });
     },
-    editrec() {},
-    edit() {},
+    editrec() { },
+    edit() { },
   },
   middleware: "authentication",
 };
@@ -199,28 +197,16 @@ export default {
                 <div id="tickets-table_length" class="dataTables_length">
                   <label class="d-inline-flex align-items-center">
                     Show&nbsp;
-                    <b-form-select
-                      v-model="perPage"
-                      size="sm"
-                      :options="pageOptions"
-                    ></b-form-select
-                    >&nbsp;entries
+                    <b-form-select v-model="perPage" size="sm" :options="pageOptions"></b-form-select>&nbsp;entries
                   </label>
                 </div>
               </div>
               <!-- Search -->
               <div class="col-sm-12 col-md-6">
-                <div
-                  id="tickets-table_filter"
-                  class="dataTables_filter text-md-end"
-                >
+                <div id="tickets-table_filter" class="dataTables_filter text-md-end">
                   <label class="d-inline-flex align-items-center">
-                    <b-form-input
-                      v-model="filter"
-                      type="search"
-                      placeholder="Search..."
-                      class="form-control rounded bg-light border-0 ms-2"
-                    ></b-form-input>
+                    <b-form-input v-model="filter" type="search" placeholder="Search..."
+                      class="form-control rounded bg-light border-0 ms-2"></b-form-input>
                   </label>
                 </div>
               </div>
@@ -228,62 +214,30 @@ export default {
             </div>
             <!-- Table -->
             <div class="table-responsive mb-0">
-              <b-table
-                class="table table-centered table-nowrap specifictd"
-                fixed
-                :items="indicators"
-                :fields="fields"
-                responsive="sm"
-                :per-page="perPage"
-                :current-page="currentPage"
-                :sort-by.sync="sortBy"
-                :sort-desc.sync="sortDesc"
-                :filter="filter"
-                :filter-included-fields="filterOn"
-                @filtered="onFiltered"
-              >
+              <b-table class="table table-centered table-nowrap specifictd" fixed :items="indicators" :fields="fields"
+                responsive="sm" :per-page="perPage" :current-page="currentPage" :sort-by.sync="sortBy"
+                :sort-desc.sync="sortDesc" :filter="filter" :filter-included-fields="filterOn" @filtered="onFiltered">
                 <template v-slot:cell(check)="data">
                   <div class="custom-control custom-checkbox">
-                    <input
-                      type="checkbox"
-                      class="custom-control-input"
-                      :id="`contacusercheck${data.item.id}`"
-                    />
-                    <label
-                      class="custom-control-label"
-                      :for="`contacusercheck${data.item.id}`"
-                    ></label>
+                    <input type="checkbox" class="custom-control-input" :id="`contacusercheck${data.item.id}`" />
+                    <label class="custom-control-label" :for="`contacusercheck${data.item.id}`"></label>
                   </div>
                 </template>
                 <template v-slot:cell(action)>
                   <ul class="list-inline mb-0">
                     <li class="list-inline-item">
-                      <a
-                        href="javascript:void(0);"
-                        class="px-2 text-primary"
-                        v-b-tooltip.hover
-                        title="Edit"
-                        v-b-modal.add-slot
-                      >
+                      <a href="javascript:void(0);" class="px-2 text-primary" v-b-tooltip.hover title="Edit"
+                        v-b-modal.add-slot>
                         <i class="uil uil-pen font-size-18"></i>
                       </a>
                     </li>
                     <li class="list-inline-item">
-                      <a
-                        href="javascript:void(0);"
-                        class="px-2 text-danger"
-                        v-b-tooltip.hover
-                        title="Delete"
-                      >
+                      <a href="javascript:void(0);" class="px-2 text-danger" v-b-tooltip.hover title="Delete">
                         <i class="uil uil-trash-alt font-size-18"></i>
                       </a>
                     </li>
-                    <b-dropdown
-                      class="list-inline-item"
-                      variant="white"
-                      right
-                      toggle-class="text-muted font-size-18 px-2"
-                    >
+                    <b-dropdown class="list-inline-item" variant="white" right
+                      toggle-class="text-muted font-size-18 px-2">
                       <template v-slot:button-content>
                         <i class="uil uil-ellipsis-v"></i>
                       </template>
@@ -306,70 +260,34 @@ export default {
                         <div class="col-lg-12">
                           <div class="mt-4">
                             <h5 class="font-size-14 mb-4">
-                              <i
-                                class="mdi mdi-arrow-right text-primary me-1"
-                              ></i>
+                              <i class="mdi mdi-arrow-right text-primary me-1"></i>
                               New Record
                             </h5>
                             <form @submit.prevent="add()">
                               <div class="row">
                                 <div class="col-md-6">
-                                  <b-form-group
-                                    label="ID Number"
-                                    label-for="formrow-idno-input"
-                                    class="mb-3"
-                                  >
-                                    <b-form-input
-                                      id="formrow-idno-input"
-                                      type="number"
-                                      v-model="id"
-                                    ></b-form-input>
+                                  <b-form-group label="ID Number" label-for="formrow-idno-input" class="mb-3">
+                                    <b-form-input id="formrow-idno-input" type="number" v-model="id"></b-form-input>
                                   </b-form-group>
                                 </div>
                                 <div class="col-md-6">
-                                  <b-form-group
-                                    label="Full Name"
-                                    label-for="formrow-idno-input"
-                                    class="mb-3"
-                                  >
-                                    <b-form-input
-                                      id="formrow-name-input"
-                                      type="text"
-                                      v-model="id"
-                                    ></b-form-input>
+                                  <b-form-group label="Full Name" label-for="formrow-idno-input" class="mb-3">
+                                    <b-form-input id="formrow-name-input" type="text" v-model="id"></b-form-input>
                                   </b-form-group>
                                 </div>
                                 <div class="col-md-6">
-                                  <b-form-group
-                                    label="Home County"
-                                    label-for="formrow-county-input"
-                                    class="mb-3"
-                                  >
-                                    <b-form-input
-                                      id="formrow-county-input"
-                                      type="text"
-                                      v-model="id"
-                                    ></b-form-input>
+                                  <b-form-group label="Home County" label-for="formrow-county-input" class="mb-3">
+                                    <b-form-input id="formrow-county-input" type="text" v-model="id"></b-form-input>
                                   </b-form-group>
                                 </div>
                                 <div class="col-md-6">
-                                  <b-form-group
-                                    label="Diagnosis"
-                                    label-for="formrow-diag-input"
-                                    class="mb-3"
-                                  >
-                                    <b-form-input
-                                      id="formrow-diag-input"
-                                      type="text"
-                                      v-model="id"
-                                    ></b-form-input>
+                                  <b-form-group label="Diagnosis" label-for="formrow-diag-input" class="mb-3">
+                                    <b-form-input id="formrow-diag-input" type="text" v-model="id"></b-form-input>
                                   </b-form-group>
                                 </div>
                               </div>
                               <div class="mt-4">
-                                <b-button type="submit" variant="primary"
-                                  >Submit</b-button
-                                >
+                                <b-button type="submit" variant="primary">Submit</b-button>
                               </div>
                             </form>
                           </div>
@@ -384,16 +302,10 @@ export default {
 
             <div class="row">
               <div class="col">
-                <div
-                  class="dataTables_paginate paging_simple_numbers float-end"
-                >
+                <div class="dataTables_paginate paging_simple_numbers float-end">
                   <ul class="pagination pagination-rounded mb-0">
                     <!-- pagination -->
-                    <b-pagination
-                      v-model="currentPage"
-                      :total-rows="rows"
-                      :per-page="perPage"
-                    ></b-pagination>
+                    <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage"></b-pagination>
                   </ul>
                 </div>
               </div>
@@ -406,15 +318,22 @@ export default {
 </template>
 <style scoped>
 @media (max-width: 768px) {
+
   /* use the max to specify at each container level */
   .specifictd {
-    width: 360px; /* adjust to desired wrapping */
+    width: 360px;
+    /* adjust to desired wrapping */
     display: table;
-    white-space: pre-wrap; /* css-3 */
-    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
-    white-space: -pre-wrap; /* Opera 4-6 */
-    white-space: -o-pre-wrap; /* Opera 7 */
-    word-wrap: break-word; /* Internet Explorer 5.5+ */
+    white-space: pre-wrap;
+    /* css-3 */
+    white-space: -moz-pre-wrap;
+    /* Mozilla, since 1999 */
+    white-space: -pre-wrap;
+    /* Opera 4-6 */
+    white-space: -o-pre-wrap;
+    /* Opera 7 */
+    word-wrap: break-word;
+    /* Internet Explorer 5.5+ */
   }
 }
 </style>

@@ -10,12 +10,7 @@ export default {};
     <div class="card">
       <div class="card-body">
         <div class="float-end">
-          <b-dropdown
-            right
-            toggle-class="p-0"
-            variant="white"
-            menu-class="dropdown-menu-end"
-          >
+          <b-dropdown right toggle-class="p-0" variant="white" menu-class="dropdown-menu-end">
             <template v-slot:button-content>
               <span class="text-muted">
                 Yesterday
@@ -28,13 +23,9 @@ export default {};
           </b-dropdown>
         </div>
 
-        <h4 class="card-title mb-4">Transactions</h4>
+        <h4 class="card-title mb-4">Upcoming Data Alignment Activities</h4>
 
-        <ol
-          class="activity-feed mb-0 ps-2"
-          data-simplebar
-          style="max-height: 336px"
-        >
+        <ol class="activity-feed mb-0 ps-2" data-simplebar style="max-height: 336px">
           <li class="feed-item">
             <div class="feed-item-list">
               <p class="text-muted mb-1 font-size-13">

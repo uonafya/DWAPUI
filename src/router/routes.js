@@ -1,166 +1,166 @@
 import store from '@/state/store'
 
 export default [{
-        path: '/login',
-        name: 'login',
-        component: () =>
-            import ('../views/pages/account/login'),
-        meta: {
-            beforeResolve(routeTo, routeFrom, next) {
-                // If the user is already logged in
-                if (store.getters['auth/loggedIn']) {
-                    // Redirect to the home page instead
-                    next({
-                        name: 'manage'
-                    })
-                } else {
-                    // Continue to the login page
-                    next()
-                }
-            },
-        },
-    },
-    {
-        path: '/register',
-        name: 'register',
-        component: () =>
-            import ('../views/pages/account/register'),
-        meta: {
-            beforeResolve(routeTo, routeFrom, next) {
-                // If the user is already logged in
-                if (store.getters['auth/loggedIn']) {
-                    // Redirect to the home page instead
-                    next({
-                        name: 'manage'
-                    })
-                } else {
-                    // Continue to the login page
-                    next()
-                }
-            },
-        },
-    },
-    {
-        path: '/forgot-password',
-        name: 'Forgot-password',
-        component: () =>
-            import ('../views/pages/account/forgot-password'),
-        meta: {
-            beforeResolve(routeTo, routeFrom, next) {
-                // If the user is already logged in
-                if (store.getters['auth/loggedIn']) {
-                    // Redirect to the home page instead
-                    next({
-                        name: 'manage'
-                    })
-                } else {
-                    // Continue to the login page
-                    next()
-                }
-            },
-        },
-    },
-    {
-        path: '/logout',
-        name: 'logout',
-        meta: {
-            authRequired: true,
-            beforeResolve(routeTo, routeFrom, next) {
-                if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
-                    store.dispatch('auth/logOut')
-                } else if (process.env.VUE_APP_DEFAULT_AUTH === "fakebackend") {
-                    store.dispatch('authfack/logout')
-                }
-                const authRequiredOnPreviousRoute = routeFrom.matched.some(
-                        (route) => route.push('/login')
-                    )
-                    // Navigate back to previous page, or home as a fallback
-                next(authRequiredOnPreviousRoute ? {
+    path: '/login',
+    name: 'login',
+    component: () =>
+        import('../views/pages/account/login'),
+    meta: {
+        beforeResolve(routeTo, routeFrom, next) {
+            // If the user is already logged in
+            if (store.getters['auth/loggedIn']) {
+                // Redirect to the home page instead
+                next({
                     name: 'manage'
-                } : {
-                    ...routeFrom
                 })
-            },
+            } else {
+                // Continue to the login page
+                next()
+            }
         },
-    }, {
-        path: '/',
-        name: 'home',
-        meta: {
-            authRequired: true,
-        },
-        component: () =>
-            import ('../views/pages/dashboard/index')
     },
-    {
-        path: '/indicators',
-        name: 'indicators',
-        meta: {
-            authRequired: true,
+},
+{
+    path: '/register',
+    name: 'register',
+    component: () =>
+        import('../views/pages/account/register'),
+    meta: {
+        beforeResolve(routeTo, routeFrom, next) {
+            // If the user is already logged in
+            if (store.getters['auth/loggedIn']) {
+                // Redirect to the home page instead
+                next({
+                    name: 'manage'
+                })
+            } else {
+                // Continue to the login page
+                next()
+            }
         },
-        component: () =>
-            import ('../views/pages/khisdata/indicators')
     },
-    {
-        path: '/manage',
-        name: 'manage',
-        meta: {
-            authRequired: true,
+},
+{
+    path: '/forgot-password',
+    name: 'Forgot-password',
+    component: () =>
+        import('../views/pages/account/forgot-password'),
+    meta: {
+        beforeResolve(routeTo, routeFrom, next) {
+            // If the user is already logged in
+            if (store.getters['auth/loggedIn']) {
+                // Redirect to the home page instead
+                next({
+                    name: 'manage'
+                })
+            } else {
+                // Continue to the login page
+                next()
+            }
         },
-        component: () =>
-            import ('../views/pages/khisdata/manage')
     },
-    {
-        path: '/indicator_groups',
-        name: 'reserve',
-        meta: {
-            authRequired: true,
+},
+{
+    path: '/logout',
+    name: 'logout',
+    meta: {
+        authRequired: true,
+        beforeResolve(routeTo, routeFrom, next) {
+            if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
+                store.dispatch('auth/logOut')
+            } else if (process.env.VUE_APP_DEFAULT_AUTH === "fakebackend") {
+                store.dispatch('authfack/logout')
+            }
+            const authRequiredOnPreviousRoute = routeFrom.matched.some(
+                (route) => route.push('/login')
+            )
+            // Navigate back to previous page, or home as a fallback
+            next(authRequiredOnPreviousRoute ? {
+                name: 'home'
+            } : {
+                ...routeFrom
+            })
         },
-        component: () =>
-            import ('../views/pages/khisdata/indicator_groups')
     },
-    {
-        path: '/income',
-        name: 'income',
-        meta: {
-            authRequired: true,
-        },
-        component: () =>
-            import ('../views/pages/revenue/income')
+}, {
+    path: '/',
+    name: 'home',
+    meta: {
+        authRequired: false,
     },
-    {
-        path: '/expenses',
-        name: 'expenses',
-        meta: {
-            authRequired: true,
-        },
-        component: () =>
-            import ('../views/pages/revenue/expenses')
+    component: () =>
+        import('../views/pages/dashboard/index')
+},
+{
+    path: '/data/indicators',
+    name: 'indicators',
+    meta: {
+        authRequired: true,
     },
-    {
-        path: '/comments',
-        name: 'comments',
-        meta: {
-            authRequired: true,
-        },
-        component: () =>
-            import ('../views/pages/cms/comments')
+    component: () =>
+        import('../views/pages/data/indicators')
+},
+{
+    path: '/data/comparison',
+    name: 'comparison',
+    meta: {
+        authRequired: true,
     },
-    {
-        path: '/complaints',
-        name: 'complaints',
-        meta: {
-            authRequired: true,
-        },
-        component: () =>
-            import ('../views/pages/cms/complaints')
+    component: () =>
+        import('../views/pages/data/comparison')
+},
+{
+    path: '/data/indicator_groups',
+    name: 'reserve',
+    meta: {
+        authRequired: true,
     },
-    {
-        path: '/suggestions',
-        name: 'suggestions',
-        meta: {
-            authRequired: true,
-        },
-        component: () =>
-            import ('../views/pages/cms/suggestions')
+    component: () =>
+        import('../views/pages/data/indicator_groups')
+},
+{
+    path: '/income',
+    name: 'income',
+    meta: {
+        authRequired: true,
     },
+    component: () =>
+        import('../views/pages/revenue/income')
+},
+{
+    path: '/expenses',
+    name: 'expenses',
+    meta: {
+        authRequired: true,
+    },
+    component: () =>
+        import('../views/pages/revenue/expenses')
+},
+{
+    path: '/comments',
+    name: 'comments',
+    meta: {
+        authRequired: true,
+    },
+    component: () =>
+        import('../views/pages/cms/comments')
+},
+{
+    path: '/complaints',
+    name: 'complaints',
+    meta: {
+        authRequired: true,
+    },
+    component: () =>
+        import('../views/pages/cms/complaints')
+},
+{
+    path: '/suggestions',
+    name: 'suggestions',
+    meta: {
+        authRequired: true,
+    },
+    component: () =>
+        import('../views/pages/cms/suggestions')
+},
 ]

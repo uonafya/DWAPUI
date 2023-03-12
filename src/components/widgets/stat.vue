@@ -44,7 +44,7 @@ export default {
           },
           y: {
             title: {
-              formatter: function() {
+              formatter: function () {
                 return "";
               },
             },
@@ -84,7 +84,7 @@ export default {
           },
           y: {
             title: {
-              formatter: function() {
+              formatter: function () {
                 return "";
               },
             },
@@ -161,27 +161,16 @@ export default {
       <div class="card">
         <div class="card-body">
           <div class="float-end mt-2">
-            <apexchart
-              class="apex-charts"
-              dir="ltr"
-              width="70"
-              height="40"
-              :options="chartOptions"
-              :series="series"
-            ></apexchart>
+            <apexchart class="apex-charts" dir="ltr" width="70" height="40" :options="chartOptions" :series="series">
+            </apexchart>
           </div>
           <div>
             <h4 class="mb-1 mt-1">
-              $
               <span data-plugin="counterup">
-                <countTo
-                  :startVal="1000"
-                  :endVal="34152"
-                  :duration="2000"
-                ></countTo>
+                <countTo :startVal="47" :endVal="35" :duration="3000"></countTo>
               </span>
             </h4>
-            <p class="text-muted mb-0">Total Revenue</p>
+            <p class="text-muted mb-0">Counties Synced</p>
           </div>
           <p class="text-muted mt-3 mb-0">
             <span class="text-success me-1">
@@ -196,27 +185,16 @@ export default {
       <div class="card">
         <div class="card-body">
           <div class="float-end mt-2">
-            <apexchart
-              class="apex-charts"
-              type="radialBar"
-              dir="ltr"
-              width="45"
-              height="45"
-              :options="orderRadial"
-              :series="orderseries"
-            ></apexchart>
+            <apexchart class="apex-charts" type="radialBar" dir="ltr" width="45" height="45" :options="orderRadial"
+              :series="orderseries"></apexchart>
           </div>
           <div>
             <h4 class="mb-1 mt-1">
               <span data-plugin="counterup">
-                <countTo
-                  :startVal="100"
-                  :endVal="5643"
-                  :duration="2000"
-                ></countTo>
+                <countTo :startVal="100" :endVal="1000" :duration="2000"></countTo>
               </span>
             </h4>
-            <p class="text-muted mb-0">Total Expenses</p>
+            <p class="text-muted mb-0">Total Facilities Synced</p>
           </div>
           <p class="text-muted mt-3 mb-0">
             <span class="text-danger me-1">
@@ -233,27 +211,16 @@ export default {
       <div class="card">
         <div class="card-body">
           <div class="float-end mt-2">
-            <apexchart
-              class="apex-charts"
-              type="radialBar"
-              dir="ltr"
-              width="45"
-              height="45"
-              :options="customerRadial"
-              :series="customerseries"
-            ></apexchart>
+            <apexchart class="apex-charts" type="radialBar" dir="ltr" width="45" height="45" :options="customerRadial"
+              :series="customerseries"></apexchart>
           </div>
           <div>
             <h4 class="mb-1 mt-1">
               <span data-plugin="counterup">
-                <countTo
-                  :startVal="1000"
-                  :endVal="258"
-                  :duration="2000"
-                ></countTo>
+                <countTo :startVal="1000" :endVal="148" :duration="2000"></countTo>
               </span>
             </h4>
-            <p class="text-muted mb-0">Clients</p>
+            <p class="text-muted mb-0">Sub Counties Synced</p>
           </div>
           <p class="text-muted mt-3 mb-0">
             <span class="text-danger me-1">
@@ -268,21 +235,15 @@ export default {
       <div class="card">
         <div class="card-body">
           <div class="float-end mt-2">
-            <apexchart
-              class="apex-charts"
-              dir="ltr"
-              width="70"
-              height="40"
-              :options="growthChartOptions"
-              :series="series"
-            ></apexchart>
+            <apexchart class="apex-charts" dir="ltr" width="70" height="40" :options="growthChartOptions"
+              :series="series"></apexchart>
           </div>
           <div>
             <h4 class="mb-1 mt-1">
               +
               <span data-plugin="counterup">12.58</span>%
             </h4>
-            <p class="text-muted mb-0">New Clients</p>
+            <p class="text-muted mb-0">New Facilities Discovered</p>
           </div>
           <p class="text-muted mt-3 mb-0">
             <span class="text-success me-1">

@@ -2,7 +2,7 @@
 import simplebar from "simplebar-vue";
 import { menuItems } from "./horizontal-menu";
 
-import { layoutComputed, authFackMethods } from "@/state/helpers";
+import { layoutComputed, dataILMethods } from "@/state/helpers";
 
 /**
  * Horizontal-topbar component
@@ -53,6 +53,8 @@ export default {
       text: null,
       flag: null,
       value: null,
+      user: null,
+      showbar: false,
     };
   },
   computed: {
@@ -67,9 +69,12 @@ export default {
     this.$router.afterEach(() => {
       this.activateParentDropdown();
     });
+    if (localStorage.getItem('user')) {
+      this.showbar = true;
+    }
   },
   methods: {
-    ...authFackMethods,
+    ...dataILMethods,
     /**
      * remove active and mm-active class
      */
@@ -224,7 +229,7 @@ export default {
     logoutUser() {
       this.logout();
       this.$router.push({
-        path: "/account/login",
+        path: "/",
       });
     },
   },
@@ -338,86 +343,91 @@ export default {
         </b-dropdown>
 
         <!--  <b-dropdown variant="white" right toggle-class="header-item">
-                <template v-slot:button-content>
-                  <img class :src="flag" alt="Header Language" height="16" />
-                  {{ text }}
-                </template>
-                <b-dropdown-item
-                  class="notify-item"
-                  v-for="(entry, i) in languages"
-                  :key="`Lang${i}`"
-                  :value="entry"
-                  @click="setLanguage(entry.language, entry.title, entry.flag)"
-                  :link-class="{ active: entry.language === current_language }"
-                >
-                  <img
-                    :src="`${entry.flag}`"
-                    alt="user-image"
-                    class="me-1"
-                    height="12"
-                  />
-                  <span class="align-middle">{{ entry.title }}</span>
-                </b-dropdown-item>
-              </b-dropdown> -->
+                                                                              <template v-slot:button-content>
+                                                                                <img class :src="flag" alt="Header Language" height="16" />
+                                                                                {{ text }}
+                                                                              </template>
+                                                                              <b-dropdown-item
+                                                                                class="notify-item"
+                                                                                v-for="(entry, i) in languages"
+                                                                                :key="`Lang${i}`"
+                                                                                :value="entry"
+                                                                                @click="setLanguage(entry.language, entry.title, entry.flag)"
+                                                                                :link-class="{ active: entry.language === current_language }"
+                                                                              >
+                                                                                <img
+                                                                                  :src="`${entry.flag}`"
+                                                                                  alt="user-image"
+                                                                                  class="me-1"
+                                                                                  height="12"
+                                                                                />
+                                                                                <span class="align-middle">{{ entry.title }}</span>
+                                                                              </b-dropdown-item>
+                                                                            </b-dropdown> -->
+        <!-- 
+                                                            <b-dropdown variant="white" class="d-none d-lg-inline-block ms-1" toggle-class="header-item noti-icon" right
+                                                              menu-class="dropdown-menu-lg">
+                                                              <template v-slot:button-content>
+                                                                <i class="uil-apps"></i>
+                                                              </template>
+                                                              <div class="px-lg-2">
+                                                                <div class="row no-gutters">
+                                                                  <div class="col">
+                                                                    <a class="dropdown-icon-item" href="#">
+                                                                      <img src="@/assets/images/brands/github.png" alt="Github" />
+                                                                      <span>{{ $t("navbar.dropdown.site.list.github") }}</span>
+                                                                    </a>
+                                                                  </div>
+                                                                  <div class="col">
+                                                                    <a class="dropdown-icon-item" href="#">
+                                                                      <img src="@/assets/images/brands/bitbucket.png" alt="bitbucket" />
+                                                                      <span>{{ $t("navbar.dropdown.site.list.bitbucket") }}</span>
+                                                                    </a>
+                                                                  </div>
+                                                                  <div class="col">
+                                                                    <a class="dropdown-icon-item" href="#">
+                                                                      <img src="@/assets/images/brands/dribbble.png" alt="dribbble" />
+                                                                      <span>{{ $t("navbar.dropdown.site.list.dribbble") }}</span>
+                                                                    </a>
+                                                                  </div>
+                                                                </div>
 
-        <b-dropdown variant="white" class="d-none d-lg-inline-block ms-1" toggle-class="header-item noti-icon" right
-          menu-class="dropdown-menu-lg">
-          <template v-slot:button-content>
-            <i class="uil-apps"></i>
-          </template>
-          <div class="px-lg-2">
-            <div class="row no-gutters">
-              <div class="col">
-                <a class="dropdown-icon-item" href="#">
-                  <img src="@/assets/images/brands/github.png" alt="Github" />
-                  <span>{{ $t("navbar.dropdown.site.list.github") }}</span>
-                </a>
-              </div>
-              <div class="col">
-                <a class="dropdown-icon-item" href="#">
-                  <img src="@/assets/images/brands/bitbucket.png" alt="bitbucket" />
-                  <span>{{ $t("navbar.dropdown.site.list.bitbucket") }}</span>
-                </a>
-              </div>
-              <div class="col">
-                <a class="dropdown-icon-item" href="#">
-                  <img src="@/assets/images/brands/dribbble.png" alt="dribbble" />
-                  <span>{{ $t("navbar.dropdown.site.list.dribbble") }}</span>
-                </a>
-              </div>
-            </div>
+                                                                <div class="row no-gutters">
+                                                                  <div class="col">
+                                                                    <a class="dropdown-icon-item" href="#">
+                                                                      <img src="@/assets/images/brands/dropbox.png" alt="dropbox" />
+                                                                      <span>{{ $t("navbar.dropdown.site.list.dropbox") }}</span>
+                                                                    </a>
+                                                                  </div>
+                                                                  <div class="col">
+                                                                    <a class="dropdown-icon-item" href="#">
+                                                                      <img src="@/assets/images/brands/mail_chimp.png" alt="mail_chimp" />
+                                                                      <span>{{ $t("navbar.dropdown.site.list.mailchimp") }}</span>
+                                                                    </a>
+                                                                  </div>
+                                                                  <div class="col">
+                                                                    <a class="dropdown-icon-item" href="#">
+                                                                      <img src="@/assets/images/brands/slack.png" alt="slack" />
+                                                                      <span>{{ $t("navbar.dropdown.site.list.slack") }}</span>
+                                                                    </a>
+                                                                  </div>
+                                                                </div>
+                                                              </div>
+                                                            </b-dropdown> -->
 
-            <div class="row no-gutters">
-              <div class="col">
-                <a class="dropdown-icon-item" href="#">
-                  <img src="@/assets/images/brands/dropbox.png" alt="dropbox" />
-                  <span>{{ $t("navbar.dropdown.site.list.dropbox") }}</span>
-                </a>
-              </div>
-              <div class="col">
-                <a class="dropdown-icon-item" href="#">
-                  <img src="@/assets/images/brands/mail_chimp.png" alt="mail_chimp" />
-                  <span>{{ $t("navbar.dropdown.site.list.mailchimp") }}</span>
-                </a>
-              </div>
-              <div class="col">
-                <a class="dropdown-icon-item" href="#">
-                  <img src="@/assets/images/brands/slack.png" alt="slack" />
-                  <span>{{ $t("navbar.dropdown.site.list.slack") }}</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </b-dropdown>
-
-        <div class="dropdown d-none d-lg-inline-block ms-1">
+        <div class="dropdown d-none d-lg-inline-block ms-1" v-if="showbar">
           <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen"
             @click="initFullScreen">
             <i class="uil-minus-path"></i>
           </button>
         </div>
+        <div class="d-none d-lg-inline-block ms-1 m-auto" v-if="!showbar">
+          <router-link class="btn btn-primary waves-effect" :to="{ name: 'login' }">Login
+            <i class=""></i>
+          </router-link>
+        </div>
         <b-dropdown variant="white" class="dropdown d-inline-block" toggle-class="header-item noti-icon" right
-          menu-class="dropdown-menu-lg p-0 dropdown-menu-end">
+          menu-class="dropdown-menu-lg p-0 dropdown-menu-end" v-if="showbar">
           <template v-slot:button-content>
             <i class="uil-bell"></i>
             <span class="badge bg-danger rounded-pill">3</span>
@@ -532,7 +542,7 @@ export default {
           </div>
         </b-dropdown>
 
-        <b-dropdown class="d-inline-block" toggle-class="header-item" right variant="white">
+        <b-dropdown class="d-inline-block" toggle-class="header-item" right variant="white" v-if="showbar">
           <template v-slot:button-content>
             <img class="rounded-circle header-profile-user" src="@/assets/HealthITLogo.png" alt="Header Avatar" />
             <span class="d-none d-xl-inline-block ms-1 fw-medium font-size-15">{{ $t("Admin") }}</span>
@@ -544,12 +554,6 @@ export default {
             <i class="uil uil-user-circle font-size-18 align-middle text-muted me-1"></i>
             <span class="align-middle">{{
               $t("navbar.dropdown.marcus.list.profile")
-            }}</span>
-          </a>
-          <a class="dropdown-item" href="#">
-            <i class="uil uil-wallet font-size-18 align-middle me-1 text-muted"></i>
-            <span class="align-middle">{{
-              $t("navbar.dropdown.marcus.list.mywallet")
             }}</span>
           </a>
           <a class="dropdown-item d-block" href="#">

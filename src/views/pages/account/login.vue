@@ -1,8 +1,7 @@
 <script>
-import { required, email } from "vuelidate/lib/validators";
+import { required } from "vuelidate/lib/validators";
 import appConfig from "@/app.config";
-import axios from "axios";
-import Swal from "sweetalert2";
+
 /**
  * Login component
  */
@@ -18,9 +17,9 @@ export default {
   },
   data() {
     return {
-      email: "admin@admin.com",
-      password: "@Admin123",
-      username: "admin",
+      email: "",
+      username: "",
+      password: "",
       submitted: false,
       authError: null,
       tryingToLogIn: false,
@@ -28,10 +27,6 @@ export default {
     };
   },
   validations: {
-    email: {
-      required,
-      email,
-    },
     password: {
       required,
     },
@@ -46,6 +41,11 @@ export default {
   },
   mounted() {
     document.body.classList.add("authentication-bg");
+    for (var i = 0; i < localStorage.length; i++) {
+      if (localStorage.key(i).toString() === "token") {
+        console.log("");
+      }
+    }
   },
   methods: {
     // Try to log the user in with the username
@@ -53,13 +53,14 @@ export default {
     tryToLogIn() {
       this.submitted = true;
       // stop here if form is invalid
+      this.email = this.email.trim();
       this.$v.$touch();
 
       if (this.$v.$invalid) {
         return;
       } else {
         if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
-          this.tryingToLogIn = true;
+          /*this.tryingToLogIn = true;
           // Reset the authError if it existed.
           this.authError = null;
           return (
@@ -84,53 +85,16 @@ export default {
                 this.authError = error ? error : "";
                 this.isAuthError = true;
               })
-          );
-        } else if (process.env.VUE_APP_DEFAULT_AUTH === "fakebackend") {
-          axios
-            .post(
-              window.$http + "login/",
-              { username: this.username, password: this.password },
-              { headers: window.$headers }
-            )
-            .then((res) => {
-              console.log(res.data);
-              if (res.data.token) {
-                const token = res.data.token;
-                axios.defaults.headers.common["Authorization"] = "Token " + token;
-                localStorage.setItem("token", token);
-                const email = "admin@admin.com";
-                const password = "@Admin123";
-                if (email && password) {
-                  this.$store.dispatch("authfack/login", {
-                    email,
-                    password,
-                  });
-                }
-              } else {
-                Swal.fire({
-                  position: "center",
-                  icon: "danger",
-                  title: "Failde!",
-                  html: "Wrong Username or Password!",
-                  showConfirmButton: false,
-                  timer: 1500,
-                });
-              }
-
-              //}
-            })
-            .catch((res) => {
-              console.log(res + ":error submit!!");
-              Swal.fire({
-                position: "center",
-                icon: "warning",
-                title: "Faild!",
-                html: res,
-                showConfirmButton: false,
-                timer: 1500,
-              });
-              return false;
+          );*/
+        } else if (process.env.VUE_APP_DEFAULT_AUTH === "dataILauth") {
+          const { username, password } = this;
+          if (username && password) {
+            this.tryingToLogIn = true;
+            this.$store.dispatch("authfack/login", {
+              username,
+              password,
             });
+          }
         }
       }
     },
@@ -139,97 +103,64 @@ export default {
 </script>
 
 <template>
-  <div class="bg-light m-0">
-    <div class="account-pages my-5 pt-sm-5">
+  <div>
+    <div class="account-pages">
       <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
+        <div class="row mt-5 pt-5">
+          <div class="col-lg-5">
             <div class="text-center">
-              <router-link to="/" class="mb-5 d-block auth-logo">
-                <h1>HealthIT DM-IL</h1>
+              <router-link to="/" class="d-block auth-logo mr-2">
+                <img src="@/assets/images/logo.png" alt height="500" class="rounded-5 d-inline" />
               </router-link>
             </div>
           </div>
-        </div>
-        <div class="row align-items-center justify-content-center">
-          <div class="col-md-8 col-lg-6 col-xl-5">
+          <div class="col-md-8 col-lg-7 col-xl-5">
             <div class="card">
-              <div class="card-body p-4 bg-success bg-gradient">
+              <div class="card-body p-4" style="background-color: darkgreen">
                 <div class="text-center mt-2">
-                  <h5 class="text-primary">Welcome Back !</h5>
-                  <p class="text-muted">Sign in to continue to DM-IL.</p>
+                  <router-link :to="{ name: 'home' }" class="d-inline"><i
+                      class="uil uil-arrow-left"></i>Back&nbsp;</router-link>
+                  <h5 class="text-white d-inline">
+                    Welcome...! Please Login To Continue
+                  </h5>
                 </div>
                 <div class="p-2 mt-4">
-                  <b-alert
-                    v-model="isAuthError"
-                    variant="danger"
-                    class="mt-3"
-                    dismissible
-                    >{{ authError }}</b-alert
-                  >
+                  <b-alert v-model="isAuthError" variant="danger" class="mt-3" dismissible>{{ authError }}</b-alert>
 
-                  <div
-                    v-if="notification.message"
-                    :class="'alert ' + notification.type"
-                  >
+                  <div v-if="notification.message" :class="'alert ' + notification.type">
                     {{ notification.message }}
                   </div>
 
                   <b-form @submit.prevent="tryToLogIn">
-                    <b-form-group
-                      id="input-group-1"
-                      class="mb-3"
-                      label="Email"
-                      label-for="input-1"
-                    >
-                      <b-form-input
-                        id="input-1"
-                        v-model="username"
-                        type="text"
-                        placeholder="Enter username"
-                      ></b-form-input>
+                    <b-form-group id="input-group-1" class="mb-3 text-white-50" label="Username" label-for="input-1">
+                      <b-form-input id="input-1" v-model="username" type="text" placeholder="Enter username"
+                        style="color: black;background: transparent;border: solid 1px black;"></b-form-input>
+                      <!-- <div v-if="submitted && $v.username.$error" class="invalid-feedback">
+                                                                                        <span v-if="!$v.username.required">Username is required.</span>
+                                                                                        <span v-if="!$v.username">Please enter valid username.</span>
+                                                                                      </div> -->
                     </b-form-group>
 
-                    <b-form-group id="input-group-2" class="mb-3">
-                      <div class="float-end">
-                        <router-link
-                          to="/account/forgot-password"
-                          class="text-muted"
-                          >Forgot password?</router-link
-                        >
-                      </div>
+                    <b-form-group id="input-group-2" class="mb-3 text-white-50">
                       <label for="input-2">Password</label>
-                      <b-form-input
-                        id="input-2"
-                        v-model="password"
-                        type="password"
-                        placeholder="Enter password"
-                        :class="{
-                          'is-invalid': submitted && $v.password.$error,
-                        }"
-                      ></b-form-input>
-                      <div
-                        v-if="submitted && !$v.password.required"
-                        class="invalid-feedback"
-                      >
+                      <b-form-input id="input-2" v-model="password" type="password" placeholder="Enter password" :class="{
+                        'is-invalid': submitted && $v.password.$error,
+                      }" style="color: black;background: transparent;border: solid 1px black;"></b-form-input>
+                      <div v-if="submitted && !$v.password.required" class="invalid-feedback">
                         Password is required.
                       </div>
                     </b-form-group>
                     <div class="form-check">
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="auth-remember-check"
-                      />
-                      <label class="form-check-label" for="auth-remember-check"
-                        >Remember me</label
-                      >
+                      <input type="checkbox" class="form-check-input text-white" id="auth-remember-check" />
+                      <label class="form-check-label text-white" for="auth-remember-check">Remember me</label>
+                      <div class="float-end">
+                        <router-link to="/forgot-password" class="text-success">Forgot password?</router-link>
+                      </div>
                     </div>
                     <div class="mt-3 text-end">
-                      <b-button type="submit" variant="primary" class="w-sm"
-                        >Log In</b-button
-                      >
+                      <b-button type="submit" variant="primary" class="w-sm">Log In</b-button>
                     </div>
+
                     <div class="mt-4 text-center">
                       <div class="signin-other-title">
                         <h5 class="font-size-14 mb-3 title">Sign in with</h5>
@@ -237,40 +168,27 @@ export default {
 
                       <ul class="list-inline">
                         <li class="list-inline-item">
-                          <a
-                            href="javascript:void()"
-                            class="social-list-item bg-primary text-white border-primary"
-                          >
+                          <a href="javascript:void()" class="social-list-item bg-primary text-white border-primary">
                             <i class="mdi mdi-facebook"></i>
                           </a>
                         </li>
                         <li class="list-inline-item">
-                          <a
-                            href="javascript:void()"
-                            class="social-list-item bg-info text-white border-info"
-                          >
+                          <a href="javascript:void()" class="social-list-item bg-info text-white border-info">
                             <i class="mdi mdi-twitter"></i>
                           </a>
                         </li>
                         <li class="list-inline-item">
-                          <a
-                            href="javascript:void()"
-                            class="social-list-item bg-danger text-white border-danger"
-                          >
+                          <a href="javascript:void()" class="social-list-item bg-danger text-white border-danger">
                             <i class="mdi mdi-google"></i>
                           </a>
                         </li>
                       </ul>
                     </div>
 
-                    <div class="mt-4 text-center">
+                    <div class="mt-4 text-center text-white-50">
                       <p class="mb-0">
-                        Don't have an account ?
-                        <router-link
-                          to="/register"
-                          class="fw-medium text-primary"
-                          >Signup now</router-link
-                        >
+                        Don't have an account ? Get Started
+                        <router-link to="/register" class="fw-medium text-primary">Here</router-link>
                       </p>
                     </div>
                   </b-form>
@@ -280,19 +198,97 @@ export default {
               <!-- end card -->
             </div>
             <div class="mt-5 text-center">
-              <p>
-                © {{ new Date().getFullYear() }} TDBSoft. Crafted with
+              <p>TDBSoft © {{ new Date().getFullYear() }}. Crafted with
                 <i class="mdi mdi-heart text-danger"></i> by TDBSoft
               </p>
             </div>
             <!-- end row -->
           </div>
-          <!-- end col -->
         </div>
-        <!-- end row -->
       </div>
     </div>
   </div>
 </template>
 
-<style lang="scss" module></style>
+<style>
+h2 {
+  color: black;
+  margin: 0;
+  font: 0.8em verdana;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.loading {
+  text-align: center;
+}
+
+.loading span {
+  display: inline-block;
+  vertical-align: middle;
+
+  width: 0.6em;
+  height: 0.6em;
+  margin: 0.19em;
+  background: black;
+  border-radius: 0.6em;
+  animation: loading 1s infinite alternate;
+}
+
+/*
+ * Dots Colors
+ * Smarter targeting vs nth-of-type?
+ */
+.loading span:nth-of-type(2) {
+  background: black;
+  animation-delay: 0.2s;
+}
+
+.loading span:nth-of-type(3) {
+  background: black;
+  animation-delay: 0.4s;
+}
+
+.loading span:nth-of-type(4) {
+  background: black;
+  animation-delay: 0.6s;
+}
+
+.loading span:nth-of-type(5) {
+  background: black;
+  animation-delay: 0.8s;
+}
+
+.loading span:nth-of-type(6) {
+  background: black;
+  animation-delay: 1s;
+}
+
+.loading span:nth-of-type(7) {
+  background: black;
+  animation-delay: 1.2s;
+}
+
+/*
+ * Animation keyframes
+ * Use transition opacity instead of keyframes?
+ */
+@keyframes loading {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+</style>
+<style lang="scss" module>
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s;
+  -webkit-text-fill-color: black !important;
+}
+</style>

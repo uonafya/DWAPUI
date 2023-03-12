@@ -1,11 +1,17 @@
 <script>
 import countTo from "vue-count-to";
+import Activity from "./activity";
+import Activity2 from "./activity2";
+import Topfacilities from "./top-facilities";
 /**
  * Sales-analytics component
  */
 export default {
   components: {
     countTo,
+    Activity,
+    Activity2,
+    Topfacilities,
   },
   data() {
     return {
@@ -105,11 +111,7 @@ export default {
     <div class="card">
       <div class="card-body">
         <div class="float-end">
-          <b-dropdown
-            variant="white"
-            toggle-class="text-reset p-0"
-            menu-class="dropdown-menu-end"
-          >
+          <b-dropdown variant="white" toggle-class="text-reset p-0" menu-class="dropdown-menu-end">
             <template v-slot:button-content>
               <span class="fw-semibold">Sort By:</span>
               <span class="text-muted">
@@ -130,56 +132,42 @@ export default {
               <h3 class="text-primary">
                 $
                 <span data-plugin="counterup">
-                  <countTo
-                    :startVal="1"
-                    :endVal="2371"
-                    :duration="2000"
-                  ></countTo>
+                  <countTo :startVal="1" :endVal="2371" :duration="2000"></countTo>
                 </span>
-                <span class="text-muted d-inline-block font-size-15 ms-3"
-                  >Income</span
-                >
+                <span class="text-muted d-inline-block font-size-15 ms-3">Income</span>
               </h3>
             </li>
             <li class="list-inline-item chart-border-left me-0">
               <h3>
                 <span data-plugin="counterup">
-                  <countTo
-                    :startVal="1"
-                    :endVal="258"
-                    :duration="2000"
-                  ></countTo>
+                  <countTo :startVal="1" :endVal="258" :duration="2000"></countTo>
                 </span>
-                <span class="text-muted d-inline-block font-size-15 ms-3"
-                  >+ Clients</span
-                >
+                <span class="text-muted d-inline-block font-size-15 ms-3">+ Clients</span>
               </h3>
             </li>
             <li class="list-inline-item chart-border-left me-0">
               <h3>
                 <span data-plugin="counterup">3.6</span>%
-                <span class="text-muted d-inline-block font-size-15 ms-3"
-                  >Conversation Ratio</span
-                >
+                <span class="text-muted d-inline-block font-size-15 ms-3">Conversation Ratio</span>
               </h3>
             </li>
           </ul>
         </div>
 
         <div class="mt-3">
-          <apexchart
-            type="line"
-            class="apex-charts"
-            dir="ltr"
-            height="339"
-            :options="chartOptions"
-            :series="series"
-          ></apexchart>
+          <apexchart type="line" class="apex-charts" dir="ltr" height="339" :options="chartOptions" :series="series">
+          </apexchart>
         </div>
       </div>
       <!-- end card-body-->
     </div>
     <!-- end card-->
+    <!--card 2-->
+    <div class="row">
+      <Topfacilities />
+      <Activity />
+      <Activity2 />
+    </div>
   </div>
   <!-- end col-->
 </template>

@@ -1,4 +1,4 @@
-import { userService } from '../../helpers/fakebackend/user.service';
+import { userService } from '../../helpers/dataILauth/user.service';
 import router from '../../router/index'
 
 const user = JSON.parse(localStorage.getItem('user'));
@@ -9,10 +9,10 @@ export const state = user
 export const actions = {
     // Logs in the user.
     // eslint-disable-next-line no-unused-vars
-    login({ dispatch, commit }, { email, password }) {
-        commit('loginRequest', { email });
+    login({ dispatch, commit }, { username, password }) {
+        commit('loginRequest', { username });
 
-        userService.login(email, password)
+        userService.login(username, password)
             .then(
                 user => {
                     commit('loginSuccess', user);

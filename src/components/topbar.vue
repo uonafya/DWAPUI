@@ -33,6 +33,8 @@ export default {
           title: "Arabic",
         },
       ],
+      user: null,
+      showbar: false,
       current_language: this.$i18n.locale,
       text: null,
       flag: null,
@@ -43,6 +45,10 @@ export default {
     this.value = this.languages.find((x) => x.language === this.$i18n.locale);
     this.text = this.value.title;
     this.flag = this.value.flag;
+    this.user = localStorage.getItem('user')
+    if (this.user != null) {
+      this.showbar = true;
+    }
   },
   methods: {
     /**
@@ -105,7 +111,7 @@ export default {
 </script>
 
 <template>
-  <header id="page-topbar bg-primary">
+  <header id="page-topbar bg-primary" v-show="showbar">
     <div class="navbar-header">
       <div class="d-flex">
         <!-- LOGO -->
@@ -129,48 +135,31 @@ export default {
           </router-link>
         </div>
 
-        <button
-          @click="toggleMenu"
-          type="button"
-          class="btn btn-sm px-3 font-size-16 header-item vertical-menu-btn"
-          id="vertical-menu-btn"
-        >
+        <button @click="toggleMenu" type="button" class="btn btn-sm px-3 font-size-16 header-item vertical-menu-btn"
+          id="vertical-menu-btn">
           <i class="fa fa-fw fa-bars"></i>
         </button>
 
         <!-- App Search-->
         <form class="app-search d-none d-lg-block">
           <div class="position-relative">
-            <input
-              type="text"
-              class="form-control"
-              :placeholder="$t('navbar.search.text')"
-            />
+            <input type="text" class="form-control" :placeholder="$t('navbar.search.text')" />
             <span class="uil-search"></span>
           </div>
         </form>
       </div>
 
       <div class="d-flex">
-        <b-dropdown
-          variant="white"
-          class="d-inline-block d-lg-none ms-2"
-          toggle-class="header-item noti-icon"
-          right
-          menu-class="dropdown-menu-lg p-0 dropdown-menu-end"
-        >
+        <b-dropdown variant="white" class="d-inline-block d-lg-none ms-2" toggle-class="header-item noti-icon" right
+          menu-class="dropdown-menu-lg p-0 dropdown-menu-end">
           <template v-slot:button-content>
             <i class="uil-search"></i>
           </template>
           <form class="p-3">
             <div class="form-group m-0">
               <div class="input-group">
-                <input
-                  type="text"
-                  class="form-control"
-                  :placeholder="$t('navbar.search.text')"
-                  aria-label="Recipient's username"
-                />
+                <input type="text" class="form-control" :placeholder="$t('navbar.search.text')"
+                  aria-label="Recipient's username" />
                 <div class="input-group-append">
                   <button class="btn btn-primary" type="submit">
                     <i class="mdi mdi-magnify"></i>
@@ -186,31 +175,16 @@ export default {
             <img class :src="flag" alt="Header Language" height="16" />
             {{ text }}
           </template>
-          <b-dropdown-item
-            class="notify-item"
-            v-for="(entry, i) in languages"
-            :key="`Lang${i}`"
-            :value="entry"
+          <b-dropdown-item class="notify-item" v-for="(entry, i) in languages" :key="`Lang${i}`" :value="entry"
             @click="setLanguage(entry.language, entry.title, entry.flag)"
-            :link-class="{ active: entry.language === current_language }"
-          >
-            <img
-              :src="`${entry.flag}`"
-              alt="user-image"
-              class="me-1"
-              height="12"
-            />
+            :link-class="{ active: entry.language === current_language }">
+            <img :src="`${entry.flag}`" alt="user-image" class="me-1" height="12" />
             <span class="align-middle">{{ entry.title }}</span>
           </b-dropdown-item>
         </b-dropdown>
 
-        <b-dropdown
-          variant="white"
-          class="d-none d-lg-inline-block ms-1"
-          toggle-class="header-item noti-icon"
-          right
-          menu-class="dropdown-menu-lg dropdown-menu-end"
-        >
+        <b-dropdown variant="white" class="d-none d-lg-inline-block ms-1" toggle-class="header-item noti-icon" right
+          menu-class="dropdown-menu-lg dropdown-menu-end">
           <template v-slot:button-content>
             <i class="uil-apps"></i>
           </template>
@@ -224,19 +198,13 @@ export default {
               </div>
               <div class="col">
                 <a class="dropdown-icon-item" href="#">
-                  <img
-                    src="@/assets/images/brands/bitbucket.png"
-                    alt="bitbucket"
-                  />
+                  <img src="@/assets/images/brands/bitbucket.png" alt="bitbucket" />
                   <span>{{ $t("navbar.dropdown.site.list.bitbucket") }}</span>
                 </a>
               </div>
               <div class="col">
                 <a class="dropdown-icon-item" href="#">
-                  <img
-                    src="@/assets/images/brands/dribbble.png"
-                    alt="dribbble"
-                  />
+                  <img src="@/assets/images/brands/dribbble.png" alt="dribbble" />
                   <span>{{ $t("navbar.dropdown.site.list.dribbble") }}</span>
                 </a>
               </div>
@@ -251,10 +219,7 @@ export default {
               </div>
               <div class="col">
                 <a class="dropdown-icon-item" href="#">
-                  <img
-                    src="@/assets/images/brands/mail_chimp.png"
-                    alt="mail_chimp"
-                  />
+                  <img src="@/assets/images/brands/mail_chimp.png" alt="mail_chimp" />
                   <span>{{ $t("navbar.dropdown.site.list.mailchimp") }}</span>
                 </a>
               </div>
@@ -269,23 +234,14 @@ export default {
         </b-dropdown>
 
         <div class="dropdown d-none d-lg-inline-block ms-1">
-          <button
-            type="button"
-            class="btn header-item noti-icon waves-effect"
-            data-toggle="fullscreen"
-            @click="initFullScreen"
-          >
+          <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen"
+            @click="initFullScreen">
             <i class="uil-minus-path"></i>
           </button>
         </div>
 
-        <b-dropdown
-          variant="white"
-          class="dropdown d-inline-block"
-          toggle-class="header-item noti-icon"
-          right
-          menu-class="dropdown-menu-lg p-0 dropdown-menu-end"
-        >
+        <b-dropdown variant="white" class="dropdown d-inline-block" toggle-class="header-item noti-icon" right
+          menu-class="dropdown-menu-lg p-0 dropdown-menu-end">
           <template v-slot:button-content>
             <i class="uil-bell"></i>
             <span class="badge bg-danger rounded-pill">3</span>
@@ -309,9 +265,7 @@ export default {
             <a href class="text-reset notification-item">
               <div class="media">
                 <div class="avatar-xs me-3">
-                  <span
-                    class="avatar-title bg-primary rounded-circle font-size-16"
-                  >
+                  <span class="avatar-title bg-primary rounded-circle font-size-16">
                     <i class="uil-shopping-basket"></i>
                   </span>
                 </div>
@@ -333,11 +287,7 @@ export default {
             </a>
             <a href class="text-reset notification-item">
               <div class="media">
-                <img
-                  src="@/assets/images/users/avatar-3.jpg"
-                  class="me-3 rounded-circle avatar-xs"
-                  alt="user-pic"
-                />
+                <img src="@/assets/images/users/avatar-3.jpg" class="me-3 rounded-circle avatar-xs" alt="user-pic" />
                 <div class="media-body">
                   <h6 class="mt-0 mb-1">
                     {{ $t("navbar.dropdown.notification.james.title") }}
@@ -357,9 +307,7 @@ export default {
             <a href class="text-reset notification-item">
               <div class="media">
                 <div class="avatar-xs me-3">
-                  <span
-                    class="avatar-title bg-light rounded-circle font-size-16"
-                  >
+                  <span class="avatar-title bg-light rounded-circle font-size-16">
                     <i class="uil-truck"></i>
                   </span>
                 </div>
@@ -382,11 +330,7 @@ export default {
 
             <a href class="text-reset notification-item">
               <div class="media">
-                <img
-                  src="@/assets/images/users/avatar-4.jpg"
-                  class="me-3 rounded-circle avatar-xs"
-                  alt="user-pic"
-                />
+                <img src="@/assets/images/users/avatar-4.jpg" class="me-3 rounded-circle avatar-xs" alt="user-pic" />
                 <div class="media-body">
                   <h6 class="mt-0 mb-1">
                     {{ $t("navbar.dropdown.notification.salena.title") }}
@@ -405,74 +349,51 @@ export default {
             </a>
           </simplebar>
           <div class="p-2 border-top">
-            <a
-              class="btn btn-sm btn-link font-size-14 btn-block text-center"
-              href="javascript:void(0)"
-            >
+            <a class="btn btn-sm btn-link font-size-14 btn-block text-center" href="javascript:void(0)">
               <i class="uil-arrow-circle-right me-1"></i>
               {{ $t("navbar.dropdown.notification.button") }}
             </a>
           </div>
         </b-dropdown>
 
-        <b-dropdown
-          class="d-inline-block"
-          toggle-class="header-item"
-          right
-          variant="white"
-          menu-class="dropdown-menu-end"
-        >
+        <b-dropdown class="d-inline-block" toggle-class="header-item" right variant="white"
+          menu-class="dropdown-menu-end">
           <template v-slot:button-content>
-            <img
-              class="rounded-circle header-profile-user"
-              src="@/assets/images/users/avatar-4.jpg"
-              alt="Header Avatar"
-            />
+            <img class="rounded-circle header-profile-user" src="@/assets/images/users/avatar-4.jpg"
+              alt="Header Avatar" />
             <span
-              class="d-none d-xl-inline-block ms-1 fw-medium font-size-15"
-              >{{ $t("navbar.dropdown.marcus.text") }}</span
-            >
+              class="d-none d-xl-inline-block ms-1 fw-medium font-size-15">{{ $t("navbar.dropdown.marcus.text") }}</span>
             <i class="uil-angle-down d-none d-xl-inline-block font-size-15"></i>
           </template>
 
           <!-- item-->
           <a class="dropdown-item" href="#">
-            <i
-              class="uil uil-user-circle font-size-18 align-middle text-muted me-1"
-            ></i>
+            <i class="uil uil-user-circle font-size-18 align-middle text-muted me-1"></i>
             <span class="align-middle">{{
               $t("navbar.dropdown.marcus.list.profile")
             }}</span>
           </a>
           <a class="dropdown-item" href="#">
-            <i
-              class="uil uil-wallet font-size-18 align-middle me-1 text-muted"
-            ></i>
+            <i class="uil uil-wallet font-size-18 align-middle me-1 text-muted"></i>
             <span class="align-middle">{{
               $t("navbar.dropdown.marcus.list.mywallet")
             }}</span>
           </a>
           <a class="dropdown-item d-block" href="#">
-            <i
-              class="uil uil-cog font-size-18 align-middle me-1 text-muted"
-            ></i>
+            <i class="uil uil-cog font-size-18 align-middle me-1 text-muted"></i>
             <span class="align-middle">{{
               $t("navbar.dropdown.marcus.list.settings")
             }}</span>
             <span class="badge bg-soft-success rounded-pill mt-1 ms-2">03</span>
           </a>
           <a class="dropdown-item" href="#">
-            <i
-              class="uil uil-lock-alt font-size-18 align-middle me-1 text-muted"
-            ></i>
+            <i class="uil uil-lock-alt font-size-18 align-middle me-1 text-muted"></i>
             <span class="align-middle">{{
               $t("navbar.dropdown.marcus.list.lockscreen")
             }}</span>
           </a>
           <a class="dropdown-item" href="/logout">
-            <i
-              class="uil uil-sign-out-alt font-size-18 align-middle me-1 text-muted"
-            ></i>
+            <i class="uil uil-sign-out-alt font-size-18 align-middle me-1 text-muted"></i>
             <span class="align-middle">{{
               $t("navbar.dropdown.marcus.list.logout")
             }}</span>
@@ -480,11 +401,8 @@ export default {
         </b-dropdown>
 
         <div class="dropdown d-inline-block">
-          <button
-            type="button"
-            class="btn header-item noti-icon right-bar-toggle toggle-right"
-            @click="toggleRightSidebar"
-          >
+          <button type="button" class="btn header-item noti-icon right-bar-toggle toggle-right"
+            @click="toggleRightSidebar">
             <i class="uil-cog toggle-right"></i>
           </button>
         </div>

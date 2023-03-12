@@ -128,7 +128,7 @@ export default {
         this.show_upload_file = true;
       } else if (
         this.data_to_use == "api data" &&
-        this.report != "Mapped File" &&
+        this.report != "Mappings File" &&
         this.report != "Comparison File"
       ) {
         this.tab2 = true;
@@ -139,6 +139,8 @@ export default {
         this.togglequaters = false;
       }
       if (this.report == "Comparison File") {
+        this.selected_report = true;
+      } else if (this.report == "Mappings File") {
         this.selected_report = true;
       } else {
         this.selected_report = false;
@@ -458,7 +460,8 @@ export default {
               timer: 3000,
             });
           });
-      } else if (this.report == "Mapped File") {
+      }
+      if (this.report == "Mappings File") {
         axios
           .get(window.$http + "get_mapped_data", {
             headers: newheaders,
@@ -485,6 +488,7 @@ export default {
       this.pl = pl;
       var data = [];
       this.concodance = 0;
+      console.log(this.report)
       if (this.report == "Comparison File") {
         this.comparisondata.forEach((val) => {
           this.concodance += Number(val["concodance"]);
@@ -508,13 +512,13 @@ export default {
       } else {
         data = this.mappeddata.map((row) => ({
           Category: row.DATIM_Indicator_Category,
-          DATIM_Indicator_ID: row.DATIM_Indicator_ID,
-          DATIM_Disag_Name: row.DATIM_Disag_Name,
-          DATIM_Disag_ID: row.DATIM_Disag_ID,
-          Operation: row.Operation,
-          MOH_Indicator_ID: row.MOH_Indicator_ID,
-          MOH_Indicator_Name: row.MOH_Indicator_Name,
-          Disag_Type: row.Disaggregation_Type,
+          //DATIM_Indicator_ID: row.DATIM_Indicator_ID,
+          "DATIM Disag Name": row.DATIM_Disag_Name,
+          "MOH Indicator Name": row.MOH_Indicator_Name,
+          "DATIM Disag ID": row.DATIM_Disag_ID,
+          //Operation: row.Operation,
+          "MOH Indicator ID": row.MOH_Indicator_ID,
+          "Disag Type": row.Disaggregation_Type,
         }));
       }
       //get headers
@@ -624,36 +628,36 @@ export default {
                                 <div class="col-xl-12">
                                   <div class="card mb-0">
                                     <b-tabs content-class="p-4" justified class="nav-tabs-custom">
-                                      <b-tab active title="Indicator Mapping" class="text-dark">
-                                        <form @submit.prevent="handleSubmit">
-                                          <div class="row">
-                                            <div class="col-sm-6 col-md-6">
-                                              <b-form-group label="County" label-for="county-input">
-                                                <multiselect class="form-control" v-model="county" :options="counties"
-                                                  placeholder="All" :multiple="false" :editable="true"></multiselect>
-                                              </b-form-group>
-                                            </div>
-                                            <div class="col-sm-6 col-md-6">
-                                              <b-form-group label="Category" label-for="Category-input">
-                                                <multiselect class="form-control" v-model="category" :options="cats"
-                                                  placeholder="All" :multiple="false" :editable="true"></multiselect>
-                                              </b-form-group>
-                                            </div>
-                                          </div>
-                                          <div class="row">
-                                            <div class="col-sm-6 mb-2">
-                                              <div class="border-top">
-                                                <div class="mt-lg-5">
-                                                  <b-button type="submit" variant="dark" class="uil uil-database-alt"
-                                                    @click="triggerMapping()">Trigger Indicator
-                                                    Mapping</b-button>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </form>
-                                      </b-tab>
-                                      <b-tab title="Indicator Comparison" class="text-dark">
+                                      <!-- <b-tab active title="Indicator Mapping" class="text-dark">
+                                                                                                                                <form @submit.prevent="handleSubmit">
+                                                                                                                                  <div class="row">
+                                                                                                                                    <div class="col-sm-6 col-md-6">
+                                                                                                                                      <b-form-group label="County" label-for="county-input">
+                                                                                                                                        <multiselect class="form-control" v-model="county" :options="counties"
+                                                                                                                                          placeholder="All" :multiple="false" :editable="true"></multiselect>
+                                                                                                                                      </b-form-group>
+                                                                                                                                    </div>
+                                                                                                                                    <div class="col-sm-6 col-md-6">
+                                                                                                                                      <b-form-group label="Category" label-for="Category-input">
+                                                                                                                                        <multiselect class="form-control" v-model="category" :options="cats"
+                                                                                                                                          placeholder="All" :multiple="false" :editable="true"></multiselect>
+                                                                                                                                      </b-form-group>
+                                                                                                                                    </div>
+                                                                                                                                  </div>
+                                                                                                                                  <div class="row">
+                                                                                                                                    <div class="col-sm-6 mb-2">
+                                                                                                                                      <div class="border-top">
+                                                                                                                                        <div class="mt-lg-5">
+                                                                                                                                          <b-button type="submit" variant="dark" class="uil uil-database-alt"
+                                                                                                                                            @click="triggerMapping()">Trigger Indicator
+                                                                                                                                            Mapping</b-button>
+                                                                                                                                        </div>
+                                                                                                                                      </div>
+                                                                                                                                    </div>
+                                                                                                                                  </div>
+                                                                                                                                </form>
+                                                                                                                              </b-tab> -->
+                                      <b-tab title="Indicator Mapping & Comparison" class="text-dark">
                                         <form @submit.prevent="handleSubmit">
                                           <div class="row">
                                             <div class="col-sm-6 col-md-6">
@@ -670,62 +674,68 @@ export default {
                                                   @input="getdataStatus()"></multiselect>
                                               </b-form-group>
                                             </div>
-                                            <div class="col-sm-6 col-md-6 mt-2" v-show="!togglequaters">
-                                              <div id="tickets-table-date-picker">
-                                                <label>
-                                                  From&nbsp;
-                                                  <date-picker class="form-control" v-model="from"
-                                                    placeholder="2022-09-27" type="date"></date-picker>
-                                                </label>
-                                              </div>
-                                            </div>
-                                            <div class="col-sm-6 col-md-6 mt-2" v-show="!togglequaters">
-                                              <div id="tickets-table-date-picker">
-                                                <label>
-                                                  To&nbsp;
-                                                  <date-picker class="form-control" v-model="to" placeholder="2022-09-27"
-                                                    type="date"></date-picker>
-                                                </label>
-                                              </div>
-                                            </div>
-                                            <div class="col-sm-6 col-md-6 mt-2" v-show="togglequaters">
-                                              <div id="tickets-table">
-                                                <label class="d-inline-flex m-2">
-                                                  Year-{{ qtryear
-                                                  }}&nbsp;
-                                                  <b-form-input type="number" class="mr-n2" v-model="qtryear">
-                                                  </b-form-input>
-                                                </label>
-                                              </div>
-                                              <div id="tickets-table-date-picker">
-                                                <label class="d-inline-flex m-2">
-                                                  Quater 1(Oct to Dec) &nbsp;
-                                                  <b-form-checkbox class="mr-n2" v-model="qt1">
-                                                  </b-form-checkbox>
-                                                </label>
-                                              </div>
-                                              <div id="tickets-table-date-picker" v-show="togglequaters">
-                                                <label class="d-inline-flex m-2">
-                                                  Quater 2(Jan to Mar)&nbsp;
-                                                  <b-form-checkbox class="mr-n2" v-model="qt2">
-                                                  </b-form-checkbox>
-                                                </label>
-                                              </div>
-                                            </div>
-                                            <div class="col-sm-6 col-md-6 mt-2" v-show="togglequaters">
-                                              <div id="tickets-table-date-picker">
-                                                <label class="d-inline-flex m-2">
-                                                  Quater 3(Apr to Jun) &nbsp;
-                                                  <b-form-checkbox class="mr-n2" v-model="qt3">
-                                                  </b-form-checkbox>
-                                                </label>
-                                              </div>
-                                              <div id="tickets-table-date-picker" class="d-block" v-show="togglequaters">
-                                                <label class="d-inline-flex m-2">
-                                                  Quater 4(Jul to Sept) &nbsp;
-                                                  <b-form-checkbox class="mr-n2" v-model="qt4">{{ qt4 }}
-                                                  </b-form-checkbox>
-                                                </label>
+                                            <div class="d-flex flex-column">
+                                              <div class="row">
+                                                <div class="col-sm-6 col-md-6 mt-2" v-if="!togglequaters">
+                                                  <div id="tickets-table-date-picker">
+                                                    <label>
+                                                      From&nbsp;
+                                                      <date-picker class="form-control" v-model="from"
+                                                        placeholder="2022-09-27" type="date"></date-picker>
+                                                    </label>
+                                                  </div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 mt-2" v-if="!togglequaters">
+                                                  <div id="tickets-table-date-picker">
+                                                    <label>
+                                                      To&nbsp;
+                                                      <date-picker class="form-control" v-model="to"
+                                                        placeholder="2022-09-27" type="date"></date-picker>
+                                                    </label>
+                                                  </div>
+                                                </div>
+                                                <div class="row">
+                                                  <div class="col-sm-6 col-md-6 mt-2" v-if="togglequaters">
+                                                    <div id="tickets-table">
+                                                      <label class="d-inline-flex m-auto">
+                                                        Year&nbsp;
+                                                        <b-form-input type="number" class="mr-n2" v-model="qtryear">
+                                                        </b-form-input>
+                                                      </label>
+                                                    </div>
+                                                    <div id="tickets-table-date-picker">
+                                                      <label class="d-inline-flex m-2">
+                                                        Quater 1(Oct to Dec) &nbsp;
+                                                        <b-form-checkbox class="mr-n2" v-model="qt1">
+                                                        </b-form-checkbox>
+                                                      </label>
+                                                    </div>
+                                                    <div id="tickets-table-date-picker" v-if="togglequaters">
+                                                      <label class="d-inline-flex m-2">
+                                                        Quater 2(Jan to Mar)&nbsp;
+                                                        <b-form-checkbox class="mr-n2" v-model="qt2">
+                                                        </b-form-checkbox>
+                                                      </label>
+                                                    </div>
+                                                  </div>
+                                                  <div class="col-sm-6 col-md-6 mt-2" v-if="togglequaters">
+                                                    <div id="tickets-table-date-picker">
+                                                      <label class="d-inline-flex m-2">
+                                                        Quater 3(Apr to Jun) &nbsp;
+                                                        <b-form-checkbox class="mr-n2" v-model="qt3">
+                                                        </b-form-checkbox>
+                                                      </label>
+                                                    </div>
+                                                    <div id="tickets-table-date-picker" class="d-block"
+                                                      v-if="togglequaters">
+                                                      <label class="d-inline-flex m-2">
+                                                        Quater 4(Jul to Sept) &nbsp;
+                                                        <b-form-checkbox class="mr-n2" v-model="qt4">{{ qt4 }}
+                                                        </b-form-checkbox>
+                                                      </label>
+                                                    </div>
+                                                  </div>
+                                                </div>
                                               </div>
                                             </div>
                                           </div>
@@ -735,8 +745,7 @@ export default {
                                               <div class="border-top">
                                                 <div class="mt-lg-5">
                                                   <b-button type="submit" variant="dark" class="uil uil-database-alt"
-                                                    @click="triggerComparison()">Trigger Indicator
-                                                    Comparison</b-button>
+                                                    @click="triggerComparison()">Initiate Action</b-button>
                                                 </div>
                                               </div>
                                             </div>
@@ -779,67 +788,74 @@ export default {
                                       </multiselect>
                                     </b-form-group>
                                   </div>
-                                  <div class="col-sm-6 col-md-6">
-                                    <b-form-group label="County" label-for="county-input">
-                                      <multiselect class="form-control" v-model="county" :options="counties"
-                                        placeholder="Kisumu County" :multiple="false" :editable="true"></multiselect>
-                                    </b-form-group>
-                                  </div>
-                                  <div class="col-sm-6 col-md-6">
-                                    <b-form-group label="Category" label-for="Category-input">
-                                      <multiselect class="form-control" v-model="category" :options="cats"
-                                        placeholder="TX_CURR" :multiple="false" :editable="true" @input="getdataStatus()">
-                                      </multiselect>
-                                    </b-form-group>
-                                  </div>
-                                  <div class="col-sm-6 col-md-6 mt-2" v-show="!togglequaters">
-                                    <div id="tickets-table-date-picker">
-                                      <label>
-                                        From&nbsp;
-                                        <date-picker class="form-control" v-model="from" placeholder="2022-09-27"
-                                          type="date"></date-picker>
-                                      </label>
+                                  <div class="d-flex flex-column" v-if="report != 'Mappings File'">
+                                    <div class="row">
+                                      <div class="col-sm-6 col-md-6">
+                                        <b-form-group label="County" label-for="county-input">
+                                          <multiselect class="form-control" v-model="county" :options="counties"
+                                            placeholder="Kisumu County" :multiple="false" :editable="true"></multiselect>
+                                        </b-form-group>
+                                      </div>
+                                      <div class="col-sm-6 col-md-6">
+                                        <b-form-group label="Category" label-for="Category-input">
+                                          <multiselect class="form-control" v-model="category" :options="cats"
+                                            placeholder="TX_CURR" :multiple="false" :editable="true"
+                                            @input="getdataStatus()">
+                                          </multiselect>
+                                        </b-form-group>
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div class="col-sm-6 col-md-6 mt-2" v-show="!togglequaters">
-                                    <div id="tickets-table-date-picker">
-                                      <label>
-                                        To&nbsp;
-                                        <date-picker class="form-control" v-model="to" placeholder="2022-09-27"
-                                          type="date"></date-picker>
-                                      </label>
-                                    </div>
-                                  </div>
-                                  <div class="col-sm-6 col-md-6 mt-2" v-show="togglequaters">
-                                    <div id="tickets-table-date-picker">
-                                      <label class="d-inline-flex m-2">
-                                        Quater 1(Oct to Dec) &nbsp;
-                                        <b-form-checkbox class="mr-n2" v-model="qt1">
-                                        </b-form-checkbox>
-                                      </label>
-                                    </div>
-                                    <div id="tickets-table-date-picker" v-show="togglequaters">
-                                      <label class="d-inline-flex m-2">
-                                        Quater 2(Jan to Mar) &nbsp;
-                                        <b-form-checkbox class="mr-n2" v-model="qt2">
-                                        </b-form-checkbox>
-                                      </label>
-                                    </div>
-                                  </div>
-                                  <div class="col-sm-6 col-md-6 mt-2" v-show="togglequaters">
-                                    <div id="tickets-table-date-picker">
-                                      <label class="d-inline-flex m-2">
-                                        Quater 3(Apr to Jun) &nbsp;
-                                        <b-form-checkbox class="mr-n2" v-model="qt3">
-                                        </b-form-checkbox>
-                                      </label>
-                                    </div>
-                                    <div id="tickets-table-date-picker" class="d-block" v-show="togglequaters">
-                                      <label class="d-inline-flex m-2">
-                                        Quater 4(Jul to Sept) &nbsp;
-                                        <b-form-checkbox class="mr-n2" v-model="qt4">
-                                        </b-form-checkbox>
-                                      </label>
+                                    <div class="row">
+                                      <div class="col-sm-6 col-md-6 mt-2" v-if="!togglequaters">
+                                        <div id="tickets-table-date-picker">
+                                          <label>
+                                            From&nbsp;
+                                            <date-picker class="form-control" v-model="from" placeholder="2022-09-27"
+                                              type="date"></date-picker>
+                                          </label>
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-6 col-md-6 mt-2" v-if="!togglequaters">
+                                        <div id="tickets-table-date-picker">
+                                          <label>
+                                            To&nbsp;
+                                            <date-picker class="form-control" v-model="to" placeholder="2022-09-27"
+                                              type="date"></date-picker>
+                                          </label>
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-6 col-md-6 mt-2" v-if="togglequaters">
+                                        <div id="tickets-table-date-picker">
+                                          <label class="d-inline-flex m-2">
+                                            Quater 1(Oct to Dec) &nbsp;
+                                            <b-form-checkbox class="mr-n2" v-model="qt1">
+                                            </b-form-checkbox>
+                                          </label>
+                                        </div>
+                                        <div id="tickets-table-date-picker" v-show="togglequaters">
+                                          <label class="d-inline-flex m-2">
+                                            Quater 2(Jan to Mar) &nbsp;
+                                            <b-form-checkbox class="mr-n2" v-model="qt2">
+                                            </b-form-checkbox>
+                                          </label>
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-6 col-md-6 mt-2" v-if="togglequaters">
+                                        <div id="tickets-table-date-picker">
+                                          <label class="d-inline-flex m-2">
+                                            Quater 3(Apr to Jun) &nbsp;
+                                            <b-form-checkbox class="mr-n2" v-model="qt3">
+                                            </b-form-checkbox>
+                                          </label>
+                                        </div>
+                                        <div id="tickets-table-date-picker" class="d-block" v-show="togglequaters">
+                                          <label class="d-inline-flex m-2">
+                                            Quater 4(Jul to Sept) &nbsp;
+                                            <b-form-checkbox class="mr-n2" v-model="qt4">
+                                            </b-form-checkbox>
+                                          </label>
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>

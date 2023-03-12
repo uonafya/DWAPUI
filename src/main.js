@@ -29,9 +29,9 @@ var tokenString = "";
 try {
     if (localStorage.user.trim() != "") {
         tokenString = CryptoJS.AES.decrypt(
-                JSON.parse(localStorage.user).token,
-                "mnopqr",
-            )
+            JSON.parse(localStorage.user).token,
+            "mnopqr",
+        )
             .toString(CryptoJS.enc.Utf8)
             .trim();
     }
@@ -40,11 +40,8 @@ try {
 }
 window.$tokenString = tokenString;
 window.$headers = {
-    Authorization: `Bearer ${window.$tokenString}`,
+    Authorization: `Token ${window.$tokenString}`,
 };
-const token = localStorage.getItem("token");
-console.log(token)
-window.$headers = { Authorization: "Token " + token, };
 Vue.use(Lightbox)
 Vue.use(VueGoogleMaps, {
     load: {
@@ -56,7 +53,7 @@ Vue.use(VueGoogleMaps, {
 
 import { initFirebaseBackend } from './helpers/firebase/authUtils';
 
-import { configureFakeBackend } from './helpers/fakebackend/fake-backend';
+import { configuredatILBackend } from './helpers/dataILauth/dataIL-auth';
 
 const firebaseConfig = {
     apiKey: process.env.VUE_APP_APIKEY,
@@ -71,8 +68,8 @@ const firebaseConfig = {
 
 if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
     initFirebaseBackend(firebaseConfig);
-} else if (process.env.VUE_APP_DEFAULT_AUTH === "fakebackend") {
-    configureFakeBackend();
+} else if (process.env.VUE_APP_DEFAULT_AUTH === "dataILauth") {
+    configuredatILBackend();
 }
 
 import '@/assets/scss/app.scss'
