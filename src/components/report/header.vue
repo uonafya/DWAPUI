@@ -10,8 +10,7 @@
                   <h5 class="my-4">
                     Do you want to generate PDF document for {{ title }}
                   </h5>
-                  <h4 class="my4 d-inline" :class="{ 'd-none': concodance == 0 }"
-                    v-if="!title.toLowerCase().includes('comparison')">
+                  <h4 class="my4 d-inline" v-if="concodance">
                     Concodance:&nbsp;<span class="text-info">{{ concodance }}&nbsp;%</span>
                   </h4>
                 </div>
@@ -148,11 +147,20 @@ export default {
       doc.addImage(imgKLogo, "PNG", 1, 1, 12, 7, 3, 3);
 
       //doc.addImage(img, "PNG", 10, 10);
-      doc.text(
-        10,
-        40,
-        this.title + "\t\t\tConcodance: " + this.concodance + " %"
-      );
+      if (this.concodance != null) {
+        doc.text(
+          10,
+          40,
+          this.title + "\t\t\tConcodance: " + this.concodance + " %"
+        );
+      } else {
+        doc.text(
+          10,
+          40,
+          this.title
+        );
+      }
+
 
       doc.setFillColor(0, 255, 0);
       doc.addFont("Tahoma", "Tahoma", "bold");

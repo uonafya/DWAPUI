@@ -11,7 +11,7 @@ export default [{
             if (store.getters['auth/loggedIn']) {
                 // Redirect to the home page instead
                 next({
-                    name: 'manage'
+                    name: 'home'
                 })
             } else {
                 // Continue to the login page
@@ -31,7 +31,7 @@ export default [{
             if (store.getters['auth/loggedIn']) {
                 // Redirect to the home page instead
                 next({
-                    name: 'manage'
+                    name: 'home'
                 })
             } else {
                 // Continue to the login page
@@ -101,6 +101,24 @@ export default [{
         import('../views/pages/data/indicators')
 },
 {
+    path: '/data/indicators',
+    name: 'indicators',
+    meta: {
+        authRequired: true,
+    },
+    component: () =>
+        import('../views/pages/data/indicators')
+},
+{
+    path: '/data/FacilityMapping',
+    name: 'Facility Mapping',
+    meta: {
+        authRequired: true,
+    },
+    component: () =>
+        import('../views/pages/data/FacilityMapping')
+},
+{
     path: '/data/comparison',
     name: 'comparison',
     meta: {
@@ -119,40 +137,40 @@ export default [{
         import('../views/pages/data/indicator_groups')
 },
 {
-    path: '/income',
+    path: '/data/DataPullSchedule',
     name: 'income',
     meta: {
         authRequired: true,
     },
     component: () =>
-        import('../views/pages/revenue/income')
+        import('../views/pages/data/DataPullSchedule')
 },
 {
-    path: '/expenses',
-    name: 'expenses',
+    path: '/account/users',
+    name: 'users',
     meta: {
         authRequired: true,
     },
     component: () =>
-        import('../views/pages/revenue/expenses')
+        import('../views/pages/account/users')
 },
 {
-    path: '/comments',
-    name: 'comments',
+    path: '/account/roles',
+    name: 'roles',
     meta: {
         authRequired: true,
     },
     component: () =>
-        import('../views/pages/cms/comments')
+        import('../views/pages/account/roles')
 },
 {
-    path: '/complaints',
-    name: 'complaints',
+    path: '/reporting/report',
+    name: 'Reports',
     meta: {
         authRequired: true,
     },
     component: () =>
-        import('../views/pages/cms/complaints')
+        import('../views/pages/reporting/report')
 },
 {
     path: '/suggestions',

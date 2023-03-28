@@ -118,8 +118,8 @@ export default {
             <div class="card">
               <div class="card-body p-4" style="background-color: darkgreen">
                 <div class="text-center mt-2">
-                  <router-link :to="{ name: 'home' }" class="d-inline"><i
-                      class="uil uil-arrow-left"></i>Back&nbsp;</router-link>
+                  <router-link :to="{ name: 'home' }" class="d-inline text-danger"><i
+                      class="uil uil-arrow-left"></i>Dashboard&nbsp;</router-link>
                   <h5 class="text-white d-inline">
                     Welcome...! Please Login To Continue
                   </h5>
@@ -136,9 +136,9 @@ export default {
                       <b-form-input id="input-1" v-model="username" type="text" placeholder="Enter username"
                         style="color: black;background: transparent;border: solid 1px black;"></b-form-input>
                       <!-- <div v-if="submitted && $v.username.$error" class="invalid-feedback">
-                                                                                        <span v-if="!$v.username.required">Username is required.</span>
-                                                                                        <span v-if="!$v.username">Please enter valid username.</span>
-                                                                                      </div> -->
+                                                                                                      <span v-if="!$v.username.required">Username is required.</span>
+                                                                                                      <span v-if="!$v.username">Please enter valid username.</span>
+                                                                                                    </div> -->
                     </b-form-group>
 
                     <b-form-group id="input-group-2" class="mb-3 text-white-50">
@@ -158,7 +158,7 @@ export default {
                       </div>
                     </div>
                     <div class="mt-3 text-end">
-                      <b-button type="submit" variant="primary" class="w-sm">Log In</b-button>
+                      <b-button type="submit" variant="danger" class="w-sm">Log In</b-button>
                     </div>
 
                     <div class="mt-4 text-center">
@@ -188,7 +188,7 @@ export default {
                     <div class="mt-4 text-center text-white-50">
                       <p class="mb-0">
                         Don't have an account ? Get Started
-                        <router-link to="/register" class="fw-medium text-primary">Here</router-link>
+                        <router-link to="/register" class="fw-medium text-danger">Here</router-link>
                       </p>
                     </div>
                   </b-form>

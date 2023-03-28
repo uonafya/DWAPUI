@@ -137,7 +137,40 @@ export const mutations = {
                         },
                     ],
                 };
-                //add sub item
+                //add sub item FacilityMapping
+                state.userScreens.push(newObjectScreen);
+                createdMenus.add("DataAlignment");
+            }
+        }
+        if (allscreens.has("FacilityMapping")) {
+            if (createdMenus.has("DataAlignment")) {
+                let newObjectScreen = {
+                    id: 4,
+                    label: "FacilityMapping",
+                    link: "/data/FacilityMapping",
+                };
+                ///add to subitem array
+                index = state.userScreens
+                    .map(function (e) {
+                        return e.label;
+                    })
+                    .indexOf("Data Alignment");
+                state.userScreens[index].subItems.push(newObjectScreen);
+            } else {
+                let newObjectScreen = {
+                    id: 2,
+                    label: "Data Alignment",
+                    icon: "uil-object-group",
+                    link: "/DataAlignment",
+                    subItems: [
+                        {
+                            id: 5,
+                            label: "FacilityMapping",
+                            link: "/data/FacilityMapping",
+                        },
+                    ],
+                };
+                //add sub item 
                 state.userScreens.push(newObjectScreen);
                 createdMenus.add("DataAlignment");
             }
@@ -215,7 +248,7 @@ export const mutations = {
                 let newObjectScreen = {
                     id: 4,
                     label: "Roles",
-                    link: "/data/Roles",
+                    link: "/account/roles",
                 };
                 ///add to subitem array
                 index = state.userScreens
@@ -234,7 +267,40 @@ export const mutations = {
                         {
                             id: 5,
                             label: "Roles",
-                            link: "/data/Roles",
+                            link: "/account/roles",
+                        },
+                    ],
+                };
+                //add sub item
+                state.userScreens.push(newObjectScreen);
+                createdMenus.add("Security");
+            }
+        }
+        if (allscreens.has("DataPullSchedule")) {
+            if (createdMenus.has("Security")) {
+                let newObjectScreen = {
+                    id: 6,
+                    label: "Data Pull Schedules",
+                    link: "/data/DataPullSchedule",
+                };
+                ///add to subitem array
+                index = state.userScreens
+                    .map(function (e) {
+                        return e.label;
+                    })
+                    .indexOf("Security");
+                state.userScreens[index].subItems.push(newObjectScreen);
+            } else {
+                let newObjectScreen = {
+                    id: 2,
+                    label: "Security",
+                    icon: "uil-lock",
+                    link: "/Security",
+                    subItems: [
+                        {
+                            id: 5,
+                            label: "Data Pull Schedules",
+                            link: "/data/DataPullSchedule",
                         },
                     ],
                 };
@@ -248,7 +314,7 @@ export const mutations = {
                 let newObjectScreen = {
                     id: 4,
                     label: "Users",
-                    link: "/data/Users",
+                    link: "/account/users",
                 };
                 ///add to subitem array
                 index = state.userScreens
@@ -267,7 +333,7 @@ export const mutations = {
                         {
                             id: 4,
                             label: "Users",
-                            link: "/data/Users",
+                            link: "/account/users",
                         },
                     ],
                 };
@@ -281,7 +347,7 @@ export const mutations = {
                 let newObjectScreen = {
                     id: 4,
                     label: "Password Policy",
-                    link: "/data/Users",
+                    link: "/account/users",
                 };
                 ///add to subitem array
                 index = state.userScreens
@@ -300,7 +366,7 @@ export const mutations = {
                         {
                             id: 5,
                             label: "Password Policy",
-                            link: "/data/PasswordPolicy",
+                            link: "/account/PasswordPolicy",
                         },
                     ],
                 };
@@ -316,7 +382,8 @@ export const mutations = {
                 let newObjectScreen = {
                     id: 3,
                     label: "Reports",
-                    link: "/data/Reports",
+                    icon: "uil-file-alt",
+                    link: "/reporting/report",
                 };
                 ///add to subitem array
                 index = state.userScreens
@@ -332,7 +399,7 @@ export const mutations = {
                     id: 2,
                     label: "Reports",
                     icon: "uil-file-alt",
-                    link: "/Reports",
+                    link: "/reporting/report",
                 };
                 //add sub item
                 state.userScreens.push(newObjectScreen);

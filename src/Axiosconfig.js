@@ -17,9 +17,9 @@ try {
 
 const instance = axios.create({
     baseURL: 'http://localhost:8000/api/', // Replace with your Django backend URL
-    timeout: 10000, // 10 seconds timeout
+    timeout: 360000, // 6 mins timeout
     headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": ["application/json"],
         Authorization: 'Token ' + tokenString,
     },
 });

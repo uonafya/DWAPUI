@@ -2,7 +2,7 @@
 import vue2Dropzone from "vue2-dropzone";
 import Swal from "sweetalert2";
 //import VueGoogleAutocomplete from "vue-google-autocomplete";
-import axios from "axios";
+import axios from "../../Axiosconfig";
 import Multiselect from "vue-multiselect";
 
 const newheaders = window.$headers;
@@ -81,7 +81,7 @@ export default {
       this.from = this.qtryear + "-09-01";
       this.to = this.qtryear + "-10-01";
       //quater 1
-      this.qt1from = this.qtryear - 1 + "-10-01";
+      this.qt1from = this.qtryear + "-10-01";
       //qt1from: "2020-10-01",
       this.qt1to = this.qtryear + "-12-31";
       //quater 2
@@ -96,13 +96,13 @@ export default {
     },
     updatefilters() {
       axios
-        .get(window.$http + "listscategories", { headers: window.$headers })
+        .get("listscategories")
         .then((res) => {
           res.data.forEach((item) => {
             this.cats.push(item.category_name);
           });
           axios
-            .get(window.$http + "listscounties", { headers: window.$headers })
+            .get("listscounties")
             .then((res) => {
               res.data.forEach((item) => {
                 this.counties.push(item.county_name);
@@ -148,7 +148,7 @@ export default {
     },
     triggerMapping() {
       axios
-        .get(window.$http + "map_data/" + this.category + "/" + this.mydatenew(this.fromdate) + "/" + this.mydatenew(this.todate) + "/100/", { headers: window.$headers })
+        .get("map_data/" + this.category + "/" + this.mydatenew(this.fromdate) + "/" + this.mydatenew(this.todate) + "/100/")
         .then((res) => {
           res.data.forEach((item) => {
             this.cats.push(item.category_name);
@@ -176,9 +176,7 @@ export default {
       let formData = new FormData();
       formData.append("mapping_files", this.file);
       axios
-        .post(window.$http + "listfiles/", formData, {
-          headers: newheaders,
-        })
+        .post("listfiles/", formData)
         .then((response) => {
           console.log(response.data);
           Swal.fire({
@@ -325,9 +323,7 @@ export default {
         enddate = this.mydatenew(new Date(this.to));
       }
       axios
-        .get(
-          window.$http +
-          "generate_comparison_file/" +
+        .get("generate_comparison_file/" +
           this.data_to_use +
           "/" +
           this.county +
@@ -337,11 +333,7 @@ export default {
           startdate +
           "/" +
           enddate +
-          "/",
-          {
-            headers: newheaders,
-          }
-        )
+          "/")
         .then((response) => {
           console.log(response.data);
           this.tab2 = false;
@@ -428,9 +420,7 @@ export default {
           enddate = this.mydatenew(new Date(this.to));
         }
         axios
-          .get(
-            window.$http +
-            "get_comparison_data/" +
+          .get("get_comparison_data/" +
             this.county +
             "/" +
             this.category +
@@ -438,11 +428,7 @@ export default {
             startdate +
             "/" +
             enddate +
-            "/",
-            {
-              headers: newheaders,
-            }
-          )
+            "/")
           .then((response) => {
             //console.log(response.data);
             this.comparisondata = response.data;
@@ -629,34 +615,34 @@ export default {
                                   <div class="card mb-0">
                                     <b-tabs content-class="p-4" justified class="nav-tabs-custom">
                                       <!-- <b-tab active title="Indicator Mapping" class="text-dark">
-                                                                                                                                <form @submit.prevent="handleSubmit">
-                                                                                                                                  <div class="row">
-                                                                                                                                    <div class="col-sm-6 col-md-6">
-                                                                                                                                      <b-form-group label="County" label-for="county-input">
-                                                                                                                                        <multiselect class="form-control" v-model="county" :options="counties"
-                                                                                                                                          placeholder="All" :multiple="false" :editable="true"></multiselect>
-                                                                                                                                      </b-form-group>
-                                                                                                                                    </div>
-                                                                                                                                    <div class="col-sm-6 col-md-6">
-                                                                                                                                      <b-form-group label="Category" label-for="Category-input">
-                                                                                                                                        <multiselect class="form-control" v-model="category" :options="cats"
-                                                                                                                                          placeholder="All" :multiple="false" :editable="true"></multiselect>
-                                                                                                                                      </b-form-group>
-                                                                                                                                    </div>
-                                                                                                                                  </div>
-                                                                                                                                  <div class="row">
-                                                                                                                                    <div class="col-sm-6 mb-2">
-                                                                                                                                      <div class="border-top">
-                                                                                                                                        <div class="mt-lg-5">
-                                                                                                                                          <b-button type="submit" variant="dark" class="uil uil-database-alt"
-                                                                                                                                            @click="triggerMapping()">Trigger Indicator
-                                                                                                                                            Mapping</b-button>
-                                                                                                                                        </div>
-                                                                                                                                      </div>
-                                                                                                                                    </div>
-                                                                                                                                  </div>
-                                                                                                                                </form>
-                                                                                                                              </b-tab> -->
+                                                                                                                                                          <form @submit.prevent="handleSubmit">
+                                                                                                                                                            <div class="row">
+                                                                                                                                                              <div class="col-sm-6 col-md-6">
+                                                                                                                                                                <b-form-group label="County" label-for="county-input">
+                                                                                                                                                                  <multiselect class="form-control" v-model="county" :options="counties"
+                                                                                                                                                                    placeholder="All" :multiple="false" :editable="true"></multiselect>
+                                                                                                                                                                </b-form-group>
+                                                                                                                                                              </div>
+                                                                                                                                                              <div class="col-sm-6 col-md-6">
+                                                                                                                                                                <b-form-group label="Category" label-for="Category-input">
+                                                                                                                                                                  <multiselect class="form-control" v-model="category" :options="cats"
+                                                                                                                                                                    placeholder="All" :multiple="false" :editable="true"></multiselect>
+                                                                                                                                                                </b-form-group>
+                                                                                                                                                              </div>
+                                                                                                                                                            </div>
+                                                                                                                                                            <div class="row">
+                                                                                                                                                              <div class="col-sm-6 mb-2">
+                                                                                                                                                                <div class="border-top">
+                                                                                                                                                                  <div class="mt-lg-5">
+                                                                                                                                                                    <b-button type="submit" variant="dark" class="uil uil-database-alt"
+                                                                                                                                                                      @click="triggerMapping()">Trigger Indicator
+                                                                                                                                                                      Mapping</b-button>
+                                                                                                                                                                  </div>
+                                                                                                                                                                </div>
+                                                                                                                                                              </div>
+                                                                                                                                                            </div>
+                                                                                                                                                          </form>
+                                                                                                                                                        </b-tab> -->
                                       <b-tab title="Indicator Mapping & Comparison" class="text-dark">
                                         <form @submit.prevent="handleSubmit">
                                           <div class="row">
@@ -757,125 +743,6 @@ export default {
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </b-tab>
-            <b-tab :active="tab3">
-              <template v-slot:title class="">
-                <i class="uil uil-download-alt font-size-20"></i>
-                <span class="d-none d-sm-block">Download Files</span>
-              </template>
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="border-top">
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="card">
-                          <div class="card-body">
-                            <div class="row d-flex flex-row">
-                              <div class="col-lg-12 col-md-6">
-                                <h3 class="my-3">Generate Report</h3>
-                                <div class="row">
-                                  <div class="col-sm-12 col-md-12">
-                                    <b-form-group label="Select report" label-for="report-input">
-                                      <multiselect class="form-control" v-model="report" :options="report_options"
-                                        :placeholder="report" :multiple="false" :editable="true" @input="getdataStatus()">
-                                      </multiselect>
-                                    </b-form-group>
-                                  </div>
-                                  <div class="d-flex flex-column" v-if="report != 'Mappings File'">
-                                    <div class="row">
-                                      <div class="col-sm-6 col-md-6">
-                                        <b-form-group label="County" label-for="county-input">
-                                          <multiselect class="form-control" v-model="county" :options="counties"
-                                            placeholder="Kisumu County" :multiple="false" :editable="true"></multiselect>
-                                        </b-form-group>
-                                      </div>
-                                      <div class="col-sm-6 col-md-6">
-                                        <b-form-group label="Category" label-for="Category-input">
-                                          <multiselect class="form-control" v-model="category" :options="cats"
-                                            placeholder="TX_CURR" :multiple="false" :editable="true"
-                                            @input="getdataStatus()">
-                                          </multiselect>
-                                        </b-form-group>
-                                      </div>
-                                    </div>
-                                    <div class="row">
-                                      <div class="col-sm-6 col-md-6 mt-2" v-if="!togglequaters">
-                                        <div id="tickets-table-date-picker">
-                                          <label>
-                                            From&nbsp;
-                                            <date-picker class="form-control" v-model="from" placeholder="2022-09-27"
-                                              type="date"></date-picker>
-                                          </label>
-                                        </div>
-                                      </div>
-                                      <div class="col-sm-6 col-md-6 mt-2" v-if="!togglequaters">
-                                        <div id="tickets-table-date-picker">
-                                          <label>
-                                            To&nbsp;
-                                            <date-picker class="form-control" v-model="to" placeholder="2022-09-27"
-                                              type="date"></date-picker>
-                                          </label>
-                                        </div>
-                                      </div>
-                                      <div class="col-sm-6 col-md-6 mt-2" v-if="togglequaters">
-                                        <div id="tickets-table-date-picker">
-                                          <label class="d-inline-flex m-2">
-                                            Quater 1(Oct to Dec) &nbsp;
-                                            <b-form-checkbox class="mr-n2" v-model="qt1">
-                                            </b-form-checkbox>
-                                          </label>
-                                        </div>
-                                        <div id="tickets-table-date-picker" v-show="togglequaters">
-                                          <label class="d-inline-flex m-2">
-                                            Quater 2(Jan to Mar) &nbsp;
-                                            <b-form-checkbox class="mr-n2" v-model="qt2">
-                                            </b-form-checkbox>
-                                          </label>
-                                        </div>
-                                      </div>
-                                      <div class="col-sm-6 col-md-6 mt-2" v-if="togglequaters">
-                                        <div id="tickets-table-date-picker">
-                                          <label class="d-inline-flex m-2">
-                                            Quater 3(Apr to Jun) &nbsp;
-                                            <b-form-checkbox class="mr-n2" v-model="qt3">
-                                            </b-form-checkbox>
-                                          </label>
-                                        </div>
-                                        <div id="tickets-table-date-picker" class="d-block" v-show="togglequaters">
-                                          <label class="d-inline-flex m-2">
-                                            Quater 4(Jul to Sept) &nbsp;
-                                            <b-form-checkbox class="mr-n2" v-model="qt4">
-                                            </b-form-checkbox>
-                                          </label>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <!----@click="position(), $bvModal.hide('modal-1') --->
-                        <div class="row">
-                          <div class="col-sm-10 text-right">{{ report }}</div>
-
-                          <div class="col-sm-2">
-                            <b-button pill variant="outline-primary" @click="
-                              [
-                                getMappegData(),
-                                printMappedPDF('l'),
-                                $bvModal.hide('modal-1'),
-                              ]
-                            " v-b-modal.modal-Print style="margin-right: 10px">
-                              Generate</b-button>
                           </div>
                         </div>
                       </div>

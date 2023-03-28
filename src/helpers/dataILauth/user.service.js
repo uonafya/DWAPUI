@@ -27,6 +27,22 @@ function login(username, password) {
     return fetch(window.$http + "login/", requestOptions)
         .then(handleResponse)
         .then((user) => {
+            // let accessScreens = [
+            //     "Dashboard",
+            //     "DataAlignment",
+            //     "IndicatorMappingRules",
+            //     "IndicatorComparison",
+            //     "DataQuality",
+            //     "Indicators",
+            //     "AllIndicators",
+            //     "Categories",
+            //     "Security",
+            //     "DataPullSchedule"
+            //     "Roles",
+            //     "Users",
+            //     "PasswordPolicy",
+            //     "Reports",
+            // ];
             let accessScreens = user.screens.toString().split(",");
             console.log(accessScreens)
             store.dispatch("screens/loadUserScreens", { userScreen: accessScreens });
@@ -42,7 +58,9 @@ function login(username, password) {
                 let responseJson = {
                     id: user.id,
                     username: username,
+                    email: user.user.email,
                     token: encryptToken,
+                    notifications: user.notifications,
                 };
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem("user", JSON.stringify(responseJson));

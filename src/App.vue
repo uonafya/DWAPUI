@@ -7,6 +7,8 @@
 <script>
 import appConfig from "@/app.config";
 import { notificationMethods } from "@/state/helpers";
+import store from "@/state/store";
+
 
 export default {
   name: "app",
@@ -19,6 +21,9 @@ export default {
   },
   methods: {
     clearNotification: notificationMethods.clear,
+    autoLogout() {
+      store.dispatch("authfack/logout");
+    },
   },
   watch: {
     /**
@@ -29,6 +34,9 @@ export default {
       // clear alert on location change
       this.clearNotification();
     },
+  },
+  created() {
+    window.addEventListener("beforeunload", this.autoLogout);
   },
   mounted() {
     // document.getElementsByTagName("html")[0].setAttribute("dir", "rtl");
