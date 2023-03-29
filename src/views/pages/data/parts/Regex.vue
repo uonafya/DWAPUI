@@ -25,7 +25,7 @@ export default {
     },
     data() {
         return {
-            id: "",
+            id: 1,
             myindex: "",
             indicators: [],
             totalRows: 1,
@@ -40,6 +40,8 @@ export default {
             sortBy: "id",
             sortDesc: false,
             fields: [],
+            gender_regex: "",
+            age_group_regex: "",
         };
     },
     created() {
@@ -53,11 +55,47 @@ export default {
     computed: {
     },
     mounted() {
+        this.updateFields();
     },
     methods: {
+        updateFields() {
+            this.id = this.orderData[0].id;
+            this.age_group_regex = this.orderData[0].age_group_regex;
+            this.gender_regex = this.orderData[0].gender_regex;
+        },
         comitRegexes() {
-            var data = {};
+            var data = {
+                age_group_regex: this.age_group_regex,
+                gender_regex: this.gender_regex,
+            };
             axios.post("rules/regex/", data).then((res) => {
+                console.log(res)
+                Swal.fire({
+                    title: "Success!",
+                    icon: "success",
+                    html: "Changes committed to datastore!",
+                    closeButtonHtml: "Close",
+                    showCloseButton: true,
+                    timer: 3000,
+                })
+            }).catch((e) => {
+                Swal.fire({
+                    title: "Error!",
+                    icon: "danger",
+                    html: e,
+                    closeButtonHtml: "Close",
+                    showCloseButton: true,
+                    timer: 3000,
+                })
+            })
+        },
+        updateRegexes() {
+            var data = {
+                id: this.id,
+                age_group_regex: this.age_group_regex,
+                gender_regex: this.gender_regex,
+            };
+            axios.put("rules/regex/" + this.id + "/", data).then((res) => {
                 console.log(res)
                 Swal.fire({
                     title: "Success!",
@@ -89,12 +127,12 @@ export default {
         <div class="row">
             <div class="col-sm-8">
                 <b-input-group prepend="Age-Group Regex" class="p-2">
-                    <b-form-input type="text" v-model="max_similarity" class="w-50"></b-form-input>
+                    <b-form-input type="text" v-model="age_group_regex" class="w-50"></b-form-input>
                     <b-input-group-append>
                     </b-input-group-append>
                 </b-input-group>
                 <b-input-group prepend="Gender Regex" class="p-2">
-                    <b-form-input type="text" v-model="max_similarity" class="w-50"></b-form-input>
+                    <b-form-input type="text" v-model="gender_regex" class="w-50"></b-form-input>
                     <b-input-group-append>
                     </b-input-group-append>
                 </b-input-group>
@@ -102,9 +140,9 @@ export default {
         </div>
         <div class="row p-2 mt-4">
             <div class="right">
-                <b-button type="submit" variant="success" @click="comitDatimMOHCols()" v-if="!editmode">Commit
+                <b-button type="submit" variant="success" @click="comitRegexes()" v-if="!editmode">Commit
                     Configurations</b-button>
-                <b-button type="submit" variant="success" @click="updateDatimMOHCols()" v-if="editmode">Update
+                <b-button type="submit" variant="success" @click="updateRegexes()" v-if="editmode">Update
                     Configurations</b-button>
             </div>
         </div>

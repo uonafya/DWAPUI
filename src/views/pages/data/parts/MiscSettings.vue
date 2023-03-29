@@ -24,7 +24,7 @@ export default {
     },
     data() {
         return {
-            id: "",
+            id: 1,
             myindex: "",
             indicators: [],
             totalRows: 1,
@@ -39,6 +39,9 @@ export default {
             sortBy: "id",
             sortDesc: false,
             fields: [],
+            max_similarity: 0,
+            merge_25_plus: false,
+            merger_1_to_9: false,
         };
     },
     created() {
@@ -52,11 +55,50 @@ export default {
     computed: {
     },
     mounted() {
+        this.updateFields();
     },
     methods: {
+        updateFields() {
+            this.id = this.orderData[0].id;
+            this.merge_25_plus = this.orderData[0].merge_25_plus_ages;
+            this.merger_1_to_9 = this.orderData[0].merger_1_to_9_ages;
+            this.max_similarity = this.orderData[0].max_word_similarity;
+        },
         comitMiscSettings() {
-            var data = {};
+            var data = {
+                merge_25_plus_ages: this.merge_25_plus,
+                merger_1_to_9_ages: this.merger_1_to_9,
+                max_word_similarity: this.max_similarity,
+            };
             axios.post("rules/misc/", data).then((res) => {
+                console.log(res)
+                Swal.fire({
+                    title: "Success!",
+                    icon: "success",
+                    html: "Changes committed to datastore!",
+                    closeButtonHtml: "Close",
+                    showCloseButton: true,
+                    timer: 3000,
+                })
+            }).catch((e) => {
+                Swal.fire({
+                    title: "Error!",
+                    icon: "danger",
+                    html: e,
+                    closeButtonHtml: "Close",
+                    showCloseButton: true,
+                    timer: 3000,
+                })
+            })
+        },
+        updateMiscSettings() {
+            var data = {
+                id: this.id,
+                merge_25_plus_ages: this.merge_25_plus,
+                merger_1_to_9_ages: this.merger_1_to_9,
+                max_word_similarity: this.max_similarity,
+            };
+            axios.put("rules/misc/" + this.id + "/", data).then((res) => {
                 console.log(res)
                 Swal.fire({
                     title: "Success!",
@@ -107,9 +149,9 @@ export default {
         </div>
         <div class="row p-2 mt-4">
             <div class="right">
-                <b-button type="submit" variant="success" @click="comitDatimMOHCols()" v-if="!editmode">Commit
+                <b-button type="submit" variant="success" @click="comitMiscSettings()" v-if="!editmode">Commit
                     Configurations</b-button>
-                <b-button type="submit" variant="success" @click="updateDatimMOHCols()" v-if="editmode">Update
+                <b-button type="submit" variant="success" @click="updateMiscSettings()" v-if="editmode">Update
                     Configurations</b-button>
             </div>
         </div>

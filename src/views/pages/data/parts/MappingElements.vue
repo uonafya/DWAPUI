@@ -26,9 +26,8 @@ export default {
     },
     data() {
         return {
-            id: "",
+            id: 1,
             myindex: "",
-            indicators: [],
             totalRows: 1,
             currentPage: 1,
             perPage: 50,
@@ -41,6 +40,9 @@ export default {
             sortBy: "id",
             sortDesc: false,
             fields: [],
+            toggle_gender: false,
+            toggle_similarity: false,
+            toggle_group: false,
         };
     },
     created() {
@@ -54,11 +56,50 @@ export default {
     computed: {
     },
     mounted() {
+        this.updateFields();
     },
     methods: {
-        comitMiscSettings() {
-            var data = {};
+        updateFields() {
+            this.id = this.orderData[0].id;
+            this.toggle_gender = this.orderData[0].gender;
+            this.toggle_group = this.orderData[0].age_group;
+            this.toggle_similarity = this.orderData[0].similar_words;
+        },
+        comitElems() {
+            var data = {
+                gender: this.toggle_gender,
+                age_group: this.toggle_group,
+                similar_words: this.toggle_similarity,
+            };
             axios.post("rules/misc/", data).then((res) => {
+                console.log(res)
+                Swal.fire({
+                    title: "Success!",
+                    icon: "success",
+                    html: "Changes committed to datastore!",
+                    closeButtonHtml: "Close",
+                    showCloseButton: true,
+                    timer: 3000,
+                })
+            }).catch((e) => {
+                Swal.fire({
+                    title: "Error!",
+                    icon: "danger",
+                    html: e,
+                    closeButtonHtml: "Close",
+                    showCloseButton: true,
+                    timer: 3000,
+                })
+            })
+        },
+        updateElems() {
+            var data = {
+                id: this.id,
+                gender: this.toggle_gender,
+                age_group: this.toggle_group,
+                similar_words: this.toggle_similarity,
+            };
+            axios.put("rules/misc/" + this.id + "/", data).then((res) => {
                 console.log(res)
                 Swal.fire({
                     title: "Success!",
@@ -112,9 +153,9 @@ export default {
         </div>
         <div class="row p-2 mt-4">
             <div class="right">
-                <b-button type="submit" variant="success" @click="comitDatimMOHCols()" v-if="!editmode">Commit
+                <b-button type="submit" variant="success" @click="comitElems()" v-if="!editmode">Commit
                     Configurations</b-button>
-                <b-button type="submit" variant="success" @click="updateDatimMOHCols()" v-if="editmode">Update
+                <b-button type="submit" variant="success" @click="updateElems()" v-if="editmode">Update
                     Configurations</b-button>
             </div>
         </div>

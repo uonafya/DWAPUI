@@ -64,29 +64,28 @@ export default {
                 },
             },
             fields: [],
-            originalcols: [
-                { name: 'Col1', label: 'Col1', type: 'text', value: '' },
-                { name: 'Col2', label: 'Col2', type: 'text', value: '' },
-                { name: 'Col3', label: 'Col3', type: 'text', value: '' },
-            ],
+            //tabs
+            tab1: true,
+            tab2: false,
+            tab3: false,
+            tab4: false,
             //timeline1
-            timeline1_updated: true,
             timeline1_status: "?",
             //&check;
             timeline1_last_updated: new Date(),
             timeline1_color: "red",
             //timeline2
-            timeline2_updated: true,
+            timeline2_last_updated: new Date(),
             timeline2_status: "?",
             //&check;
             timeline2_color: "red",
             //timeline3
-            timeline3_updated: true,
+            timeline3_last_updated: new Date(),
             timeline3_status: "?",
             //&check;
             timeline3_color: "red",
             //timeline4
-            timeline4_updated: true,
+            timeline4_last_updated: new Date(),
             timeline4_status: "?",
             //&check;
             timeline4_color: "red",
@@ -94,6 +93,7 @@ export default {
             editregex: false,
             editnewcols: false,
             editelems: false,
+            editmisc: false,
             datim_col_name: "",
             moh_col_name: "",
         };
@@ -144,7 +144,7 @@ export default {
                                 .then((res) => {
                                     this.elems = res.data;
                                     if (this.elems.length > 0) {
-                                        this.editregex = true;
+                                        this.editelems = true;
                                         this.timeline2_color = "blue";
                                         this.timeline2_last_updated = new Date(res.data[0].last_updated)
                                         this.timeline2_status = "&check;"
@@ -250,17 +250,17 @@ export default {
                     :color="timeline1_color" />
 
                 <!-- rule2 -->
-                <vue-timeline-update :date="timeline2_updated" :title="timeline2_status"
+                <vue-timeline-update :date="timeline2_last_updated" :title="timeline2_status"
                     description="Key Elements to consider from the 2 columns in rule one when mapping."
                     thumbnail="/images/vuetimeline/hunter_x_hunter.jpg" category="Key Mapping Elements" icon="pill"
                     :color="timeline2_color" />
 
                 <!-- rule3 -->
-                <vue-timeline-update :date="timeline3_updated" :title="timeline3_status"
+                <vue-timeline-update :date="timeline3_last_updated" :title="timeline3_status"
                     description="Define Regex for extracting/comparing the the key defined elements in each column."
                     thumbnail="/images/vuetimeline/ghost_in_the_shell.jpg" category="Series Regex" icon="pill"
                     :color="timeline3_color" />
-                <vue-timeline-update :date="timeline4_updated" :title="timeline4_status"
+                <vue-timeline-update :date="timeline4_last_updated" :title="timeline4_status"
                     description="Addtional mapping configurations." thumbnail="/images/vuetimeline/ghost_in_the_shell.jpg"
                     category="More Settings" icon="pill" :color="timeline4_color" is-last />
             </div>
@@ -305,8 +305,7 @@ export default {
                                     <div class="col-sm-12">
                                         <b-card header="Rename Columns" header-tag="header" footer="Rename Columns"
                                             footer-tag="footer" title="">
-                                            <RenameCols :newcols="newcols" :originalcols="originalcols"
-                                                :editmode="editmode" />
+                                            <RenameCols :orderData="newcols" :editmode="editnewcols" />
                                         </b-card>
                                     </div>
                                 </div>
@@ -317,21 +316,21 @@ export default {
                                 <i class="uil uil-data-sharing font-size-20"></i>
                                 <span class="d-none d-sm-block">Mapping Elements</span>
                             </template>
-                            <Elements :orderData="elems" :editmode="editmode" />
+                            <Elements :orderData="elems" :editmode="editelems" />
                         </b-tab>
                         <b-tab :active="tab3">
                             <template v-slot:title class="">
                                 <i class="uil uil-sync font-size-20"></i>
                                 <span class="d-none d-sm-block">Regex Definations</span>
                             </template>
-                            <Regex :orderData="regex" :editmode="editmode" />
+                            <Regex :orderData="regex" :editmode="editregex" />
                         </b-tab>
                         <b-tab :active="tab4">
                             <template v-slot:title class="">
                                 <i class="uil uil-cog font-size-20"></i>
                                 <span class="d-none d-sm-block">Misc Settings</span>
                             </template>
-                            <MiscSettings :orderData="misc" :editmode="editmode" />
+                            <MiscSettings :orderData="misc" :editmode="editmisc" />
                         </b-tab>
                     </b-tabs>
                     <!-- Nav tabs -->
