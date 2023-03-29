@@ -13,7 +13,7 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 export default {
     components: { Layout, PageHeader },
     page: {
-        title: "Facilities",
+        title: "Security",
         meta: [
             {
                 name: "description",
@@ -25,14 +25,14 @@ export default {
         return {
             stoped: true,
             showsync: true,
-            title: "Facilities",
+            title: "Security",
             modaltitle: "Add New",
             items: [
                 {
-                    text: "Facilities",
+                    text: "Security",
                 },
                 {
-                    text: "Facility Mapping",
+                    text: "Password Policy",
                     active: true,
                 },
             ],

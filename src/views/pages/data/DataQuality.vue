@@ -13,7 +13,7 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 export default {
     components: { Layout, PageHeader },
     page: {
-        title: "Facilities",
+        title: "Mapping Rules",
         meta: [
             {
                 name: "description",
@@ -25,14 +25,14 @@ export default {
         return {
             stoped: true,
             showsync: true,
-            title: "Facilities",
+            title: "Data",
             modaltitle: "Add New",
             items: [
                 {
-                    text: "Facilities",
+                    text: "Data",
                 },
                 {
-                    text: "Facility Mapping",
+                    text: "Data Quality",
                     active: true,
                 },
             ],

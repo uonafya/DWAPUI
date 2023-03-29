@@ -41,7 +41,6 @@ export const mutations = {
 
             state.userScreens[0] = newObjectScreen;
         }
-
         ////////////////////////////////////////DataAlignment///////////////////////////////////////
         if (allscreens.has("IndicatorMappingRules")) {
             if (createdMenus.has("DataAlignment")) {
@@ -170,12 +169,12 @@ export const mutations = {
                         },
                     ],
                 };
-                //add sub item 
+                //add sub item
                 state.userScreens.push(newObjectScreen);
                 createdMenus.add("DataAlignment");
             }
         }
-        ////////////////////////////////////////Indicators///////////////////////////////////////      
+        ////////////////////////////////////////Indicators///////////////////////////////////////
         if (allscreens.has("AllIndicators")) {
             if (createdMenus.has("Indicators")) {
                 let newObjectScreen = {
@@ -347,7 +346,7 @@ export const mutations = {
                 let newObjectScreen = {
                     id: 4,
                     label: "Password Policy",
-                    link: "/account/users",
+                    link: "/account/PasswordPolicy",
                 };
                 ///add to subitem array
                 index = state.userScreens

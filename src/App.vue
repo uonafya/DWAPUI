@@ -1,45 +1,55 @@
 <template>
-  <div id="app">
-    <router-view />
-  </div>
+  <v-app>
+    <v-app-bar
+      app
+      color="primary"
+      dark
+    >
+      <div class="d-flex align-center">
+        <v-img
+          alt="Vuetify Logo"
+          class="shrink mr-2"
+          contain
+          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+          transition="scale-transition"
+          width="40"
+        />
+
+        <v-img
+          alt="Vuetify Name"
+          class="shrink mt-1 hidden-sm-and-down"
+          contain
+          min-width="100"
+          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
+          width="100"
+        />
+      </div>
+
+      <v-spacer></v-spacer>
+
+      <v-btn
+        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+        target="_blank"
+        text
+      >
+        <span class="mr-2">Latest Release</span>
+        <v-icon>mdi-open-in-new</v-icon>
+      </v-btn>
+    </v-app-bar>
+
+    <v-main>
+      <router-view/>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-import appConfig from "@/app.config";
-import { notificationMethods } from "@/state/helpers";
-import store from "@/state/store";
-
 
 export default {
-  name: "app",
-  page: {
-    // All subcomponent titles will be injected into this template.
-    titleTemplate(title) {
-      title = typeof title === "function" ? title(this.$store) : title;
-      return title ? `${title} | ${appConfig.title}` : appConfig.title;
-    },
-  },
-  methods: {
-    clearNotification: notificationMethods.clear,
-    autoLogout() {
-      store.dispatch("authfack/logout");
-    },
-  },
-  watch: {
-    /**
-     * Clear the alert message on route change
-     */
-    // eslint-disable-next-line no-unused-vars
-    $route(to, from) {
-      // clear alert on location change
-      this.clearNotification();
-    },
-  },
-  created() {
-    window.addEventListener("beforeunload", this.autoLogout);
-  },
-  mounted() {
-    // document.getElementsByTagName("html")[0].setAttribute("dir", "rtl");
-  }
+  name: 'App',
+
+  data: () => ({
+    //
+  }),
 };
 </script>

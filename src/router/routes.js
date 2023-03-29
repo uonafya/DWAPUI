@@ -119,6 +119,15 @@ export default [{
         import('../views/pages/data/FacilityMapping')
 },
 {
+    path: '/data/mapping-rules',
+    name: 'MappingRules',
+    meta: {
+        authRequired: true,
+    },
+    component: () =>
+        import('../views/pages/data/mapping-rules')
+},
+{
     path: '/data/comparison',
     name: 'comparison',
     meta: {
@@ -164,6 +173,15 @@ export default [{
         import('../views/pages/account/roles')
 },
 {
+    path: '/account/PasswordPolicy',
+    name: 'PasswordPolicy',
+    meta: {
+        authRequired: true,
+    },
+    component: () =>
+        import('../views/pages/account/PasswordPolicy')
+},
+{
     path: '/reporting/report',
     name: 'Reports',
     meta: {
@@ -173,12 +191,12 @@ export default [{
         import('../views/pages/reporting/report')
 },
 {
-    path: '/suggestions',
-    name: 'suggestions',
+    path: '/data/DataQuality',
+    name: 'DataQuality',
     meta: {
         authRequired: true,
     },
     component: () =>
-        import('../views/pages/cms/suggestions')
+        import('../views/pages/data/DataQuality')
 },
 ]

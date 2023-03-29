@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import BootstrapVue from 'bootstrap-vue'
 import router from './router'
 
 import vco from "v-click-outside"
@@ -11,6 +10,14 @@ import i18n from './i18n'
 import store from '@/state/store'
 import DatePicker from 'vue2-datepicker';
 import 'vue2-datepicker/index.css';
+
+import VueTimeline from "@growthbunker/vuetimeline";
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+
+// Import Bootstrap and BootstrapVue CSS files (order is important)
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
 
 import App from './App.vue'
 // As a plugin
@@ -73,7 +80,12 @@ if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
 }
 
 import '@/assets/scss/app.scss'
-
+//Vue.use(Vuetify)
+Vue.use(VueTimeline);
+// Make BootstrapVue available throughout your project
+Vue.use(BootstrapVue)
+// Optionally install the BootstrapVue icon components plugin
+Vue.use(IconsPlugin)
 Vue.component('VueSlideBar', VueSlideBar)
 Vue.use(BootstrapVue)
 Vue.use(DatePicker)
@@ -89,5 +101,6 @@ new Vue({
     router,
     store,
     i18n,
+    //vuetify: new Vuetify(),
     render: h => h(App),
 }).$mount('#app')

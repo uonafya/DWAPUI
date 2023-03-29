@@ -3,7 +3,6 @@ import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 import appConfig from "@/app.config";
 import Swal from "sweetalert2";
-import mapping from "../../../components/mapping/mapping.vue";
 //import VueGoogleAutocomplete from "vue-google-autocomplete";
 import axios from '../../../Axiosconfig';
 import DatePicker from "vue2-datepicker";
@@ -28,7 +27,6 @@ export default {
     components: {
         Layout,
         PageHeader,
-        countTo,
         DatePicker,
         Multiselect,
         //vueDropzone: vue2Dropzone,
