@@ -45,12 +45,6 @@ export default {
         };
     },
     created() {
-        setInterval(() => {
-            if (this.stoped) {
-                //this.upadtearray();
-            }
-        }, 5000);
-        //this.upadtearray();
     },
     computed: {
     },
@@ -59,9 +53,26 @@ export default {
     },
     methods: {
         updateFields() {
-            this.id = this.orderData[0].id;
-            this.age_group_regex = this.orderData[0].age_group_regex;
-            this.gender_regex = this.orderData[0].gender_regex;
+            axios
+                .get("rules/regex/")
+                .then((res) => {
+                    if (res.data.length > 0) {
+                        this.orderData = res.data;
+                        this.id = this.orderData[0].id;
+                        this.age_group_regex = this.orderData[0].age_group_regex;
+                        this.gender_regex = this.orderData[0].gender_regex;
+                    }
+                }).catch((e) => {
+                    console.log(e);
+                    Swal.fire({
+                        position: "center",
+                        icon: "warning",
+                        title: "Error!",
+                        html: "" + e,
+                        showConfirmButton: true,
+                        timer: 3000,
+                    });
+                });
         },
         comitRegexes() {
             var data = {

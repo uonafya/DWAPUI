@@ -45,12 +45,7 @@ export default {
         };
     },
     created() {
-        setInterval(() => {
-            if (this.stoped) {
-                //this.upadtearray();
-            }
-        }, 5000);
-        //this.upadtearray();
+        //this.updateFields();
     },
     computed: {
     },
@@ -59,10 +54,27 @@ export default {
     },
     methods: {
         updateFields() {
-            this.id = this.orderData[0].id;
-            this.merge_25_plus = this.orderData[0].merge_25_plus_ages;
-            this.merger_1_to_9 = this.orderData[0].merger_1_to_9_ages;
-            this.max_similarity = this.orderData[0].max_word_similarity;
+            axios
+                .get("rules/misc/")
+                .then((res) => {
+                    if (res.data.length > 0) {
+                        this.orderData = res.data;
+                        this.id = this.orderData[0].id;
+                        this.merge_25_plus = this.orderData[0].merge_25_plus_ages;
+                        this.merger_1_to_9 = this.orderData[0].merger_1_to_9_ages;
+                        this.max_similarity = this.orderData[0].max_word_similarity;
+                    }
+                }).catch((e) => {
+                    console.log(e);
+                    Swal.fire({
+                        position: "center",
+                        icon: "warning",
+                        title: "Error!",
+                        html: "" + e,
+                        showConfirmButton: true,
+                        timer: 3000,
+                    });
+                });
         },
         comitMiscSettings() {
             var data = {

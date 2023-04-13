@@ -46,12 +46,6 @@ export default {
         };
     },
     created() {
-        setInterval(() => {
-            if (this.stoped) {
-                //this.upadtearray();
-            }
-        }, 5000);
-        //this.upadtearray();
     },
     computed: {
     },
@@ -60,10 +54,28 @@ export default {
     },
     methods: {
         updateFields() {
-            this.id = this.orderData[0].id;
-            this.toggle_gender = this.orderData[0].gender;
-            this.toggle_group = this.orderData[0].age_group;
-            this.toggle_similarity = this.orderData[0].similar_words;
+            axios
+                .get("rules/elements/")
+                .then((res) => {
+                    if (res.data.length > 0) {
+                        this.orderData = res.data;
+                        this.id = this.orderData[0].id;
+                        this.toggle_gender = this.orderData[0].gender;
+                        this.toggle_group = this.orderData[0].age_group;
+                        this.toggle_similarity = this.orderData[0].similar_words;
+                    }
+                }
+                ).catch((e) => {
+                    console.log(e);
+                    Swal.fire({
+                        position: "center",
+                        icon: "warning",
+                        title: "Error!",
+                        html: "" + e,
+                        showConfirmButton: true,
+                        timer: 3000,
+                    });
+                });
         },
         comitElems() {
             var data = {

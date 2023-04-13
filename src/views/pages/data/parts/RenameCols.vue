@@ -29,7 +29,7 @@
             </div>
             <div class="row p-2 mt-4">
                 <div class="right">
-                    <b-button type="submit" variant="success" @click="comitCols()" v-if="editmode">Update</b-button>
+                    <b-button type="submit" variant="success" @click="comitCols()" v-if="true">Update</b-button>
                 </div>
             </div>
         </div>
@@ -83,14 +83,33 @@ export default {
         };
     },
     created() {
+        //this.updateFields();
+    },
+    mounted() {
         this.updateFields();
     },
     methods: {
         updateFields() {
-            this.orderData.forEach((col, index) => {
-                this.newCols.push({ name: `NewCol${index}`, id: col.id, label: `NewCol${index}`, type: 'text', value: col.rename_to })
-                this.originalCols.push({ name: `Col${index}`, id: col.id, label: `NewCol${index}`, type: 'text', value: col.original_name })
-            });
+            axios.get("rules/rename/")
+                .then((res) => {
+                    if (res.data.length > 0) {
+                        this.orderData = res.data;
+                        this.orderData.forEach((col, index) => {
+                            this.newCols.push({ name: `NewCol${index}`, id: col.id, label: `NewCol${index}`, type: 'text', value: col.rename_to });
+                            this.originalCols.push({ name: `Col${index}`, id: col.id, label: `NewCol${index}`, type: 'text', value: col.original_name });
+                        });
+                    }
+                }).catch((e) => {
+                    console.log(e);
+                    Swal.fire({
+                        position: "center",
+                        icon: "warning",
+                        title: "Error!",
+                        html: "" + e,
+                        showConfirmButton: true,
+                        timer: 3000,
+                    });
+                });
         },
         comitCols() {
             this.newCols.forEach((field, index) => {
