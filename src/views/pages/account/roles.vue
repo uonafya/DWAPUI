@@ -37,6 +37,7 @@ export default {
             description: "",
             editmode: false,
             title: "Roles",
+            modaltitle: "Add Roles",
             items: [
                 {
                     text: "USER: " + JSON.parse(localStorage.user).username.charAt(0)
@@ -82,7 +83,15 @@ export default {
                 },
                 {
                     key: "screens",
-                    label: "Screen Access",
+                    label: "Access Screens",
+                    sortable: true,
+                },
+                {
+                    key: "facility_id",
+                    sortable: true,
+                },
+                {
+                    key: "assigned_facilities",
                     sortable: true,
                 },
                 "action",
@@ -160,7 +169,6 @@ export default {
                 .then((response) => {
                     // JSON responses are automatically parsed.
                     this.orderData = response.data;
-                    console.log(response.data);
                     Swal.close();
                 })
                 .catch((e) => {
@@ -271,19 +279,24 @@ export default {
             console.log("Error on submit");
         },
         /* ---------------------------------------------------------------------------------edit----------------- */
-        // edit(index, id, name, description, screens) {
-        //   this.editmode = true;
-        //   //alert(name);
-        //   this.myid = index;
-        //   this.id = id;
-        //   this.rname = name;
-        //   this.description = description;
-        //   this.selectedlists = screens;
-        // },
-        deleterec(index, myid, rname, description) {
+        edit(index, id, name, screens) {
+            this.editmode = true;
+            this.modaltitle = "Edit Roles";
+            //alert(name);
+            this.myid = index;
+            this.id = id;
+            this.rname = name;
+            if (screens.includes(",")) {
+                screens.split(",").forEach((e) => {
+                    this.selectedlists.push(e)
+                })
+            } else {
+                this.selectedlists.push(screens);
+            }
+        },
+        deleterec(index, myid, rname) {
             this.myid = myid;
             this.rname = rname;
-            this.description = description;
 
             Swal.fire({
                 title: "Are you sure, you want to delete? " + this.rname,
@@ -318,7 +331,6 @@ export default {
         },
         clearvalues() {
             this.rname = "";
-            this.description = "";
             this.editmode = false;
             this.modaltitle = "Add Role";
         },
@@ -345,20 +357,20 @@ export default {
                                 <div class="col-sm-2">
                                     <button @click="printpdf('p')" v-b-modal.modal-Print
                                         class="
-                                                                                                                              btn btn-success
-                                                                                                                              waves-effect waves-light
-                                                                                                                              mdi-file-pdf
-                                                                                                                            ">
+                                                                                                                                                                                                                                                                                                                                      btn btn-success
+                                                                                                                                                                                                                                                                                                                                      waves-effect waves-light
+                                                                                                                                                                                                                                                                                                                                      mdi-file-pdf
+                                                                                                                                                                                                                                                                                                                                    ">
                                         Print PDF
                                     </button>
                                 </div>
                                 <div class="col-sm-2">
                                     <button v-b-modal.modal-Add
                                         class="
-                                                                                                                              btn btn-success
-                                                                                                                              waves-effect waves-light
-                                                                                                                              uil-focus-add
-                                                                                                                            "
+                                                                                                                                                                                                                                                                                                                                      btn btn-success
+                                                                                                                                                                                                                                                                                                                                      waves-effect waves-light
+                                                                                                                                                                                                                                                                                                                                      uil-focus-add
+                                                                                                                                                                                                                                                                                                                                    "
                                         @click="clearvalues()">
                                         Add {{ title }}
                                     </button>
@@ -374,25 +386,25 @@ export default {
                                         <div class="col-12">
                                             <div
                                                 class="
-                                                                                                                                  table table-centered
-                                                                                                                                  datatable
-                                                                                                                                  dt-responsive
-                                                                                                                                  nowrap
-                                                                                                                                  table-card-list
-                                                                                                                                  dataTable
-                                                                                                                                  no-footer
-                                                                                                                                  dtr-inline
-                                                                                                                                ">
+                                                                                                                                                                                                                                                                                                                                          table table-centered
+                                                                                                                                                                                                                                                                                                                                          datatable
+                                                                                                                                                                                                                                                                                                                                          dt-responsive
+                                                                                                                                                                                                                                                                                                                                          nowrap
+                                                                                                                                                                                                                                                                                                                                          table-card-list
+                                                                                                                                                                                                                                                                                                                                          dataTable
+                                                                                                                                                                                                                                                                                                                                          no-footer
+                                                                                                                                                                                                                                                                                                                                          dtr-inline
+                                                                                                                                                                                                                                                                                                                                        ">
                                                 <div class="row">
                                                     <div class="col-sm-12 col-md-6">
                                                         <div id="tickets-table_length" class="dataTables_length"
                                                             style="word-wrap: break-word;">
                                                             <label
                                                                 class="
-                                                                                                                                          d-inline-flex
-                                                                                                                                          align-items-center
-                                                                                                                                          fw-normal
-                                                                                                                                        ">
+                                                                                                                                                                                                                                                                                                                                                  d-inline-flex
+                                                                                                                                                                                                                                                                                                                                                  align-items-center
+                                                                                                                                                                                                                                                                                                                                                  fw-normal
+                                                                                                                                                                                                                                                                                                                                                ">
                                                                 Show&nbsp;
                                                                 <b-form-select v-model="perPage" size="sm"
                                                                     :options="pageOptions"></b-form-select>&nbsp;entries
@@ -405,10 +417,10 @@ export default {
                                                             class="dataTables_filter text-md-end">
                                                             <label
                                                                 class="
-                                                                                                                                          d-inline-flex
-                                                                                                                                          align-items-center
-                                                                                                                                          fw-normal
-                                                                                                                                        ">
+                                                                                                                                                                                                                                                                                                                                                  d-inline-flex
+                                                                                                                                                                                                                                                                                                                                                  align-items-center
+                                                                                                                                                                                                                                                                                                                                                  fw-normal
+                                                                                                                                                                                                                                                                                                                                                ">
                                                                 Search:
                                                                 <b-form-input v-model="filter" type="search"
                                                                     placeholder="Search..."
@@ -442,17 +454,31 @@ export default {
                                                         <a href="#" class="text-body text-wrap"
                                                             style="word-wrap: break-word;">{{ data.item.screens }}</a>
                                                     </template>
+                                                    <template v-slot:cell(assigned_facilities)="data">
+                                                        <a href="#" class="text-body text-wrap"
+                                                            style="word-wrap: break-word;"
+                                                            v-if="data.item.assigned_facilities">{{ data.item.assigned_facilities }}</a>
+                                                        <a href="#" class="text-body text-wrap"
+                                                            style="word-wrap: break-word;" v-else>NILL</a>
+                                                    </template>
+                                                    <template v-slot:cell(facility_id)="data">
+                                                        <a href="#" class="text-body text-wrap"
+                                                            style="word-wrap: break-word;"
+                                                            v-if="data.item.facility_id">{{ data.item.facility_id }}</a>
+                                                        <a href="#" class="text-body text-wrap"
+                                                            style="word-wrap: break-word;" v-else>-</a>
+                                                    </template>
 
                                                     <template v-slot:cell(action)="data">
                                                         <ul class="list-inline mb-0">
                                                             <li class="list-inline-item">
                                                                 <a href="#" class="px-2 text-success" v-b-tooltip.hover
-                                                                    v-b-modal.modal-Add title="Edit"
-                                                                    @click="
+                                                                    v-b-modal.modal-Add title="Edit" @click="
                                                                         edit(
                                                                             data.index,
                                                                             data.item.id,
                                                                             data.item.role_name,
+                                                                            data.item.screens,
                                                                         )
                                                                     ">
                                                                     <i class="uil uil-pen font-size-18"></i>
@@ -477,11 +503,9 @@ export default {
                                             <div class="row">
                                                 <div class="col">
                                                     <div
-                                                        class="
-                                                                                                                                      dataTables_paginate
-                                                                                                                                      paging_simple_numbers
-                                                                                                                                      float-end
-                                                                                                                                    ">
+                                                        class="dataTables_paginate
+                                                                                                                            paging_simple_numbers
+                                                                                                                            float-end">
                                                         <ul class="pagination pagination-rounded">
                                                             <!-- pagination -->
                                                             <b-pagination v-model="currentPage" :total-rows="rows"
@@ -523,8 +547,8 @@ export default {
             <reportdet :title="title" :orderData="orderData" :pl="pl" :headers="headers" :uniqueCars="uniqueCars"
                 :shome="showme" v-show="showme"></reportdet>
         </b-modal>
-        <b-modal id="modal-Add" title="Add Roles" hide-footer size="xl" centered>
-            <addroles :rname="rname" :description="description" :editmode="editmode" :orderData="orderData"
+        <b-modal id="modal-Add" :title="modaltitle" hide-footer size="xl" centered>
+            <addroles :rname="rname" :id="id" :description="description" :editmode="editmode" :orderData="orderData"
                 :selectedlists="selectedlists">
             </addroles>
         </b-modal>

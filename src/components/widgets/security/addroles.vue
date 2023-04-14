@@ -1,14 +1,15 @@
 <script>
 import Swal from "sweetalert2";
 import axios from "../../../Axiosconfig";
-var CryptoJS = require("crypto-js");
-
 //import html2canvas from "html2canvas";
 //import rptheader from "@/components/report/header.js";
 
 export default {
     props: {
-
+        selectedlists: Array,
+        rname: String,
+        editmode: Boolean,
+        id: Number,
     },
     components: {},
     data() {
@@ -23,12 +24,8 @@ export default {
                     active: true,
                 },
             ],
-            rname: "",
-            description: "",
-            selectedlists: [],
             addroleslog: false,
             username: "titus.owuor@tdbsoft.co.ke",
-            id: "",
             filter: null,
             filterOn: [],
             sortBy: "id",
@@ -36,10 +33,12 @@ export default {
             name: "",
             myindex: "",
             modaltitle: "Add",
-            lists: ["Dashboard",
+            lists: [
+                "Dashboard",
                 "DataAlignment",
                 "IndicatorMappingRules",
                 "IndicatorComparison",
+                "FacilityMapping",
                 "DataQuality",
                 "Indicators",
                 "AllIndicators",
@@ -49,7 +48,8 @@ export default {
                 "Roles",
                 "Users",
                 "PasswordPolicy",
-                "Reports",],
+                "Reports",
+            ],
         };
     },
     watch: {
@@ -88,61 +88,6 @@ export default {
         this.fetchscreens();
     },
     methods: {
-        fetchscreens() {
-            //alert(window.$http);
-
-            Swal.fire({
-                title: "Please Wait !",
-                html: "Loading data...", // add html attribute if you want or remove
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                willOpen: () => {
-                    Swal.showLoading();
-                },
-            });
-            axios
-                .get(`listroles/`)
-                .then((response) => {
-                    // JSON responses are automatically parsed.
-                    this.lists = [
-                        "Dashboard",
-                        "DataAlignment",
-                        "IndicatorMappingRules",
-                        "IndicatorComparison",
-                        "FacilityMapping",
-                        "DataQuality",
-                        "Indicators",
-                        "AllIndicators",
-                        "Categories",
-                        "Security",
-                        "DataPullSchedule",
-                        "Roles",
-                        "Users",
-                        "PasswordPolicy",
-                        "Reports",
-                    ];
-                    this.screenlist = response.data;
-
-                    response.data.forEach((e) => {
-                        this.screenlist.push(e.screens);
-                    });
-                    //console.log(this.orderData);
-
-                    Swal.close();
-                })
-                .catch((e) => {
-                    Swal.fire({
-                        position: "center",
-                        icon: "error",
-                        title: "" + e,
-                        showConfirmButton: true,
-                    }).then((e) => {
-                        Swal.close(e);
-                    });
-
-                    //throw e;
-                });
-        },
         focusInput() {
             this.$refs.rname.focus();
         },
@@ -181,33 +126,6 @@ export default {
             //alert(this.rname);
             //console.log("Error on submit");
         },
-        addroleforscreen(data) {
-            // var data = {
-            //   roleid: this.roleid,
-            //   controlid: this.screenid,
-            //   select: 1,
-            // };
-            axios
-                .post(window.$http + `controlselection/`, data, { headers: { "Authorization": `Bearer ${CryptoJS.AES.decrypt(JSON.parse(localStorage.user).token, "mnopqr").toString(CryptoJS.enc.Utf8).trim()}` } })
-                .then((response) => {
-                    this.screenlist = response;
-                    // JSON responses are automatically parsed.
-                    //post
-                    Swal.close();
-                })
-                .catch((e) => {
-                    Swal.fire({
-                        position: "center",
-                        icon: "error",
-                        title: "" + e,
-                        showConfirmButton: true,
-                    }).then((e) => {
-                        Swal.close(e);
-                    });
-
-                    //throw e;
-                });
-        },
         add() {
             //var timenow = this.gettime();
             //console.log(timenow);
@@ -217,13 +135,12 @@ export default {
                 });
                 return;
             }
-
             axios
-                .post("listroles", {
+                .post("listroles/", {
                     id: 0,
                     role_name: this.rname,
-                    userrole_deletedstatus: false,
-                    screens: this.selectedlists.toString()
+                    screens: this.selectedlists.toString(),
+                    faclities: this.faclities,
                 })
                 .then((response) => {
                     //this.screenlist = response;
@@ -245,7 +162,6 @@ export default {
                             screens: this.selectedlists,
                         });
                     });
-                    console.log(response);
                 })
                 .catch(function (error) {
                     Swal.fire({
@@ -262,62 +178,50 @@ export default {
                 });
         },
         editrec() {
-            if (this.name.trim() == "") {
-                Swal.fire("Please enter  Allowable Tolerance Name!");
+            if (this.selectedlist.trim() == "") {
+                Swal.fire("Please select screens!");
                 return;
             }
-
-            //alert(this.myindex);
-            this.orderData[this.myindex].id = this.id;
-            this.orderData[this.myindex].name = this.name;
-            this.orderData[this.myindex].pix = this.pix;
+            axios
+                .put("listroles/" + this.id + "/", {
+                    role_id: this.id,
+                    screens: this.selectedlists.toString(),
+                    faclities: this.faclities,
+                })
+                .then((response) => {
+                    //this.screenlist = response;
+                    this.addroleslog = true;
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Your work has been saved",
+                        showConfirmButton: false,
+                        timer: 3000,
+                    }).then((result) => {
+                        result;
+                        this.clearvalues();
+                    });
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Error on submmission. Check Servers.",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    }).then((result) => {
+                        result;
+                        this.clearvalues();
+                    });
+                    console.log(error);
+                });
             Swal.fire({
                 position: "center",
                 icon: "success",
                 title: "Your work has been saved",
                 showConfirmButton: false,
                 timer: 1500,
-            });
-        },
-        position() {
-            if (Number(this.saw) < 0) {
-                Swal.fire(
-                    "Single Axle. Please enter value greater than or equla to 0."
-                );
-                //this.$refs.saw.focus();
-                return;
-            }
-            if (Number(this.gaw) < 0) {
-                Swal.fire("Group Axle. Please enter value greater than or equla to 0.");
-                //this.$refs.gaw.focus();
-                return;
-            }
-            if (Number(this.gvw) < 0) {
-                Swal.fire(
-                    "Gross Vehicle Weight. Please enter value greater than or equla to 0!"
-                );
-                //this.$refs.gvw.focus();
-                return;
-            }
-
-            var orderid = this.orderData.length + 1;
-
-            this.orderData.push({
-                id: orderid,
-                datetime: this.gettime(),
-                username: this.username,
-                saw: this.saw,
-                gaw: this.gaw,
-                gvw: this.gvw,
-            });
-            this.clearvalues();
-            Swal.fire({
-                position: "center",
-                icon: "success",
-                title: "Your work has been saved",
-                showConfirmButton: false,
-                timer: 1500,
-                className: "alert-custom",
             });
         },
         deleterec(index, id, name) {
@@ -341,11 +245,9 @@ export default {
             });
         },
         clearvalues() {
-            //alert();
-            //this.rname = "";
-            //this.description = "";
-            //this.allToLeft();
-            //this.lists = [];
+            this.rname = "";
+            this.allToLeft();
+            this.selectedlists = [];
         },
         oneToRight() {
             // if (this.rname.trim() == "") {
@@ -519,7 +421,7 @@ export default {
                                 <button v-show="!editmode" class="btn btn-primary" @click="add()">
                                     Add Role
                                 </button>
-                                <button v-show="editmode" class="btn btn-primary" @click="edit()">
+                                <button v-show="editmode" class="btn btn-primary" @click="editrec()">
                                     Edit Role
                                 </button>
                             </div>

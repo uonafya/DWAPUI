@@ -82,7 +82,7 @@ export default {
                     sortable: true,
                 },
                 {
-                    key: "organization",
+                    key: "organisation",
                     label: "Organization",
                     sortable: true,
                 },
@@ -320,10 +320,10 @@ export default {
                                 <div class="col-sm-2">
                                     <button @click="printpdf('p')" v-b-modal.modal-Print
                                         class="
-                                                                                                                                  btn btn-success
-                                                                                                                                  waves-effect waves-light
-                                                                                                                                  mdi-file-pdf
-                                                                                                                                ">
+                                                                                                                                          btn btn-success
+                                                                                                                                          waves-effect waves-light
+                                                                                                                                          mdi-file-pdf
+                                                                                                                                        ">
                                         Print PDF
                                     </button>
                                 </div>
@@ -350,24 +350,24 @@ export default {
                                             </div>
                                             <div
                                                 class="
-                                                                                                                                      table table-centered
-                                                                                                                                      datatable
-                                                                                                                                      dt-responsive
-                                                                                                                                      nowrap
-                                                                                                                                      table-card-list
-                                                                                                                                      dataTable
-                                                                                                                                      no-footer
-                                                                                                                                      dtr-inline
-                                                                                                                                    ">
+                                                                                                                                              table table-centered
+                                                                                                                                              datatable
+                                                                                                                                              dt-responsive
+                                                                                                                                              nowrap
+                                                                                                                                              table-card-list
+                                                                                                                                              dataTable
+                                                                                                                                              no-footer
+                                                                                                                                              dtr-inline
+                                                                                                                                            ">
                                                 <div class="row">
                                                     <div class="col-sm-12 col-md-6">
                                                         <div id="tickets-table_length" class="dataTables_length">
                                                             <label
                                                                 class="
-                                                                                                                                              d-inline-flex
-                                                                                                                                              align-items-center
-                                                                                                                                              fw-normal
-                                                                                                                                            ">
+                                                                                                                                                      d-inline-flex
+                                                                                                                                                      align-items-center
+                                                                                                                                                      fw-normal
+                                                                                                                                                    ">
                                                                 Show&nbsp;
                                                                 <b-form-select v-model="perPage" size="sm"
                                                                     :options="pageOptions"></b-form-select>&nbsp;entries
@@ -380,10 +380,10 @@ export default {
                                                             class="dataTables_filter text-md-end">
                                                             <label
                                                                 class="
-                                                                                                                                              d-inline-flex
-                                                                                                                                              align-items-center
-                                                                                                                                              fw-normal
-                                                                                                                                            ">
+                                                                                                                                                      d-inline-flex
+                                                                                                                                                      align-items-center
+                                                                                                                                                      fw-normal
+                                                                                                                                                    ">
                                                                 Search:
                                                                 <b-form-input v-model="filter" type="search"
                                                                     placeholder="Search..."
@@ -407,34 +407,34 @@ export default {
                                                             <br /></a>
                                                     </template>
                                                     <!----
-                                                                                                                                      <template v-slot:cell(check)="data">
-                                                                                                                                        <div class="">
-                                                                                                                                          <input
-                                                                                                                                            type="button"
-                                                                                                                                            class="custom-control-input"
-                                                                                                                                            :id="`contacusercheck${data.item.id}`"
-                                                                                                                                            value="Submit"
-                                                                                                                                          />
-                                                                                                                                          <label
-                                                                                                                                            class="custom-control-label"
-                                                                                                                                            :for="`contacusercheck${data.item.id}`"
-                                                                                                                                          ></label>
-                                                                                                                                        </div>
-                                                                                                                                      </template>
-                                                                                                                                      <template v-slot:cell(id)="data">
-                                                                                                                                        <a
-                                                                                                                                          href="javascript: void(0);"
-                                                                                                                                          class="text-dark fw-bold"
-                                                                                                                                          >{{ data.item.id }}</a
-                                                                                                                                        >
-                                                                                                                                      </template>
+                                                                                                                                              <template v-slot:cell(check)="data">
+                                                                                                                                                <div class="">
+                                                                                                                                                  <input
+                                                                                                                                                    type="button"
+                                                                                                                                                    class="custom-control-input"
+                                                                                                                                                    :id="`contacusercheck${data.item.id}`"
+                                                                                                                                                    value="Submit"
+                                                                                                                                                  />
+                                                                                                                                                  <label
+                                                                                                                                                    class="custom-control-label"
+                                                                                                                                                    :for="`contacusercheck${data.item.id}`"
+                                                                                                                                                  ></label>
+                                                                                                                                                </div>
+                                                                                                                                              </template>
+                                                                                                                                              <template v-slot:cell(id)="data">
+                                                                                                                                                <a
+                                                                                                                                                  href="javascript: void(0);"
+                                                                                                                                                  class="text-dark fw-bold"
+                                                                                                                                                  >{{ data.item.id }}</a
+                                                                                                                                                >
+                                                                                                                                              </template>
 
-                                                                                                                                      <template v-slot:cell(name)="data">
-                                                                                                                                        <a href="#" class="text-body">{{
-                                                                                                                                          data.item.name
-                                                                                                                                        }}</a>
-                                                                                                                                      </template>
-                                                                                                                                      --->
+                                                                                                                                              <template v-slot:cell(name)="data">
+                                                                                                                                                <a href="#" class="text-body">{{
+                                                                                                                                                  data.item.name
+                                                                                                                                                }}</a>
+                                                                                                                                              </template>
+                                                                                                                                              --->
                                                     <template v-slot:cell(fullnames)="data">
                                                         <div class="m-auto">
                                                             <p>{{ data.item.first_name }} {{ data.item.last_name }}</p>
@@ -481,10 +481,10 @@ export default {
                                                 <div class="col">
                                                     <div
                                                         class="
-                                                                                                                                          dataTables_paginate
-                                                                                                                                          paging_simple_numbers
-                                                                                                                                          float-end
-                                                                                                                                        ">
+                                                                                                                                                  dataTables_paginate
+                                                                                                                                                  paging_simple_numbers
+                                                                                                                                                  float-end
+                                                                                                                                                ">
                                                         <ul class="pagination pagination-rounded">
                                                             <!-- pagination -->
                                                             <b-pagination v-model="currentPage" :total-rows="rows"
