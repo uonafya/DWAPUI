@@ -1,8 +1,7 @@
 <script>
 import countTo from "vue-count-to";
-/**
- * Stat component
- */
+import Swal from "sweetalert2";
+import axios from "axios";
 export default {
   components: {
     countTo,
@@ -94,8 +93,8 @@ export default {
           },
         },
       },
-      orderseries: [70],
-      orderRadial: {
+      counties: [41],
+      CountyRadial: {
         fill: {
           colors: ["#34c38f"],
         },
@@ -122,8 +121,8 @@ export default {
           },
         },
       },
-      customerseries: [55],
-      customerRadial: {
+      facilties: [55],
+      FacilityRadial: {
         fill: {
           colors: ["#5b73e8"],
         },
@@ -152,6 +151,30 @@ export default {
       },
     };
   },
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    fetchData() {
+      axios
+        .get(`insights/assets/`)
+        .then((response) => {
+          this.counties = [response.data[0].counties];
+          this.facilities = [response.data[0].facilities];
+          console.log(this.counties);
+        })
+        .catch((e) => {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "" + e,
+            showConfirmButton: true,
+          }).then((e) => {
+            Swal.close(e);
+          });
+        });
+    }
+  },
 };
 </script>
 
@@ -167,7 +190,7 @@ export default {
           <div>
             <h4 class="mb-1 mt-1">
               <span data-plugin="counterup">
-                <countTo :startVal="47" :endVal="35" :duration="3000"></countTo>
+                <countTo :startVal="47" :endVal="counties" :duration="3000"></countTo>
               </span>
             </h4>
             <p class="text-muted mb-0">Counties Synced</p>
@@ -186,19 +209,19 @@ export default {
         <div class="card-body">
           <div class="float-end mt-2">
             <apexchart class="apex-charts" type="radialBar" dir="ltr" width="45" height="45" :options="orderRadial"
-              :series="orderseries"></apexchart>
+              :series="counties"></apexchart>
           </div>
           <div>
             <h4 class="mb-1 mt-1">
               <span data-plugin="counterup">
-                <countTo :startVal="100" :endVal="1000" :duration="2000"></countTo>
+                <countTo :startVal="100" :endVal="facilities" :duration="2000"></countTo>
               </span>
             </h4>
             <p class="text-muted mb-0">Total Facilities Synced</p>
           </div>
           <p class="text-muted mt-3 mb-0">
-            <span class="text-danger me-1">
-              <i class="mdi mdi-arrow-down-bold me-1"></i>0.82%
+            <span class="text-success me-1">
+              <i class="mdi mdi-arrow-up-bold me-1"></i>0.82%
             </span>
             since last week
           </p>
@@ -211,8 +234,8 @@ export default {
       <div class="card">
         <div class="card-body">
           <div class="float-end mt-2">
-            <apexchart class="apex-charts" type="radialBar" dir="ltr" width="45" height="45" :options="customerRadial"
-              :series="customerseries"></apexchart>
+            <apexchart class="apex-charts" type="radialBar" dir="ltr" width="45" height="45" :options="FacilityRadial"
+              :series="facilties"></apexchart>
           </div>
           <div>
             <h4 class="mb-1 mt-1">
@@ -223,8 +246,8 @@ export default {
             <p class="text-muted mb-0">Sub Counties Synced</p>
           </div>
           <p class="text-muted mt-3 mb-0">
-            <span class="text-danger me-1">
-              <i class="mdi mdi-arrow-down-bold me-1"></i>6.24%
+            <span class="text-success me-1">
+              <i class="mdi mdi-arrow-up-bold me-1"></i>6.24%
             </span>
             since last week
           </p>

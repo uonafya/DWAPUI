@@ -7,7 +7,7 @@ import addroles from "@/components/widgets/security/addroles";
 import reportdet from "@/components/report/header";
 
 import Swal from "sweetalert2";
-import axios from "../../../Axiosconfig";
+import axios from "axios";
 var CryptoJS = require("crypto-js");
 
 export default {
@@ -87,7 +87,7 @@ export default {
                     sortable: true,
                 },
                 {
-                    key: "facility_id",
+                    key: "assigned_counties",
                     sortable: true,
                 },
                 {
@@ -457,16 +457,20 @@ export default {
                                                     <template v-slot:cell(assigned_facilities)="data">
                                                         <a href="#" class="text-body text-wrap"
                                                             style="word-wrap: break-word;"
-                                                            v-if="data.item.assigned_facilities">{{ data.item.assigned_facilities }}</a>
+                                                            v-if="data.item.facilities">{{ data.item.facilities.length }}
+                                                            <router-link to="" class="uil uil-eye"
+                                                                :title="data.item.facilities"></router-link></a>
                                                         <a href="#" class="text-body text-wrap"
-                                                            style="word-wrap: break-word;" v-else>NILL</a>
+                                                            style="word-wrap: break-word;" v-else>0</a>
                                                     </template>
-                                                    <template v-slot:cell(facility_id)="data">
+                                                    <template v-slot:cell(assigned_counties)="data">
                                                         <a href="#" class="text-body text-wrap"
                                                             style="word-wrap: break-word;"
-                                                            v-if="data.item.facility_id">{{ data.item.facility_id }}</a>
+                                                            v-if="data.item.counties">{{ data.item.counties.length }}
+                                                            <router-link to="" class="uil uil-eye"
+                                                                :title="data.item.counties"></router-link></a>
                                                         <a href="#" class="text-body text-wrap"
-                                                            style="word-wrap: break-word;" v-else>-</a>
+                                                            style="word-wrap: break-word;" v-else>0</a>
                                                     </template>
 
                                                     <template v-slot:cell(action)="data">
@@ -480,7 +484,7 @@ export default {
                                                                             data.item.role_name,
                                                                             data.item.screens,
                                                                         )
-                                                                    ">
+                                                                        ">
                                                                     <i class="uil uil-pen font-size-18"></i>
                                                                 </a>
                                                             </li>
@@ -492,7 +496,7 @@ export default {
                                                                             data.item.id,
                                                                             data.item.role_name,
                                                                         )
-                                                                    ">
+                                                                        ">
                                                                     <i class="uil uil-trash-alt font-size-18"></i>
                                                                 </a>
                                                             </li>

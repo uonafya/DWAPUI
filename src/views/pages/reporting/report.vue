@@ -226,13 +226,13 @@ export default {
     },
     updatefilters() {
       axios
-        .get("listscategories")
+        .get("listcategories")
         .then((res) => {
           res.data.forEach((item) => {
             this.cats.push(item.category_name);
           });
           axios
-            .get("listscounties")
+            .get("listcounties")
             .then((res) => {
               res.data.forEach((item) => {
                 this.counties.push(item.county_name);
@@ -536,7 +536,7 @@ export default {
       //this.reports=[]
       this.reports=[]
     if(this.mod=="Data Alignment"){
-        this.reports.push( 
+        this.reports.push(
         "Data Quality Analytics",
         "Facility Data",
         "Mapping Configurations",
@@ -644,220 +644,182 @@ export default {
 </script>
 
 <template>
-    <Layout>
-        <PageHeader :title="title" :items="items" />
+  <Layout>
+    <PageHeader :title="title" :items="items" />
 
-        <div class="row">
-            <div class="card">
+    <div class="row">
+      <div class="card">
+        <div class="card-body">
+          <form @submit.prevent="handleSubmit">
+            <div class="row">
+              <div class="card col-md-2"></div>
+              <div class="card col-md-8 changebg">
                 <div class="card-body">
-                    <form @submit.prevent="handleSubmit">
-                        <div class="row">
-                            <div class="card col-md-2"></div>
-                            <div class="card col-md-8 changebg">
-                                <div class="card-body">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="col-sm-12">
-                                                <div class="input-group">
-                                                    <div class="input-group-text col-sm-2 mb-3">
-                                                        Module:
-                                                    </div>
-                                                    <div class="col-sm-10">
-                                                        <multiselect @input="getrptstate()" v-model="mod" :options="modules"
-                                                            placeholder="Select Report"></multiselect>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-sm-12">
-                                                <div class="input-group">
-                                                    <div class="input-group-text col-sm-2 mb-3">
-                                                        Report For:
-                                                    </div>
-                                                    <div class="col-sm-10">
-                                                        <multiselect @input="getrptstate()" v-model="report"
-                                                            :options="reports" placeholder="Select Report">
-                                                        </multiselect>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-sm-12">
-                                                <div class="input-group">
-                                                    <div class="input-group-text col-sm-2">
-                                                        <input type="checkbox" id="mail_checkbox" v-model="mail_checkbox"
-                                                            :checked="mail_checkbox" />
-                                                        <label for="checkbox"></label>
-                                                        Send Mail:
-                                                    </div>
-                                                    <input class="form-control" type="text"
-                                                        placeholder="Type in Your Email Address" v-model="email" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!--Download files-->
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="border-top">
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="card" v-if="toggleFilter">
-                                                            <div class="card-body">
-                                                                <div class="row d-flex flex-row">
-                                                                    <div class="col-lg-12 col-md-6">
-                                                                        <div class="row">
-                                                                            <div class="d-flex flex-column">
-                                                                                <div class="row">
-                                                                                    <div class="col-sm-6 col-md-6">
-                                                                                        <b-form-group label="County"
-                                                                                            label-for="county-input">
-                                                                                            <multiselect
-                                                                                                class="form-control"
-                                                                                                v-model="county"
-                                                                                                :options="counties"
-                                                                                                placeholder="Kisumu County"
-                                                                                                :multiple="false"
-                                                                                                :editable="true">
-                                                                                            </multiselect>
-                                                                                        </b-form-group>
-                                                                                    </div>
-                                                                                    <div class="col-sm-6 col-md-6">
-                                                                                        <b-form-group label="Category"
-                                                                                            label-for="Category-input">
-                                                                                            <multiselect
-                                                                                                class="form-control"
-                                                                                                v-model="category"
-                                                                                                :options="cats"
-                                                                                                placeholder="TX_CURR"
-                                                                                                :multiple="false"
-                                                                                                :editable="true"
-                                                                                                @input="getdataStatus()">
-                                                                                            </multiselect>
-                                                                                        </b-form-group>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row">
-                                                                                    <div class="col-sm-6 col-md-6 mt-2"
-                                                                                        v-if="!togglequaters">
-                                                                                        <div id="tickets-table-date-picker">
-                                                                                            <label>
-                                                                                                From&nbsp;
-                                                                                                <date-picker
-                                                                                                    class="form-control"
-                                                                                                    v-model="from"
-                                                                                                    placeholder="2022-09-27"
-                                                                                                    type="date"></date-picker>
-                                                                                            </label>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-sm-6 col-md-6 mt-2"
-                                                                                        v-if="!togglequaters">
-                                                                                        <div id="tickets-table-date-picker">
-                                                                                            <label>
-                                                                                                To&nbsp;
-                                                                                                <date-picker
-                                                                                                    class="form-control"
-                                                                                                    v-model="to"
-                                                                                                    placeholder="2022-09-27"
-                                                                                                    type="date"></date-picker>
-                                                                                            </label>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-sm-6 col-md-6 mt-2"
-                                                                                        v-if="togglequaters">
-                                                                                        <div id="tickets-table-date-picker">
-                                                                                            <label
-                                                                                                class="d-inline-flex m-2">
-                                                                                                Quater 1(Oct to Dec) &nbsp;
-                                                                                                <b-form-checkbox
-                                                                                                    class="mr-n2"
-                                                                                                    v-model="qt1">
-                                                                                                </b-form-checkbox>
-                                                                                            </label>
-                                                                                        </div>
-                                                                                        <div id="tickets-table-date-picker"
-                                                                                            v-show="togglequaters">
-                                                                                            <label
-                                                                                                class="d-inline-flex m-2">
-                                                                                                Quater 2(Jan to Mar) &nbsp;
-                                                                                                <b-form-checkbox
-                                                                                                    class="mr-n2"
-                                                                                                    v-model="qt2">
-                                                                                                </b-form-checkbox>
-                                                                                            </label>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-sm-6 col-md-6 mt-2"
-                                                                                        v-if="togglequaters">
-                                                                                        <div id="tickets-table-date-picker">
-                                                                                            <label
-                                                                                                class="d-inline-flex m-2">
-                                                                                                Quater 3(Apr to Jun) &nbsp;
-                                                                                                <b-form-checkbox
-                                                                                                    class="mr-n2"
-                                                                                                    v-model="qt3">
-                                                                                                </b-form-checkbox>
-                                                                                            </label>
-                                                                                        </div>
-                                                                                        <div id="tickets-table-date-picker"
-                                                                                            class="d-block"
-                                                                                            v-show="togglequaters">
-                                                                                            <label
-                                                                                                class="d-inline-flex m-2">
-                                                                                                Quater 4(Jul to Sept) &nbsp;
-                                                                                                <b-form-checkbox
-                                                                                                    class="mr-n2"
-                                                                                                    v-model="qt4">
-                                                                                                </b-form-checkbox>
-                                                                                            </label>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- ///buttons -->
-                                    <div class="row">
-                                        <div class="col-sm-8 text-right">{{ report }}</div>
-                                        <div class="col-sm-2">
-                                            <b-button pill variant="outline-primary" @click="
-                                                [
-                                                    genrpt('l'),
-                                                    $bvModal.hide('modal-1'),
-                                                ]
-                                            " v-b-modal.modal-Print style="margin-right: 10px">
-                                                Generate</b-button>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="col-sm-12">
+                        <div class="input-group">
+                          <div class="input-group-text col-sm-2 mb-3">
+                            Module:
+                          </div>
+                          <div class="col-sm-10">
+                            <multiselect @input="getrptstate()" v-model="mod" :options="modules"
+                              placeholder="Select Report"></multiselect>
+                          </div>
                         </div>
-                    </form>
+                      </div>
+
+                      <div class="col-sm-12">
+                        <div class="input-group">
+                          <div class="input-group-text col-sm-2 mb-3">
+                            Report For:
+                          </div>
+                          <div class="col-sm-10">
+                            <multiselect @input="getrptstate()" v-model="report" :options="reports"
+                              placeholder="Select Report">
+                            </multiselect>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-sm-12">
+                        <div class="input-group">
+                          <div class="input-group-text col-sm-2">
+                            <input type="checkbox" id="mail_checkbox" v-model="mail_checkbox" :checked="mail_checkbox" />
+                            <label for="checkbox"></label>
+                            Send Mail:
+                          </div>
+                          <input class="form-control" type="text" placeholder="Type in Your Email Address"
+                            v-model="email" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--Download files-->
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="border-top">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="card" v-if="toggleFilter">
+                              <div class="card-body">
+                                <div class="row d-flex flex-row">
+                                  <div class="col-lg-12 col-md-6">
+                                    <div class="row">
+                                      <div class="d-flex flex-column">
+                                        <div class="row">
+                                          <div class="col-sm-6 col-md-6">
+                                            <b-form-group label="County" label-for="county-input">
+                                              <multiselect class="form-control" v-model="county" :options="counties"
+                                                placeholder="Kisumu County" :multiple="false" :editable="true">
+                                              </multiselect>
+                                            </b-form-group>
+                                          </div>
+                                          <div class="col-sm-6 col-md-6">
+                                            <b-form-group label="Category" label-for="Category-input">
+                                              <multiselect class="form-control" v-model="category" :options="cats"
+                                                placeholder="TX_CURR" :multiple="false" :editable="true"
+                                                @input="getdataStatus()">
+                                              </multiselect>
+                                            </b-form-group>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-6 col-md-6 mt-2" v-if="!togglequaters">
+                                            <div id="tickets-table-date-picker">
+                                              <label>
+                                                From&nbsp;
+                                                <date-picker class="form-control" v-model="from" placeholder="2022-09-27"
+                                                  type="date"></date-picker>
+                                              </label>
+                                            </div>
+                                          </div>
+                                          <div class="col-sm-6 col-md-6 mt-2" v-if="!togglequaters">
+                                            <div id="tickets-table-date-picker">
+                                              <label>
+                                                To&nbsp;
+                                                <date-picker class="form-control" v-model="to" placeholder="2022-09-27"
+                                                  type="date"></date-picker>
+                                              </label>
+                                            </div>
+                                          </div>
+                                          <div class="col-sm-6 col-md-6 mt-2" v-if="togglequaters">
+                                            <div id="tickets-table-date-picker">
+                                              <label class="d-inline-flex m-2">
+                                                Quater 1(Oct to Dec) &nbsp;
+                                                <b-form-checkbox class="mr-n2" v-model="qt1">
+                                                </b-form-checkbox>
+                                              </label>
+                                            </div>
+                                            <div id="tickets-table-date-picker" v-show="togglequaters">
+                                              <label class="d-inline-flex m-2">
+                                                Quater 2(Jan to Mar) &nbsp;
+                                                <b-form-checkbox class="mr-n2" v-model="qt2">
+                                                </b-form-checkbox>
+                                              </label>
+                                            </div>
+                                          </div>
+                                          <div class="col-sm-6 col-md-6 mt-2" v-if="togglequaters">
+                                            <div id="tickets-table-date-picker">
+                                              <label class="d-inline-flex m-2">
+                                                Quater 3(Apr to Jun) &nbsp;
+                                                <b-form-checkbox class="mr-n2" v-model="qt3">
+                                                </b-form-checkbox>
+                                              </label>
+                                            </div>
+                                            <div id="tickets-table-date-picker" class="d-block" v-show="togglequaters">
+                                              <label class="d-inline-flex m-2">
+                                                Quater 4(Jul to Sept) &nbsp;
+                                                <b-form-checkbox class="mr-n2" v-model="qt4">
+                                                </b-form-checkbox>
+                                              </label>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- ///buttons -->
+                  <div class="row">
+                    <div class="col-sm-8 text-right">{{ report }}</div>
+                    <div class="col-sm-2">
+                      <b-button pill variant="outline-primary" @click="
+                        [
+                          genrpt('l'),
+                          $bvModal.hide('modal-1'),
+                        ]
+                        " v-b-modal.modal-Print style="margin-right: 10px">
+                        Generate</b-button>
+                    </div>
+
+                  </div>
                 </div>
+              </div>
             </div>
+          </form>
         </div>
-        <reportdet :title="report" :reportfor="report" :orderData="orderData" :pl="pl" :headers="headers"
-            :uniqueCars="uniqueCars" :printedpdf="printedpdf" :rpt="rpt" :exceldata="exceldata" v-show="false"
-            ref="uploadComponent"></reportdet>
-        <b-modal id="modal-Print" :title="report" hide-footer size="bg" centered>
-            <reportdet :title="report" :reportfor="report" :orderData="orderData" :pl="pl" :headers="headers"
-                :uniqueCars="uniqueCars" :shome="showme" :printedpdf="printedpdf" :rpt="rpt" :v-show="showme"
-                @sendEmail="sendEmail" :exceldata="exceldata" :mail_checkbox="mail_checkbox"></reportdet>
-        </b-modal>
-    </Layout>
+      </div>
+    </div>
+    <reportdet :title="report" :reportfor="report" :orderData="orderData" :pl="pl" :headers="headers"
+      :uniqueCars="uniqueCars" :printedpdf="printedpdf" :rpt="rpt" :exceldata="exceldata" v-show="false"
+      ref="uploadComponent"></reportdet>
+    <b-modal id="modal-Print" :title="report" hide-footer size="bg" centered>
+      <reportdet :title="report" :reportfor="report" :orderData="orderData" :pl="pl" :headers="headers"
+        :uniqueCars="uniqueCars" :shome="showme" :printedpdf="printedpdf" :rpt="rpt" :v-show="showme"
+        @sendEmail="sendEmail" :exceldata="exceldata" :mail_checkbox="mail_checkbox"></reportdet>
+    </b-modal>
+  </Layout>
 </template>
 <style scoped>
 .changebg {
-    background-color: rgb(240, 240, 240);
+  background-color: rgb(240, 240, 240);
 }
 </style>

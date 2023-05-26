@@ -266,7 +266,7 @@ export default {
       if (this.stoped && !this.showsync) {
         this.upadtearray();
       }
-    }, 3000);
+    }, 10000);
     //this.upadtearray();
   },
   computed: {

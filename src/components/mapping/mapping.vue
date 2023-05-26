@@ -37,7 +37,7 @@ export default {
       tab2: false,
       tab3: false,
       county: "All",
-      counties: ["All", "Kisumu County"],
+      counties: ["All",],
       cats: ["All", "TX_CURR"],
       category: "All",
       data_to_use: "Select a data source",
@@ -96,13 +96,13 @@ export default {
     },
     updatefilters() {
       axios
-        .get("listscategories")
+        .get("listcategories")
         .then((res) => {
           res.data.forEach((item) => {
             this.cats.push(item.category_name);
           });
           axios
-            .get("listscounties")
+            .get("listcounties")
             .then((res) => {
               res.data.forEach((item) => {
                 this.counties.push(item.county_name);
@@ -178,11 +178,10 @@ export default {
       axios
         .post("listfiles/", formData)
         .then((response) => {
-          console.log(response.data);
           Swal.fire({
             position: "center",
             icon: "success",
-            title: "File submitted successfully!",
+            title: response.staus + ":File submitted successfully!",
             html: "Please click on the Mapping tab to initiate data mapping",
             showConfirmButton: false,
             timer: 3000,

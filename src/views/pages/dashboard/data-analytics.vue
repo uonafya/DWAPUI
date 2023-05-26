@@ -1,107 +1,190 @@
 <script>
-import countTo from "vue-count-to";
-import Activity from "./activity";
-import Activity2 from "./activity2";
-import Topfacilities from "./top-facilities";
-/**
- * Sales-analytics component
- */
+//import VueApexCharts from 'vue-apexcharts';
+//import countTo from "vue-count-to";
+// import Activity from "./activity";
+// import Activity2 from "./activity2";
+// import Topfacilities from "./top-facilities";
+import Multiselect from "vue-multiselect";
+import Swal from "sweetalert2";
+import axios from "axios";
 export default {
   components: {
-    countTo,
-    Activity,
-    Activity2,
-    Topfacilities,
+    //countTo,
+    // Activity,
+    // Activity2,
+    // Topfacilities,
+    Multiselect,
+    //apexchart: VueApexCharts,
   },
   data() {
     return {
-      series: [
-        {
-          name: "City Squre",
-          type: "column",
-          data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
-        },
-        {
-          name: "Agakhan Squre",
-          type: "area",
-          data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-        },
-        {
-          name: "Coptic Facility",
-          type: "line",
-          data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
-        },
-      ],
+      series: [],
       chartOptions: {
         chart: {
-          stacked: false,
+          type: 'bar',
+          height: 550,
+          stacked: true,
+          selection: {
+            enabled: true
+          },
           toolbar: {
-            show: false,
-          },
-        },
-        stroke: {
-          width: [0, 2, 4],
-          curve: "smooth",
-        },
-        plotOptions: {
-          bar: {
-            columnWidth: "30%",
-          },
-        },
-        colors: ["#5b73e8", "#dfe2e6", "#f1b44c"],
-        fill: {
-          opacity: [0.85, 0.25, 1],
-          gradient: {
-            inverseColors: false,
-            shade: "light",
-            type: "vertical",
-            opacityFrom: 0.85,
-            opacityTo: 0.55,
-            stops: [0, 100, 100, 100],
-          },
-        },
-        labels: [
-          "01/01/2003",
-          "02/01/2003",
-          "03/01/2003",
-          "04/01/2003",
-          "05/01/2003",
-          "06/01/2003",
-          "07/01/2003",
-          "08/01/2003",
-          "09/01/2003",
-          "10/01/2003",
-          "11/01/2003",
-        ],
-        markers: {
-          size: 0,
+            show: true,
+            offsetX: 0,
+            offsetY: 0,
+          }
+
         },
 
+        plotOptions: {
+          bar: {
+            horizontal: false,
+          },
+        },
+        dataLabels: {
+          enabled: false,
+          enabledOnSeries: [1]
+        },
+        stroke: {
+          width: [0, 4]
+        },
+        title: {
+          text: 'COUNTY SUMMARY',
+          style: {
+            fontSize: '14px',
+            fontWeight: 'bold',
+            fontFamily: undefined,
+            color: '#263238'
+          }
+        },
         xaxis: {
-          type: "datetime",
+          type: 'category',
+          categories: [],
+          labels: {
+            formatter: function (val) {
+              return val
+            }
+          }
         },
         yaxis: {
           title: {
-            text: "Points",
+            text: undefined
           },
         },
         tooltip: {
-          shared: true,
-          intersect: false,
           y: {
-            formatter: function (y) {
-              if (typeof y !== "undefined") {
-                return y.toFixed(0) + " points";
-              }
-              return y;
-            },
-          },
+            formatter: function (val) {
+              return val
+            }
+          }
         },
-        grid: {
-          borderColor: "#f1f1f1",
+        fill: {
+          opacity: 1
         },
+        legend: {
+          position: 'top',
+          horizontalAlign: 'left',
+          offsetX: 40,
+          fontSize: '14px',
+          fontFamily: 'Helvetica, Arial',
+          fontWeight: 400,
+        }
+
+
       },
+      Options: {
+        chart: {
+          animations: {
+            enabled: true
+          }
+        },
+        // xaxis: {
+        //   title: {
+        //     text: 'Concordance Category'
+        //   }
+        // },
+        yaxis: {
+          title: {
+            text: 'Concordance (%)'
+          }
+        },
+        series: [],
+      },
+      chartSeries: [
+        {
+          name: 'Concordance',
+          data: [],
+        }
+      ],
+      indicators: ["TX_CURR", "TX_NEW", "PMTCT_STAT"],
+      indicator: "TX_CURR",
+      fromdate: new Date(),
+      todate: new Date(),
     };
+  },
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    fetchData() {
+      Swal.fire({
+        title: "Please Wait !",
+        html: "Loading data...", // add html attribute if you want or remove
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      axios
+        .get(`insights/group_concodance?from_date=2021-10-01&to_date=2022-12-31&category=${this.indicator}`)
+        .then((response) => {
+          const categories = response.data.map(item => item.county.toString());
+          const less90Data = response.data.map(item => item.less_90);
+          const between90_100Data = response.data.map(item => item.between_90_100);
+          const more100Data = response.data.map(item => item.more_100);
+          this.chartOptions.xaxis.categories = categories;
+          //updating chart options dynamically
+          this.chartOptions.xaxis.categories = categories;
+          // Call the $refs to update the chart with new options
+          this.$refs.chart.updateOptions(this.chartOptions);
+          this.series = [
+            {
+              name: 'Less 90%',
+              data: less90Data,
+            },
+            {
+              name: '90-100%',
+              data: between90_100Data,
+            },
+            {
+              name: 'More 100%',
+              data: more100Data,
+            },
+          ];
+          axios
+            .get(`insights/facilty_concodance?from_date=2021-10-01&to_date=2022-12-31&category=${this.indicator}`)
+            .then((response) => {
+              this.chartSeries = [
+                {
+                  name: "concodance(%)",
+                  data: response.data,
+                }
+              ]
+            });
+          Swal.close();
+        })
+        .catch((e) => {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "" + e,
+            showConfirmButton: true,
+          }).then((e) => {
+            Swal.close(e);
+          });
+        });
+    }
   },
 };
 </script>
@@ -126,48 +209,62 @@ export default {
         </div>
         <h4 class="card-title mb-4">Data Insights</h4>
 
-        <div class="mt-1">
-          <ul class="list-inline main-chart mb-0">
-            <li class="list-inline-item chart-border-left me-0 border-0">
-              <h3 class="text-primary">
-                $
-                <span data-plugin="counterup">
-                  <countTo :startVal="1" :endVal="2371" :duration="2000"></countTo>
-                </span>
-                <span class="text-muted d-inline-block font-size-15 ms-3">Income</span>
-              </h3>
-            </li>
-            <li class="list-inline-item chart-border-left me-0">
-              <h3>
-                <span data-plugin="counterup">
-                  <countTo :startVal="1" :endVal="258" :duration="2000"></countTo>
-                </span>
-                <span class="text-muted d-inline-block font-size-15 ms-3">+ Clients</span>
-              </h3>
-            </li>
-            <li class="list-inline-item chart-border-left me-0">
-              <h3>
-                <span data-plugin="counterup">3.6</span>%
-                <span class="text-muted d-inline-block font-size-15 ms-3">Conversation Ratio</span>
-              </h3>
-            </li>
-          </ul>
-        </div>
+        <div class="col-xl-12">
 
-        <div class="mt-3">
-          <apexchart type="line" class="apex-charts" dir="ltr" height="339" :options="chartOptions" :series="series">
-          </apexchart>
+          <div class="card" style="background-color:beige;padding:10px;">
+
+            <div class="card-body">
+              <h4 class="card-title mb-4">Data Analytics 1</h4>
+              <h5 class="card-title mb-4">SUMMARY OF CONCODANCE BY COUNTY</h5>
+              <div class="float-left">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <span>Indicator:</span>
+                    <multiselect @input="fetchData()" v-model="indicator" :options="indicators" class="">
+                    </multiselect>
+                  </div>
+                  <div class="col-sm-3">
+                    <span>From Date:</span>
+                    <date-picker value="2021-01-01" v-model="fromdate" :first-day-of-week="1" lang="en"
+                      @change="fetchData()"></date-picker>
+                  </div>
+                  <div class="col-sm-3">
+                    <span>To Date:</span>
+                    <date-picker @change="fetchData()" value="2022-12-31" v-model="todate" :first-day-of-week="1"
+                      lang="en"></date-picker>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3">
+                <apexchart type="bar" ref="chart" class="apex-charts" dir="ltr" height="400" :options="chartOptions"
+                  :series="series">
+                </apexchart>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="background-color:beige;padding:10px;">
+
+            <div class="card-body">
+              <h4 class="card-title mb-4">Data Analytics 2</h4>
+              <h5 class="card-title mb-4">SUMMARY OF CONCODANCE BY FACILITY</h5>
+              <div class="mt-3">
+                <div>
+                  <apexchart ref="chart2" type="scatter" :options="Options" :series="chartSeries" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <!-- end card-body-->
     </div>
     <!-- end card-->
     <!--card 2-->
-    <div class="row">
+    <!-- <div class="row">
       <Topfacilities />
       <Activity />
       <Activity2 />
-    </div>
+    </div> -->
   </div>
   <!-- end col-->
 </template>

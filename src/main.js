@@ -10,7 +10,7 @@ import i18n from './i18n'
 import store from '@/state/store'
 import DatePicker from 'vue2-datepicker';
 import 'vue2-datepicker/index.css';
-
+import axios from "axios";
 import VueTimeline from "@growthbunker/vuetimeline";
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
@@ -32,6 +32,7 @@ import Axios from 'axios'
 Vue.prototype.$axios = Axios
 
 window.$http = "http://127.0.0.1:8000/api/"; //api/indicators
+axios.defaults.baseURL = 'http://localhost:8000/api/';
 var CryptoJS = require("crypto-js");
 var tokenString = "";
 

@@ -1,7 +1,7 @@
 import { authHeader } from "./auth-header";
 import store from "@/state/store";
 var CryptoJS = require("crypto-js");
-// import axios from "axios";
+import axios from "axios";
 // import Swal from "sweetalert2";
 
 export const userService = {
@@ -43,8 +43,10 @@ function login(username, password) {
             //     "PasswordPolicy",
             //     "Reports",
             // ];
+            axios.defaults.headers.common['Authorization'] = `Token ${user.user.token}`;
+            axios.defaults.baseURL = 'http://localhost:8000/api/';
+            axios.defaults.timeout = 720000;
             let accessScreens = user.screens.toString().split(",");
-            console.log(accessScreens)
             store.dispatch("screens/loadUserScreens", { userScreen: accessScreens });
 
             // for (var i = 0; i < accessScreens.length; i++) {
