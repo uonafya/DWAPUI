@@ -290,44 +290,46 @@ export default {
 <template>
   <header id="page-topbar">
     <div class="navbar-header">
-      <div class="d-flex">
-        <!-- LOGO -->
-        <div class="navbar-brand-box">
-          <router-link to="/" class="logo logo-dark">
-            <span class="logo-xl col">
-              <img src="@/assets/HealthITLogo.png" alt="" class="" height="50" />
-            </span>
-            <span class="logo-lg">
-              <img src="@/assets/images/logo-dark.png" alt height="20" />
-            </span>
-          </router-link>
+      <div class="float-left">
+         <!-- LOGO -->
+          <div class="navbar-brand-box float-left mr-4 pr-4 mt-2">
+            <router-link to="/" class="logo logo-dark">
+              <span class="logo-sm">
+                <img src="@/assets/HealthITLogo.png" alt height="100" />
+              </span>
+              <span class="logo-lg">
+                <img src="@/assets/HealthITLogo.png" alt height="100" />
+              </span>
+            </router-link>
 
-          <router-link to="/" class="logo logo-light">
-            <div class="container d-flex flex-row">
-              <span class="logo-xl col">
-                <img src="@/assets/HealthITLogo.png" alt="" class="" height="50" />
+            <router-link to="/" class="logo logo-light">
+              <span class="logo-sm">
+                <img src="@/assets/HealthITLogo.png" alt height="100" />
               </span>
-              <span class="logo-lg text-white row">
-                <h1 class="logo-lg text-white mt-4">DHIS2 DM-IL</h1>
+              <span class="logo-lg">
+                <img src="@/assets/HealthITLogo.png" alt height="100" />
               </span>
-            </div>
-          </router-link>
-        </div>
+            </router-link>
+          </div>
 
         <button type="button" class="btn btn-sm px-3 font-size-16 d-lg-none header-item" data-toggle="collapse"
           data-target="#topnav-menu-content" @click="toggleMenu">
           <i class="fa fa-fw fa-bars"></i>
         </button>
 
-        <!-- App Search-->
+        <!-- App Search
         <form class="app-search d-none">
           <div class="position-relative">
             <input type="text" class="form-control" :placeholder="$t('navbar.search.text')" />
             <span class="uil-search"></span>
           </div>
-        </form>
+        </form>-->
       </div>
-
+       <div class="mt-2">
+          <h2 class="text-white font-size-22">
+           HEALTH-IT DATA IL
+          </h2>
+        </div>
       <div class="d-flex">
         <b-dropdown variant="white" class="d-inline-block d-lg-none ms-2" toggle-class="header-item noti-icon" right
           menu-class="dropdown-menu-lg p-0">
@@ -348,79 +350,6 @@ export default {
             </div>
           </form>
         </b-dropdown>
-
-        <!--  <b-dropdown variant="white" right toggle-class="header-item">
-                                                                                                                                                                                                                        <template v-slot:button-content>
-                                                                                                                                                                                                                          <img class :src="flag" alt="Header Language" height="16" />
-                                                                                                                                                                                                                          {{ text }}
-                                                                                                                                                                                                                        </template>
-                                                                                                                                                                                                                        <b-dropdown-item
-                                                                                                                                                                                                                          class="notify-item"
-                                                                                                                                                                                                                          v-for="(entry, i) in languages"
-                                                                                                                                                                                                                          :key="`Lang${i}`"
-                                                                                                                                                                                                                          :value="entry"
-                                                                                                                                                                                                                          @click="setLanguage(entry.language, entry.title, entry.flag)"
-                                                                                                                                                                                                                          :link-class="{ active: entry.language === current_language }"
-                                                                                                                                                                                                                        >
-                                                                                                                                                                                                                          <img
-                                                                                                                                                                                                                            :src="`${entry.flag}`"
-                                                                                                                                                                                                                            alt="user-image"
-                                                                                                                                                                                                                            class="me-1"
-                                                                                                                                                                                                                            height="12"
-                                                                                                                                                                                                                          />
-                                                                                                                                                                                                                          <span class="align-middle">{{ entry.title }}</span>
-                                                                                                                                                                                                                        </b-dropdown-item>
-                                                                                                                                                                                                                      </b-dropdown> -->
-        <!-- 
-                                                                                                                                                                                                      <b-dropdown variant="white" class="d-none d-lg-inline-block ms-1" toggle-class="header-item noti-icon" right
-                                                                                                                                                                                                        menu-class="dropdown-menu-lg">
-                                                                                                                                                                                                        <template v-slot:button-content>
-                                                                                                                                                                                                          <i class="uil-apps"></i>
-                                                                                                                                                                                                        </template>
-                                                                                                                                                                                                        <div class="px-lg-2">
-                                                                                                                                                                                                          <div class="row no-gutters">
-                                                                                                                                                                                                            <div class="col">
-                                                                                                                                                                                                              <a class="dropdown-icon-item" href="#">
-                                                                                                                                                                                                                <img src="@/assets/images/brands/github.png" alt="Github" />
-                                                                                                                                                                                                                <span>{{ $t("navbar.dropdown.site.list.github") }}</span>
-                                                                                                                                                                                                              </a>
-                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                            <div class="col">
-                                                                                                                                                                                                              <a class="dropdown-icon-item" href="#">
-                                                                                                                                                                                                                <img src="@/assets/images/brands/bitbucket.png" alt="bitbucket" />
-                                                                                                                                                                                                                <span>{{ $t("navbar.dropdown.site.list.bitbucket") }}</span>
-                                                                                                                                                                                                              </a>
-                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                            <div class="col">
-                                                                                                                                                                                                              <a class="dropdown-icon-item" href="#">
-                                                                                                                                                                                                                <img src="@/assets/images/brands/dribbble.png" alt="dribbble" />
-                                                                                                                                                                                                                <span>{{ $t("navbar.dropdown.site.list.dribbble") }}</span>
-                                                                                                                                                                                                              </a>
-                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                          </div>
-
-                                                                                                                                                                                                          <div class="row no-gutters">
-                                                                                                                                                                                                            <div class="col">
-                                                                                                                                                                                                              <a class="dropdown-icon-item" href="#">
-                                                                                                                                                                                                                <img src="@/assets/images/brands/dropbox.png" alt="dropbox" />
-                                                                                                                                                                                                                <span>{{ $t("navbar.dropdown.site.list.dropbox") }}</span>
-                                                                                                                                                                                                              </a>
-                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                            <div class="col">
-                                                                                                                                                                                                              <a class="dropdown-icon-item" href="#">
-                                                                                                                                                                                                                <img src="@/assets/images/brands/mail_chimp.png" alt="mail_chimp" />
-                                                                                                                                                                                                                <span>{{ $t("navbar.dropdown.site.list.mailchimp") }}</span>
-                                                                                                                                                                                                              </a>
-                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                            <div class="col">
-                                                                                                                                                                                                              <a class="dropdown-icon-item" href="#">
-                                                                                                                                                                                                                <img src="@/assets/images/brands/slack.png" alt="slack" />
-                                                                                                                                                                                                                <span>{{ $t("navbar.dropdown.site.list.slack") }}</span>
-                                                                                                                                                                                                              </a>
-                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                          </div>
-                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                      </b-dropdown> -->
 
         <div class="dropdown d-none d-lg-inline-block ms-1" v-if="showbar">
           <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen"

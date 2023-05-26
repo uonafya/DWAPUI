@@ -202,27 +202,26 @@ export default {
 <template>
   <!-- ========== Left Sidebar Start ========== -->
   <div class="vertical-menu">
-    <!-- LOGO -->
-    <div class="navbar-brand-box">
-      <router-link to="/" class="logo logo-dark">
-        <span class="logo-sm">
-          <img src="@/assets/images/logo-sm.png" alt height="22" />
-        </span>
-        <span class="logo-lg">
-          <img src="@/assets/images/logo-dark.png" alt height="20" />
-        </span>
-      </router-link>
+     <!-- LOGO -->
+      <div class="navbar-brand-box float-left mr-4 pr-4 mt-2">
+        <router-link to="/" class="logo logo-dark">
+          <span class="logo-sm">
+            <img src="@/assets/HealthITLogo.png" alt height="100" />
+          </span>
+          <span class="logo-lg">
+            <img src="@/assets/HealthITLogo.png" alt height="100" />
+          </span>
+        </router-link>
 
-      <router-link to="/" class="logo logo-light">
-        <span class="logo-sm">
-          <img src="@/assets/images/logo-sm.png" alt height="22" />
-        </span>
-        <span class="logo-lg">
-          <img src="@/assets/images/logo-light.png" alt height="20" />
-        </span>
-      </router-link>
-    </div>
-
+        <router-link to="/" class="logo logo-light">
+          <span class="logo-sm">
+            <img src="@/assets/HealthITLogo.png" alt height="100" />
+          </span>
+          <span class="logo-lg">
+            <img src="@/assets/HealthITLogo.png" alt height="100" />
+          </span>
+        </router-link>
+      </div>
     <button
       type="button"
       @click="toggleMenu"
