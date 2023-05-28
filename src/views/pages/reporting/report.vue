@@ -122,6 +122,7 @@ export default {
       toggleFilter:false,
       email: "",
       user: null,
+      load:false,
       users: [],
       fromhour: "00:00",
       hours: [
@@ -154,6 +155,25 @@ export default {
     };
   },
   watch: {
+    qtryear(value){
+      this.qtryear=value;
+      this.from = this.qtryear + "-09-01";
+      this.to = this.qtryear + "-10-01";
+      //quater 1
+      this.qt1from = this.qtryear - 1 + "-10-01";
+      //qt1from: "2020-10-01",
+      this.qt1to = this.qtryear + "-12-31";
+      //quater 2
+      this.qt2from = this.qtryear + "-01-01";
+      this.qt2to = this.qtryear + "-03-31";
+      //quater 3
+      this.qt3from = this.qtryear + "-04-01";
+      this.qt3to = this.qtryear + "-06-31";
+      //quater 4
+      this.qt4from = this.qtryear + "-07-01";
+      this.qt4to = this.qtryear + "-09-30";
+      console.log(this.qt1from);
+    },
     viewReports(newValue) {
       var curentuser = JSON.parse(localStorage.user).email;
       var currentdate = new Date();
@@ -194,7 +214,7 @@ export default {
     },
   },
   created() {
-    this.updateDates();
+        this.updateDates();
   },
   mounted() {
     // Set the initial number of items
@@ -205,6 +225,7 @@ export default {
     this.updatefields();
     this.totalRows = this.items.length;
     this.viewReports = true;
+    this.updateDates();
 },
   methods: {
     updateDates() {
@@ -300,13 +321,14 @@ export default {
 
       return [year, month, day].join("-");
     },
-      genrpt(pl){
-              this.pl = pl;
-      if (this.report == "Comparison Data") {
-        this.getComparisonData()
-      }
+    genrpt(pl){
+      this.pl = pl;
+      this.load=true;
       if (this.report == "Mapping Data") {
         this.getmappedData()
+      }
+      if (this.report == "Comparison Data") {
+        this.getComparisonData()
       }
       if (this.report == "Users") {
         this.getUserdata()
@@ -408,7 +430,7 @@ export default {
               timer: 3000,
             });
           });
-        data = this.mappeddata.map((row) => ({
+        data = this.orderData.map((row) => ({
           Category: row.DATIM_Indicator_Category,
           //DATIM_Indicator_ID: row.DATIM_Indicator_ID,
           "DATIM Disag Name": row.DATIM_Disag_Name,
@@ -478,7 +500,7 @@ export default {
           .then((response) => {
             //console.log(response.data);
             this.orderData = response.data;
-            this.genrpt("l");
+            //this.genrpt("l");
             Swal.close();
           })
           .catch((e) => {
@@ -743,7 +765,14 @@ export default {
                                               </label>
                                             </div>
                                           </div>
-                                          <div class="col-sm-6 col-md-6 mt-2" v-if="togglequaters">
+                                          <div id="tickets-table-date-picker"  v-if="togglequaters">
+                                            <label>
+                                              Report Year&nbsp;
+                                              <input class="form-control" v-model="qtryear" @change="qtryear()" placeholder="Enter Report Year e.g 2022"
+                                                type="number"/>{{qtryear}}
+                                            </label>
+                                          </div>
+                                          <div class="col-sm-6 col-md-6" v-if="togglequaters">
                                             <div id="tickets-table-date-picker">
                                               <label class="d-inline-flex m-2">
                                                 Quater 1(Oct to Dec) &nbsp;
@@ -759,7 +788,7 @@ export default {
                                               </label>
                                             </div>
                                           </div>
-                                          <div class="col-sm-6 col-md-6 mt-2" v-if="togglequaters">
+                                          <div class="col-sm-6 col-md-6" v-if="togglequaters">
                                             <div id="tickets-table-date-picker">
                                               <label class="d-inline-flex m-2">
                                                 Quater 3(Apr to Jun) &nbsp;
@@ -796,8 +825,15 @@ export default {
                           genrpt('l'),
                           $bvModal.hide('modal-1'),
                         ]
-                        " v-b-modal.modal-Print style="margin-right: 10px">
-                        Generate</b-button>
+                        " style="margin-right: 10px" v-if="!load">
+                        Load Data</b-button>
+                        <b-button pill variant="outline-primary" @click="
+                          [
+                            genrpt('l'),
+                            $bvModal.hide('modal-1'),
+                          ]
+                          " v-b-modal.modal-Print style="margin-right: 10px" v-if="load">
+                          Generate Report</b-button>
                     </div>
 
                   </div>
