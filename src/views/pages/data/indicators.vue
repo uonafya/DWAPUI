@@ -80,50 +80,6 @@ export default {
           key: "created",
           sortable: true,
         },
-        {
-          key: "displayName",
-          sortable: true,
-        },
-        {
-          key: "displayNumeratorDescription",
-          sortable: true,
-        },
-        {
-          key: "denominatorDescription",
-          sortable: true,
-        },
-        {
-          key: "displayDenominatorDescription",
-          sortable: true,
-        },
-        {
-          key: "numeratorDescription",
-          sortable: true,
-        },
-        {
-          key: "dimensionItem",
-          sortable: true,
-        },
-        {
-          key: "displayFormName",
-          sortable: true,
-        },
-        {
-          key: "numerator",
-          sortable: true,
-        },
-        {
-          key: "denominator",
-          sortable: true,
-        },
-        {
-          key: "dimensionItemType",
-          sortable: true,
-        },
-        {
-          key: "indicatorType",
-          sortable: true,
-        },
         "action",
       ],
     };
@@ -212,94 +168,46 @@ export default {
               </div>
               <!-- End search -->
             </div>
-            <!-- Table -->
-            <div class="table-responsive mb-0">
-              <b-table class="table table-centered table-nowrap specifictd" fixed :items="indicators" :fields="fields"
-                responsive="sm" :per-page="perPage" :current-page="currentPage" :sort-by.sync="sortBy"
-                :sort-desc.sync="sortDesc" :filter="filter" :filter-included-fields="filterOn" @filtered="onFiltered">
-                <template v-slot:cell(check)="data">
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" :id="`contacusercheck${data.item.id}`" />
-                    <label class="custom-control-label" :for="`contacusercheck${data.item.id}`"></label>
-                  </div>
-                </template>
-                <template v-slot:cell(action)>
-                  <ul class="list-inline mb-0">
-                    <li class="list-inline-item">
-                      <a href="javascript:void(0);" class="px-2 text-primary" v-b-tooltip.hover title="Edit"
-                        v-b-modal.add-slot>
-                        <i class="uil uil-pen font-size-18"></i>
-                      </a>
-                    </li>
-                    <li class="list-inline-item">
-                      <a href="javascript:void(0);" class="px-2 text-danger" v-b-tooltip.hover title="Delete">
-                        <i class="uil uil-trash-alt font-size-18"></i>
-                      </a>
-                    </li>
-                    <b-dropdown class="list-inline-item" variant="white" right
-                      toggle-class="text-muted font-size-18 px-2">
-                      <template v-slot:button-content>
-                        <i class="uil uil-ellipsis-v"></i>
-                      </template>
-
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Action 1</a>
-                      <a class="dropdown-item" href="#">Action 2</a>
-                    </b-dropdown>
-                  </ul>
-                </template>
-              </b-table>
-            </div>
-            <!--modals-->
-            <b-modal id="add-slot" size="xl" :title="modaltitle">
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col-lg-12">
-                          <div class="mt-4">
-                            <h5 class="font-size-14 mb-4">
-                              <i class="mdi mdi-arrow-right text-primary me-1"></i>
-                              New Record
-                            </h5>
-                            <form @submit.prevent="add()">
-                              <div class="row">
-                                <div class="col-md-6">
-                                  <b-form-group label="ID Number" label-for="formrow-idno-input" class="mb-3">
-                                    <b-form-input id="formrow-idno-input" type="number" v-model="id"></b-form-input>
-                                  </b-form-group>
-                                </div>
-                                <div class="col-md-6">
-                                  <b-form-group label="Full Name" label-for="formrow-idno-input" class="mb-3">
-                                    <b-form-input id="formrow-name-input" type="text" v-model="id"></b-form-input>
-                                  </b-form-group>
-                                </div>
-                                <div class="col-md-6">
-                                  <b-form-group label="Home County" label-for="formrow-county-input" class="mb-3">
-                                    <b-form-input id="formrow-county-input" type="text" v-model="id"></b-form-input>
-                                  </b-form-group>
-                                </div>
-                                <div class="col-md-6">
-                                  <b-form-group label="Diagnosis" label-for="formrow-diag-input" class="mb-3">
-                                    <b-form-input id="formrow-diag-input" type="text" v-model="id"></b-form-input>
-                                  </b-form-group>
-                                </div>
-                              </div>
-                              <div class="mt-4">
-                                <b-button type="submit" variant="primary">Submit</b-button>
-                              </div>
-                            </form>
-                          </div>
-                        </div>
-                      </div>
+             <!-- Table -->
+              <div class="table-responsive mb-0">
+                <b-table class="table table-centered table-nowrap specifictd" fixed :items="indicators" :fields="fields"
+                  responsive="sm" :per-page="perPage" :current-page="currentPage" :sort-by.sync="sortBy"
+                  :sort-desc.sync="sortDesc" :filter="filter" :filter-included-fields="filterOn" @filtered="onFiltered">
+                  <template v-slot:cell(check)="data">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" :id="`contacusercheck${data.item.id}`" />
+                      <label class="custom-control-label" :for="`contacusercheck${data.item.id}`"></label>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </b-modal>
-            <!--end modals-->
+                  </template>
+                  <template v-slot:cell(action)>
+                    <ul class="list-inline mb-0">
+                      <li class="list-inline-item">
+                        <a href="javascript:void(0);" class="px-2 text-primary" v-b-tooltip.hover title="Edit"
+                          v-b-modal.add-slot>
+                          <i class="uil uil-pen font-size-18"></i>
+                        </a>
+                      </li>
+                      <li class="list-inline-item">
+                        <a href="javascript:void(0);" class="px-2 text-danger" v-b-tooltip.hover title="Delete">
+                          <i class="uil uil-trash-alt font-size-18"></i>
+                        </a>
+                      </li>
+                      <b-dropdown class="list-inline-item" variant="white" right
+                        toggle-class="text-muted font-size-18 px-2">
+                        <template v-slot:button-content>
+                          <i class="uil uil-ellipsis-v"></i>
+                        </template>
 
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Action 1</a>
+                        <a class="dropdown-item" href="#">Action 2</a>
+                      </b-dropdown>
+                    </ul>
+                  </template>
+                </b-table>
+              </div>
+            <!--modals-->
+            <!--end modals-->
             <div class="row">
               <div class="col">
                 <div class="dataTables_paginate paging_simple_numbers float-end">

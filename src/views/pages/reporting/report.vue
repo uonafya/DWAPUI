@@ -64,7 +64,7 @@ export default {
       exceldata: [],
       excelpdf: "",
       county: "All",
-      counties: ["All", "Kisumu County"],
+      counties: ["All",],
       cats: ["All", "TX_CURR"],
       category: "All",
       data_to_use: "Select a data source",
@@ -332,6 +332,11 @@ export default {
       }
       if (this.report == "Users") {
         this.getUserdata()
+      }
+      if (this.excelpdf == "PDF") {
+        this.$refs.uploadComponent.generatePDF("pdf");
+      } else {
+        this.$refs.uploadComponent.generatePDF("Excel");
       }
       this.$emit("myrecords", {
         records: this.records,

@@ -135,17 +135,13 @@ export default {
                     <b-form-group id="input-group-1" class="mb-3 text-white-50" label="Username" label-for="input-1">
                       <b-form-input id="input-1" v-model="username" type="text" placeholder="Enter username"
                         style="color: black;background: transparent;border: solid 1px black;"></b-form-input>
-                      <!-- <div v-if="submitted && $v.username.$error" class="invalid-feedback">
-                                                                                                      <span v-if="!$v.username.required">Username is required.</span>
-                                                                                                      <span v-if="!$v.username">Please enter valid username.</span>
-                                                                                                    </div> -->
                     </b-form-group>
 
                     <b-form-group id="input-group-2" class="mb-3 text-white-50">
                       <label for="input-2">Password</label>
                       <b-form-input id="input-2" v-model="password" type="password" placeholder="Enter password" :class="{
                         'is-invalid': submitted && $v.password.$error,
-                      }" style="color: black;background: transparent;border: solid 1px black;"></b-form-input>
+                      }" style="color: red;background: transparent;border: solid 1px black;"></b-form-input>
                       <div v-if="submitted && !$v.password.required" class="invalid-feedback">
                         Password is required.
                       </div>
