@@ -110,6 +110,7 @@ export default {
       report: null,
       mod: "",
       picked: "",
+      concodance:0,
       modules: [
         "All",
         "Data Alignment",
@@ -256,7 +257,7 @@ export default {
             .get("listcounties")
             .then((res) => {
               res.data.forEach((item) => {
-                this.counties.push(item.county_name);
+                this.counties.push(item.name);
               });
             });
         })
@@ -850,12 +851,12 @@ export default {
       </div>
     </div>
     <reportdet :title="report" :reportfor="report" :orderData="orderData" :pl="pl" :headers="headers"
-      :uniqueCars="uniqueCars" :printedpdf="printedpdf" :rpt="rpt" :exceldata="exceldata" v-show="false"
+      :uniqueCars="uniqueCars" :printedpdf="printedpdf" :rpt="rpt" :exceldata="exceldata" :concodance="concodance" v-show="false"
       ref="uploadComponent"></reportdet>
     <b-modal id="modal-Print" :title="report" hide-footer size="bg" centered>
       <reportdet :title="report" :reportfor="report" :orderData="orderData" :pl="pl" :headers="headers"
         :uniqueCars="uniqueCars" :shome="showme" :printedpdf="printedpdf" :rpt="rpt" :v-show="showme"
-        @sendEmail="sendEmail" :exceldata="exceldata" :mail_checkbox="mail_checkbox"></reportdet>
+        @sendEmail="sendEmail" :exceldata="exceldata" :mail_checkbox="mail_checkbox" :concodance="concodance"></reportdet>
     </b-modal>
   </Layout>
 </template>

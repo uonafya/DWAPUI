@@ -2,11 +2,13 @@
 import vue2Dropzone from "vue2-dropzone";
 import Swal from "sweetalert2";
 //import VueGoogleAutocomplete from "vue-google-autocomplete";
+import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import axios from "../../Axiosconfig";
 import Multiselect from "vue-multiselect";
 
-const newheaders = window.$headers;
+const newheaders = axios.defaults.headers;
 newheaders["Content-Type"] = "multipart/form-data";
+axios.defaults.headers = newheaders;
 export default {
   name: "mapping",
   props: {
@@ -22,16 +24,29 @@ export default {
   },
   data() {
     return {
-      files: new FormData(),
-      file: "",
+      files: [],
       concodance: 0,
-      dropzoneOptions: {
-        url: "https://httpbin.org/post",
-        thumbnailWidth: 150,
-        maxFilesize: 1024,
-        includeStyling: true,
-        addRemoveLinks: true,
-        headers: newheaders,
+      // dropzoneOptions: {
+      //   url: "https://httpbin.org/post",
+      //   thumbnailWidth: 150,
+      //   maxFilesize: 1024,
+      //   includeStyling: true,
+      //   addRemoveLinks: true,
+      //   headers: newheaders,
+      // },
+       dropzoneOptions: {
+        url: window.$http + "/api/listfiles/",
+        autoProcessQueue: false,
+        uploadMultiple: true,
+        maxFilesize: 2, // maximum size of each file in MB
+        //acceptedFiles: "*", // restrict to image files only
+        addRemoveLinks: true, // show remove button on uploaded files
+        params: {
+          file_id: 0, // replace with the actual product ID
+        },
+        dictDefaultMessage: 'Drop images here or click to upload',
+        maxFiles: 10,
+        headers: window.$headers,
       },
       tab1: true,
       tab2: false,
@@ -105,7 +120,7 @@ export default {
             .get("listcounties")
             .then((res) => {
               res.data.forEach((item) => {
-                this.counties.push(item.county_name);
+                this.counties.push(item.name);
               });
             });
         })
@@ -164,28 +179,38 @@ export default {
           });
         });
     },
-    handleFileUpload() {
-      this.file = this.$refs.file.files[0];
-      //this.file = event.target.files[0];
-    },
-    vfileAdded() {
-      this.file = this.$refs.myVueDropzone.getAcceptedFiles()[0];
-      console.log(this.$refs.myVueDropzone.getAcceptedFiles()[0]); //your origin image data url
-    },
     submitFile() {
       let formData = new FormData();
-      formData.append("mapping_files", this.file);
+       const files = this.$refs.myDropzone.getAcceptedFiles();
+      // create a new FormData object
+      // add each file to the FormData object
+      console.log(files);
+      files.forEach((file) => {
+        formData.append('mapping_file', file);
+      });
+      console.log(formData)
       axios
         .post("listfiles/", formData)
         .then((response) => {
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: response.staus + ":File submitted successfully!",
-            html: "Please click on the Mapping tab to initiate data mapping",
-            showConfirmButton: false,
-            timer: 3000,
-          });
+          if (response.status == 200){
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "File submitted successfully!",
+              html: "Please click on the Mapping tab to initiate data mapping",
+              showConfirmButton: false,
+              timer: 3000,
+            });
+          } else {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Error Submitting Files",
+              html: "Please check and try again!",
+              showConfirmButton: false,
+              timer: 3000,
+            });
+          }
           this.tab2 = true;
         })
         .catch((e) => {
@@ -579,14 +604,11 @@ export default {
                     <div class="my-3">
                       Upload Data Mapping Files, ONE by ONE
                     </div>
-                    <vue-dropzone id="dropzone" ref="myVueDropzone" :use-custom-slot="true" :options="dropzoneOptions"
-                      @vdropzone-file-added="vfileAdded" @vdropzone-success="vfileAdded">
-                      <div class="dropzone-custom-content">
-                        <i class="display-4 text-muted bx bxs-cloud-upload"></i>
-                        <h4>Drop files here or click to upload.</h4>
-                      </div>
-                    </vue-dropzone>
-                  </div>
+                     <div class="p-4 border-top">
+                      <vue-dropzone ref="myDropzone" id="dropzone" :options="dropzoneOptions">
+                      </vue-dropzone>
+                    </div>
+                    </div>
                   <div class="col-lg-6 m-auto">
                     <div class="mt-lg-5">
                       <b-button type="submit" variant="dark" class="uil uil-upload-alt m-4" @click="submitFile()">Finish
@@ -681,7 +703,7 @@ export default {
                                                 </div>
                                                 <div class="row">
                                                   <div class="col-sm-6 col-md-6 mt-2" v-if="togglequaters">
-                                                    <div id="tickets-table">
+                                                    <div id="tickets-table">{{ qtryear }}
                                                       <label class="d-inline-flex m-auto">
                                                         Year&nbsp;
                                                         <b-form-input type="number" class="mr-n2" v-model="qtryear">
