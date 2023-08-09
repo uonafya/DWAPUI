@@ -44,7 +44,7 @@ export default {
         params: {
           file_id: 0, // replace with the actual product ID
         },
-        dictDefaultMessage: 'Drop images here or click to upload',
+        dictDefaultMessage: 'Drop files here or click to upload',
         maxFiles: 10,
         headers: window.$headers,
       },
@@ -602,7 +602,7 @@ export default {
                 <div class="row d-flex flex-row">
                   <div class="col-lg-6 col-md-3">
                     <div class="my-3">
-                      Upload Data Mapping Files, ONE by ONE
+                      Upload Data Mapping Files
                     </div>
                      <div class="p-4 border-top">
                       <vue-dropzone ref="myDropzone" id="dropzone" :options="dropzoneOptions">

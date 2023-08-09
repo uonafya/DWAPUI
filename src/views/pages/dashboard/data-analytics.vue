@@ -139,7 +139,7 @@ export default {
       axios
         .get(`insights/group_concodance?from_date=2021-10-01&to_date=2022-12-31&category=${this.indicator}`)
         .then((response) => {
-          const categories = response.data.map(item => item.county.toString());
+          const categories = response.data.map(item => item.county__name.toString());
           const less90Data = response.data.map(item => item.less_90);
           const between90_100Data = response.data.map(item => item.between_90_100);
           const more100Data = response.data.map(item => item.more_100);
