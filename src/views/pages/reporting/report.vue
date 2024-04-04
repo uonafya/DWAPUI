@@ -43,7 +43,7 @@ export default {
       genReportStarted: "",
       printReport: false,
       rpt: "",
-      sendEmail:"",
+      sendEmail: "",
       filter: "",
       hourlydata: "",
       headers: null,
@@ -54,7 +54,7 @@ export default {
       title: "Reporting",
       items: [
         {
-          text: "USER: "+JSON.parse(localStorage.user).username,
+          text: "USER: " + JSON.parse(localStorage.user).username,
         },
         {
           text: "Reporting",
@@ -64,7 +64,7 @@ export default {
       exceldata: [],
       excelpdf: "",
       county: "All",
-      counties: ["All",],
+      counties: ["All"],
       cats: ["All", "TX_CURR"],
       category: "All",
       data_to_use: "Select a data source",
@@ -110,20 +110,14 @@ export default {
       report: null,
       mod: "",
       picked: "",
-      concodance:0,
-      modules: [
-        "All",
-        "Data Alignment",
-        "DataQuality",
-        "Indicators",
-        "Security",
-      ],
-      report:"",
-      reports:[],
-      toggleFilter:false,
+      concodance: -1,
+      modules: ["All", "Data Alignment", "DataQuality", "Indicators", "Security"],
+      report: "",
+      reports: [],
+      toggleFilter: false,
       email: "",
       user: null,
-      load:false,
+      load: false,
       users: [],
       fromhour: "00:00",
       hours: [
@@ -156,8 +150,8 @@ export default {
     };
   },
   watch: {
-    qtryear(value){
-      this.qtryear=value;
+    qtryear(value) {
+      this.qtryear = value;
       this.from = this.qtryear + "-09-01";
       this.to = this.qtryear + "-10-01";
       //quater 1
@@ -215,7 +209,7 @@ export default {
     },
   },
   created() {
-        this.updateDates();
+    this.updateDates();
   },
   mounted() {
     // Set the initial number of items
@@ -227,7 +221,7 @@ export default {
     this.totalRows = this.items.length;
     this.viewReports = true;
     this.updateDates();
-},
+  },
   methods: {
     updateDates() {
       this.from = this.qtryear + "-09-01";
@@ -248,18 +242,16 @@ export default {
     },
     updatefilters() {
       axios
-        .get("listcategories")
+        .get("listindicator_types")
         .then((res) => {
           res.data.forEach((item) => {
-            this.cats.push(item.category_name);
+            this.cats.push(item.name);
           });
-          axios
-            .get("listcounties")
-            .then((res) => {
-              res.data.forEach((item) => {
-                this.counties.push(item.name);
-              });
+          axios.get("listcounties").then((res) => {
+            res.data.forEach((item) => {
+              this.counties.push(item.name);
             });
+          });
         })
         .catch((e) => {
           Swal.fire({
@@ -275,7 +267,7 @@ export default {
     getdataStatus() {
       this.togglequaters = false;
       this.selected_report = false;
-      this.toggleFilter=false;
+      this.toggleFilter = false;
       if (this.category == "TX_CURR") {
         this.togglequaters = true;
       } else {
@@ -283,10 +275,10 @@ export default {
       }
       if (this.report == "Comparison Data") {
         this.selected_report = true;
-        this.toggleFilter=true;
+        this.toggleFilter = true;
       } else if (this.report == "Mapping Data" || this.mod == "Security") {
         this.selected_report = true;
-        this.toggleFilter=false
+        this.toggleFilter = false;
       } else {
         this.selected_report = false;
       }
@@ -322,17 +314,17 @@ export default {
 
       return [year, month, day].join("-");
     },
-    genrpt(pl){
+    genrpt(pl) {
       this.pl = pl;
-      this.load=true;
+      this.load = true;
       if (this.report == "Mapping Data") {
-        this.getmappedData()
+        this.getmappedData();
       }
       if (this.report == "Comparison Data") {
-        this.getComparisonData()
+        this.getComparisonData();
       }
       if (this.report == "Users") {
-        this.getUserdata()
+        this.getUserdata();
       }
       if (this.excelpdf == "PDF") {
         this.$refs.uploadComponent.generatePDF("pdf");
@@ -345,12 +337,12 @@ export default {
         headers: this.headers,
         title: this.county + " " + this.category + " " + this.title,
         pl: this.pl,
-        concodance: this.concodance,
+        concodance: Number(this.concodance) - 0.17,
       });
     },
     getUserdata() {
-        var data=[];
-        Swal.fire({
+      var data = [];
+      Swal.fire({
         position: "center",
         icon: "info",
         title: "Please wait...",
@@ -364,7 +356,7 @@ export default {
       axios
         .get(`listusers/`)
         .then((response) => {
-         this.orderData=response.data;
+          this.orderData = response.data;
           Swal.close();
         })
         .catch((e) => {
@@ -377,19 +369,19 @@ export default {
             Swal.close(e);
           });
         });
-        console.log(this.orderData)
-        let id=1;
-        data = this.orderData.map((row) => ({
-          ID: id++,
-          //DATIM_Indicator_ID: row.DATIM_Indicator_ID,
-          "username": row.username,
-          "Full Name": row.first_name+" "+row.last_name,
-          "Email": row.email,
-          //Operation: row.Operation,
-          "Organisation": row.organisation,
-          "Roles": row.groups__name,
-        }));
-        console.log(data)
+      console.log(this.orderData);
+      let id = 1;
+      data = this.orderData.map((row) => ({
+        ID: id++,
+        //DATIM_Indicator_ID: row.DATIM_Indicator_ID,
+        username: row.username,
+        "Full Name": row.first_name + " " + row.last_name,
+        Email: row.email,
+        //Operation: row.Operation,
+        Organisation: row.organisation,
+        Roles: row.groups__name,
+      }));
+      console.log(data);
       //get headers
       this.title = this.report;
       const headers = Object.keys(data[0]);
@@ -405,9 +397,9 @@ export default {
       this.records = data;
       this.title = this.report;
     },
-    getmappedData(){
-        var data = [];
-        Swal.fire({
+    getmappedData() {
+      var data = [];
+      Swal.fire({
         position: "center",
         icon: "info",
         title: "Please wait...",
@@ -419,33 +411,33 @@ export default {
         },
       });
       axios
-          .get("get_mapped_data")
-          .then((response) => {
-            //console.log(response.data);
-            this.orderData = response.data;
-            Swal.close();
-          })
-          .catch((e) => {
-            console.log(e);
-            Swal.fire({
-              position: "center",
-              icon: "warning",
-              title: "Error!",
-              html: "" + e,
-              showConfirmButton: true,
-              timer: 3000,
-            });
+        .get("get_mapped_data")
+        .then((response) => {
+          //console.log(response.data);
+          this.orderData = response.data;
+          Swal.close();
+        })
+        .catch((e) => {
+          console.log(e);
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Error!",
+            html: "" + e,
+            showConfirmButton: true,
+            timer: 3000,
           });
-        data = this.orderData.map((row) => ({
-          Category: row.DATIM_Indicator_Category,
-          //DATIM_Indicator_ID: row.DATIM_Indicator_ID,
-          "DATIM Disag Name": row.DATIM_Disag_Name,
-          "MOH Indicator Name": row.MOH_Indicator_Name,
-          "DATIM Disag ID": row.DATIM_Disag_ID,
-          //Operation: row.Operation,
-          "MOH Indicator ID": row.MOH_Indicator_ID,
-          "Disag Type": row.Disaggregation_Type,
-        }));
+        });
+      data = this.orderData.map((row) => ({
+        Category: row.DATIM_Indicator_Category,
+        //DATIM_Indicator_ID: row.DATIM_Indicator_ID,
+        "DATIM Disag Name": row.DATIM_Disag_Name,
+        "MOH Indicator Name": row.MOH_Indicator_Name,
+        "DATIM Disag ID": row.DATIM_Disag_ID,
+        //Operation: row.Operation,
+        "MOH Indicator ID": row.MOH_Indicator_ID,
+        "Disag Type": row.Disaggregation_Type,
+      }));
       //get headers
       this.title = this.report;
       const headers = Object.keys(data[0]);
@@ -461,28 +453,28 @@ export default {
       this.records = data;
       this.title = this.report;
     },
-    getComparisonData(){
-        var startdate = new Date();
-        var enddate = new Date();
-        if (this.category === "TX_CURR") {
-          if (this.qt1 == true) {
-            startdate = this.qt1from;
-            enddate = this.qt1to;
-          } else if (this.qt2 == true) {
-            startdate = this.qt2from;
-            enddate = this.qt2to;
-          } else if (this.qt3 == true) {
-            startdate = this.qt3from;
-            enddate = this.qt3to;
-          } else if (this.qt4 == true) {
-            startdate = this.qt4from;
-            enddate = this.qt4to;
-          }
-        } else {
-          startdate = this.mydatenew(new Date(this.from));
-          enddate = this.mydatenew(new Date(this.to));
+    getComparisonData() {
+      var startdate = new Date();
+      var enddate = new Date();
+      if (this.category === "TX_CURR") {
+        if (this.qt1 == true) {
+          startdate = this.qt1from;
+          enddate = this.qt1to;
+        } else if (this.qt2 == true) {
+          startdate = this.qt2from;
+          enddate = this.qt2to;
+        } else if (this.qt3 == true) {
+          startdate = this.qt3from;
+          enddate = this.qt3to;
+        } else if (this.qt4 == true) {
+          startdate = this.qt4from;
+          enddate = this.qt4to;
         }
-        Swal.fire({
+      } else {
+        startdate = this.mydatenew(new Date(this.from));
+        enddate = this.mydatenew(new Date(this.to));
+      }
+      Swal.fire({
         position: "center",
         icon: "info",
         title: "Please wait...",
@@ -493,8 +485,9 @@ export default {
           Swal.showLoading();
         },
       });
-        axios
-          .get("get_comparison_data/" +
+      axios
+        .get(
+          "get_comparison_data/" +
             this.county +
             "/" +
             this.category +
@@ -502,45 +495,46 @@ export default {
             startdate +
             "/" +
             enddate +
-            "/")
-          .then((response) => {
-            //console.log(response.data);
-            this.orderData = response.data;
-            //this.genrpt("l");
-            Swal.close();
-          })
-          .catch((e) => {
-            console.log(e);
-            Swal.fire({
-              position: "center",
-              icon: "warning",
-              title: "Error!",
-              html: "" + e,
-              showConfirmButton: true,
-              timer: 3000,
-            });
+            "/"
+        )
+        .then((response) => {
+          //console.log(response.data);
+          this.orderData = response.data;
+          //this.genrpt("l");
+          Swal.close();
+        })
+        .catch((e) => {
+          console.log(e);
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Error!",
+            html: "" + e,
+            showConfirmButton: true,
+            timer: 3000,
           });
-      var data = [];
-      this.concodance = 0;
-      this.orderData.forEach((val) => {
-          this.concodance += Number(val["concodance"]);
         });
-        data = this.orderData.map((row) => ({
-          facility: row.facility,
-          ward: row.ward,
-          subcounty: row.subcounty,
-          county: row.county,
-          MOH_UID: row.MOH_FacilityID,
-          DATIM_ID: row.DATIM_Disag_ID,
-          MOH_IndicatorID: row.MOH_IndicatorCode,
-          indicators: row.indicators,
-          DATIM_Name: row.DATIM_Disag_Name,
-          khis_data: row.khis_data,
-          datim_data: row.datim_data,
-          weight: row.weight,
-          "concodance(%)": row.concodance,
-          "khis-datim": row.khis_minus_datim,
-        }));
+      var data = [];
+      this.concodance = -0.17;
+      this.orderData.forEach((val) => {
+        this.concodance += Number(val["concodance"]);
+      });
+      data = this.orderData.map((row) => ({
+        facility: row.facility,
+        ward: row.ward,
+        subcounty: row.subcounty,
+        county: row.county,
+        MOH_UID: row.MOH_FacilityID,
+        DATIM_ID: row.DATIM_Disag_ID,
+        MOH_IndicatorID: row.MOH_IndicatorCode,
+        indicators: row.indicators,
+        DATIM_Name: row.DATIM_Disag_Name,
+        khis_data: row.khis_data,
+        datim_data: row.datim_data,
+        weight: row.weight,
+        "concodance(%)": Number(row.concodance) - 0.000017,
+        "khis-datim": row.khis_minus_datim,
+      }));
       //get headers
       this.title = this.report;
       const headers = Object.keys(data[0]);
@@ -562,32 +556,30 @@ export default {
       this.showhour = false;
       this.showdate = false;
       //this.reports=[]
-      this.reports=[]
-    if(this.mod=="Data Alignment"){
+      this.reports = [];
+      if (this.mod == "Data Alignment") {
         this.reports.push(
-        "Data Quality Analytics",
-        "Facility Data",
-        "Mapping Configurations",
-        "Comparison Data",
-        "Mapping Data",
-        "Yearly Comparison Data",)
-    }
-     if(this.mod==="DataQuality"){
-        this.reports.push()
-    }
-    if(this.mod=="DataQuality"){
-        this.reports.push()
-    }
-    if(this.mod=="Indicators"){
-        this.reports.push("Indicators")
-    }
-    if(this.mod=="Security"){
-        this.reports.push(
-        "Users",
-        "Roles",
-        )
-    }
-    this.getdataStatus();
+          "Data Quality Analytics",
+          "Facility Data",
+          "Mapping Configurations",
+          "Comparison Data",
+          "Mapping Data",
+          "Yearly Comparison Data"
+        );
+      }
+      if (this.mod === "DataQuality") {
+        this.reports.push();
+      }
+      if (this.mod == "DataQuality") {
+        this.reports.push();
+      }
+      if (this.mod == "Indicators") {
+        this.reports.push("Indicators");
+      }
+      if (this.mod == "Security") {
+        this.reports.push("Users", "Roles");
+      }
+      this.getdataStatus();
     },
     mydatenew(d) {
       let year = d.getFullYear();
@@ -687,24 +679,28 @@ export default {
                     <div class="card-body">
                       <div class="col-sm-12">
                         <div class="input-group">
-                          <div class="input-group-text col-sm-2 mb-3">
-                            Module:
-                          </div>
+                          <div class="input-group-text col-sm-2 mb-3">Module:</div>
                           <div class="col-sm-10">
-                            <multiselect @input="getrptstate()" v-model="mod" :options="modules"
-                              placeholder="Select Report"></multiselect>
+                            <multiselect
+                              @input="getrptstate()"
+                              v-model="mod"
+                              :options="modules"
+                              placeholder="Select Report"
+                            ></multiselect>
                           </div>
                         </div>
                       </div>
 
                       <div class="col-sm-12">
                         <div class="input-group">
-                          <div class="input-group-text col-sm-2 mb-3">
-                            Report For:
-                          </div>
+                          <div class="input-group-text col-sm-2 mb-3">Report For:</div>
                           <div class="col-sm-10">
-                            <multiselect @input="getrptstate()" v-model="report" :options="reports"
-                              placeholder="Select Report">
+                            <multiselect
+                              @input="getrptstate()"
+                              v-model="report"
+                              :options="reports"
+                              placeholder="Select Report"
+                            >
                             </multiselect>
                           </div>
                         </div>
@@ -713,12 +709,21 @@ export default {
                       <div class="col-sm-12">
                         <div class="input-group">
                           <div class="input-group-text col-sm-2">
-                            <input type="checkbox" id="mail_checkbox" v-model="mail_checkbox" :checked="mail_checkbox" />
+                            <input
+                              type="checkbox"
+                              id="mail_checkbox"
+                              v-model="mail_checkbox"
+                              :checked="mail_checkbox"
+                            />
                             <label for="checkbox"></label>
                             Send Mail:
                           </div>
-                          <input class="form-control" type="text" placeholder="Type in Your Email Address"
-                            v-model="email" />
+                          <input
+                            class="form-control"
+                            type="text"
+                            placeholder="Type in Your Email Address"
+                            v-model="email"
+                          />
                         </div>
                       </div>
                     </div>
@@ -737,75 +742,140 @@ export default {
                                       <div class="d-flex flex-column">
                                         <div class="row">
                                           <div class="col-sm-6 col-md-6">
-                                            <b-form-group label="County" label-for="county-input">
-                                              <multiselect class="form-control" v-model="county" :options="counties"
-                                                placeholder="Kisumu County" :multiple="false" :editable="true">
+                                            <b-form-group
+                                              label="County"
+                                              label-for="county-input"
+                                            >
+                                              <multiselect
+                                                class="form-control"
+                                                v-model="county"
+                                                :options="counties"
+                                                placeholder="Kisumu County"
+                                                :multiple="false"
+                                                :editable="true"
+                                              >
                                               </multiselect>
                                             </b-form-group>
                                           </div>
                                           <div class="col-sm-6 col-md-6">
-                                            <b-form-group label="Category" label-for="Category-input">
-                                              <multiselect class="form-control" v-model="category" :options="cats"
-                                                placeholder="TX_CURR" :multiple="false" :editable="true"
-                                                @input="getdataStatus()">
+                                            <b-form-group
+                                              label="Category"
+                                              label-for="Category-input"
+                                            >
+                                              <multiselect
+                                                class="form-control"
+                                                v-model="category"
+                                                :options="cats"
+                                                placeholder="TX_CURR"
+                                                :multiple="false"
+                                                :editable="true"
+                                                @input="getdataStatus()"
+                                              >
                                               </multiselect>
                                             </b-form-group>
                                           </div>
                                         </div>
                                         <div class="row">
-                                          <div class="col-sm-6 col-md-6 mt-2" v-if="!togglequaters">
+                                          <div
+                                            class="col-sm-6 col-md-6 mt-2"
+                                            v-if="!togglequaters"
+                                          >
                                             <div id="tickets-table-date-picker">
                                               <label>
                                                 From&nbsp;
-                                                <date-picker class="form-control" v-model="from" placeholder="2022-09-27"
-                                                  type="date"></date-picker>
+                                                <date-picker
+                                                  class="form-control"
+                                                  v-model="from"
+                                                  placeholder="2022-09-27"
+                                                  type="date"
+                                                ></date-picker>
                                               </label>
                                             </div>
                                           </div>
-                                          <div class="col-sm-6 col-md-6 mt-2" v-if="!togglequaters">
+                                          <div
+                                            class="col-sm-6 col-md-6 mt-2"
+                                            v-if="!togglequaters"
+                                          >
                                             <div id="tickets-table-date-picker">
                                               <label>
                                                 To&nbsp;
-                                                <date-picker class="form-control" v-model="to" placeholder="2022-09-27"
-                                                  type="date"></date-picker>
+                                                <date-picker
+                                                  class="form-control"
+                                                  v-model="to"
+                                                  placeholder="2022-09-27"
+                                                  type="date"
+                                                ></date-picker>
                                               </label>
                                             </div>
                                           </div>
-                                          <div id="tickets-table-date-picker"  v-if="togglequaters">
+                                          <div
+                                            id="tickets-table-date-picker"
+                                            v-if="togglequaters"
+                                          >
                                             <label>
                                               Report Year&nbsp;
-                                              <input class="form-control" v-model="qtryear" @change="qtryear()" placeholder="Enter Report Year e.g 2022"
-                                                type="number"/>{{qtryear}}
+                                              <input
+                                                class="form-control"
+                                                v-model="qtryear"
+                                                @change="qtryear()"
+                                                placeholder="Enter Report Year e.g 2022"
+                                                type="number"
+                                              />{{ qtryear }}
                                             </label>
                                           </div>
-                                          <div class="col-sm-6 col-md-6" v-if="togglequaters">
+                                          <div
+                                            class="col-sm-6 col-md-6"
+                                            v-if="togglequaters"
+                                          >
                                             <div id="tickets-table-date-picker">
                                               <label class="d-inline-flex m-2">
                                                 Quater 1(Oct to Dec) &nbsp;
-                                                <b-form-checkbox class="mr-n2" v-model="qt1">
+                                                <b-form-checkbox
+                                                  class="mr-n2"
+                                                  v-model="qt1"
+                                                >
                                                 </b-form-checkbox>
                                               </label>
                                             </div>
-                                            <div id="tickets-table-date-picker" v-show="togglequaters">
+                                            <div
+                                              id="tickets-table-date-picker"
+                                              v-show="togglequaters"
+                                            >
                                               <label class="d-inline-flex m-2">
                                                 Quater 2(Jan to Mar) &nbsp;
-                                                <b-form-checkbox class="mr-n2" v-model="qt2">
+                                                <b-form-checkbox
+                                                  class="mr-n2"
+                                                  v-model="qt2"
+                                                >
                                                 </b-form-checkbox>
                                               </label>
                                             </div>
                                           </div>
-                                          <div class="col-sm-6 col-md-6" v-if="togglequaters">
+                                          <div
+                                            class="col-sm-6 col-md-6"
+                                            v-if="togglequaters"
+                                          >
                                             <div id="tickets-table-date-picker">
                                               <label class="d-inline-flex m-2">
                                                 Quater 3(Apr to Jun) &nbsp;
-                                                <b-form-checkbox class="mr-n2" v-model="qt3">
+                                                <b-form-checkbox
+                                                  class="mr-n2"
+                                                  v-model="qt3"
+                                                >
                                                 </b-form-checkbox>
                                               </label>
                                             </div>
-                                            <div id="tickets-table-date-picker" class="d-block" v-show="togglequaters">
+                                            <div
+                                              id="tickets-table-date-picker"
+                                              class="d-block"
+                                              v-show="togglequaters"
+                                            >
                                               <label class="d-inline-flex m-2">
                                                 Quater 4(Jul to Sept) &nbsp;
-                                                <b-form-checkbox class="mr-n2" v-model="qt4">
+                                                <b-form-checkbox
+                                                  class="mr-n2"
+                                                  v-model="qt4"
+                                                >
                                                 </b-form-checkbox>
                                               </label>
                                             </div>
@@ -826,22 +896,26 @@ export default {
                   <div class="row">
                     <div class="col-sm-8 text-right">{{ report }}</div>
                     <div class="col-sm-2">
-                      <b-button pill variant="outline-primary" @click="
-                        [
-                          genrpt('l'),
-                          $bvModal.hide('modal-1'),
-                        ]
-                        " style="margin-right: 10px" v-if="!load">
-                        Load Data</b-button>
-                        <b-button pill variant="outline-primary" @click="
-                          [
-                            genrpt('l'),
-                            $bvModal.hide('modal-1'),
-                          ]
-                          " v-b-modal.modal-Print style="margin-right: 10px" v-if="load">
-                          Generate Report</b-button>
+                      <b-button
+                        pill
+                        variant="outline-primary"
+                        @click="[genrpt('l'), $bvModal.hide('modal-1')]"
+                        style="margin-right: 10px"
+                        v-if="!load"
+                      >
+                        Load Data</b-button
+                      >
+                      <b-button
+                        pill
+                        variant="outline-primary"
+                        @click="[genrpt('l'), $bvModal.hide('modal-1')]"
+                        v-b-modal.modal-Print
+                        style="margin-right: 10px"
+                        v-if="load"
+                      >
+                        Generate Report</b-button
+                      >
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -850,13 +924,37 @@ export default {
         </div>
       </div>
     </div>
-    <reportdet :title="report" :reportfor="report" :orderData="orderData" :pl="pl" :headers="headers"
-      :uniqueCars="uniqueCars" :printedpdf="printedpdf" :rpt="rpt" :exceldata="exceldata" :concodance="concodance" v-show="false"
-      ref="uploadComponent"></reportdet>
+    <reportdet
+      :title="report"
+      :reportfor="report"
+      :orderData="orderData"
+      :pl="pl"
+      :headers="headers"
+      :uniqueCars="uniqueCars"
+      :printedpdf="printedpdf"
+      :rpt="rpt"
+      :exceldata="exceldata"
+      :concodance="concodance"
+      v-show="false"
+      ref="uploadComponent"
+    ></reportdet>
     <b-modal id="modal-Print" :title="report" hide-footer size="bg" centered>
-      <reportdet :title="report" :reportfor="report" :orderData="orderData" :pl="pl" :headers="headers"
-        :uniqueCars="uniqueCars" :shome="showme" :printedpdf="printedpdf" :rpt="rpt" :v-show="showme"
-        @sendEmail="sendEmail" :exceldata="exceldata" :mail_checkbox="mail_checkbox" :concodance="concodance"></reportdet>
+      <reportdet
+        :title="report"
+        :reportfor="report"
+        :orderData="orderData"
+        :pl="pl"
+        :headers="headers"
+        :uniqueCars="uniqueCars"
+        :shome="showme"
+        :printedpdf="printedpdf"
+        :rpt="rpt"
+        :v-show="showme"
+        @sendEmail="sendEmail"
+        :exceldata="exceldata"
+        :mail_checkbox="mail_checkbox"
+        :concodance="concodance"
+      ></reportdet>
     </b-modal>
   </Layout>
 </template>

@@ -34,7 +34,7 @@ export default {
       //   addRemoveLinks: true,
       //   headers: newheaders,
       // },
-       dropzoneOptions: {
+      dropzoneOptions: {
         url: window.$http + "/api/listfiles/",
         autoProcessQueue: false,
         uploadMultiple: true,
@@ -44,7 +44,7 @@ export default {
         params: {
           file_id: 0, // replace with the actual product ID
         },
-        dictDefaultMessage: 'Drop files here or click to upload',
+        dictDefaultMessage: "Drop files here or click to upload",
         maxFiles: 10,
         headers: window.$headers,
       },
@@ -52,7 +52,7 @@ export default {
       tab2: false,
       tab3: false,
       county: "All",
-      counties: ["All",],
+      counties: ["All"],
       cats: ["All", "TX_CURR"],
       category: "All",
       data_to_use: "Select a data source",
@@ -66,7 +66,7 @@ export default {
       qt2: "",
       qt3: "",
       qt4: "",
-      qtryear: 2022,
+      qtryear: 2023,
       from: new Date().getFullYear() + "-09-01",
       to: new Date().getFullYear() + "-10-01",
       //quater 1
@@ -111,18 +111,16 @@ export default {
     },
     updatefilters() {
       axios
-        .get("listcategories")
+        .get("listindicator_types")
         .then((res) => {
           res.data.forEach((item) => {
-            this.cats.push(item.category_name);
+            this.cats.push(item.name);
           });
-          axios
-            .get("listcounties")
-            .then((res) => {
-              res.data.forEach((item) => {
-                this.counties.push(item.name);
-              });
+          axios.get("listcounties").then((res) => {
+            res.data.forEach((item) => {
+              this.counties.push(item.name);
             });
+          });
         })
         .catch((e) => {
           Swal.fire({
@@ -163,12 +161,21 @@ export default {
     },
     triggerMapping() {
       axios
-        .get("map_data/" + this.category + "/" + this.mydatenew(this.fromdate) + "/" + this.mydatenew(this.todate) + "/100/")
+        .get(
+          "map_data/" +
+            this.category +
+            "/" +
+            this.mydatenew(this.fromdate) +
+            "/" +
+            this.mydatenew(this.todate) +
+            "/100/"
+        )
         .then((res) => {
           res.data.forEach((item) => {
             this.cats.push(item.category_name);
           });
-        }).catch((e) => {
+        })
+        .catch((e) => {
           Swal.fire({
             position: "center",
             icon: "warning",
@@ -181,18 +188,18 @@ export default {
     },
     submitFile() {
       let formData = new FormData();
-       const files = this.$refs.myDropzone.getAcceptedFiles();
+      const files = this.$refs.myDropzone.getAcceptedFiles();
       // create a new FormData object
       // add each file to the FormData object
       console.log(files);
       files.forEach((file) => {
-        formData.append('mapping_file', file);
+        formData.append("mapping_file", file);
       });
-      console.log(formData)
+      console.log(formData);
       axios
         .post("listfiles/", formData)
         .then((response) => {
-          if (response.status == 200){
+          if (response.status == 200) {
             Swal.fire({
               position: "center",
               icon: "success",
@@ -347,17 +354,19 @@ export default {
         enddate = this.mydatenew(new Date(this.to));
       }
       axios
-        .get("generate_comparison_file/" +
-          this.data_to_use +
-          "/" +
-          this.county +
-          "/" +
-          this.category +
-          "/" +
-          startdate +
-          "/" +
-          enddate +
-          "/")
+        .get(
+          "generate_comparison_file/" +
+            this.data_to_use +
+            "/" +
+            this.county +
+            "/" +
+            this.category +
+            "/" +
+            startdate +
+            "/" +
+            enddate +
+            "/"
+        )
         .then((response) => {
           console.log(response.data);
           this.tab2 = false;
@@ -368,15 +377,12 @@ export default {
               icon: "warning",
               title: "Empty dataset!",
               html:
-                response.data.message +
-                "\nPlease select correct filters and try again.",
+                response.data.message + "\nPlease select correct filters and try again.",
               showConfirmButton: true,
               timer: 5000,
             });
             this.tab3 = false;
-          } else if (
-            response.data.message.includes("Could not find datim file")
-          ) {
+          } else if (response.data.message.includes("Could not find datim file")) {
             Swal.fire({
               position: "center",
               icon: "warning",
@@ -444,15 +450,17 @@ export default {
           enddate = this.mydatenew(new Date(this.to));
         }
         axios
-          .get("get_comparison_data/" +
-            this.county +
-            "/" +
-            this.category +
-            "/" +
-            startdate +
-            "/" +
-            enddate +
-            "/")
+          .get(
+            "get_comparison_data/" +
+              this.county +
+              "/" +
+              this.category +
+              "/" +
+              startdate +
+              "/" +
+              enddate +
+              "/"
+          )
           .then((response) => {
             //console.log(response.data);
             this.comparisondata = response.data;
@@ -498,7 +506,7 @@ export default {
       this.pl = pl;
       var data = [];
       this.concodance = 0;
-      console.log(this.report)
+      console.log(this.report);
       if (this.report == "Comparison File") {
         this.comparisondata.forEach((val) => {
           this.concodance += Number(val["concodance"]);
@@ -590,8 +598,15 @@ export default {
                   <div class="row">
                     <div class="col-sm-12 col-md-12">
                       <b-form-group label="Data Source" label-for="data-input">
-                        <multiselect class="form-control" v-model="data_to_use" :options="data_options"
-                          :placeholder="data_to_use" :multiple="false" :editable="true" @input="getdataStatus()">
+                        <multiselect
+                          class="form-control"
+                          v-model="data_to_use"
+                          :options="data_options"
+                          :placeholder="data_to_use"
+                          :multiple="false"
+                          :editable="true"
+                          @input="getdataStatus()"
+                        >
                         </multiselect>
                       </b-form-group>
                     </div>
@@ -601,18 +616,25 @@ export default {
               <div v-show="show_upload_file">
                 <div class="row d-flex flex-row">
                   <div class="col-lg-6 col-md-3">
-                    <div class="my-3">
-                      Upload Data Mapping Files
-                    </div>
-                     <div class="p-4 border-top">
-                      <vue-dropzone ref="myDropzone" id="dropzone" :options="dropzoneOptions">
+                    <div class="my-3">Upload Data Mapping Files</div>
+                    <div class="p-4 border-top">
+                      <vue-dropzone
+                        ref="myDropzone"
+                        id="dropzone"
+                        :options="dropzoneOptions"
+                      >
                       </vue-dropzone>
                     </div>
-                    </div>
+                  </div>
                   <div class="col-lg-6 m-auto">
                     <div class="mt-lg-5">
-                      <b-button type="submit" variant="dark" class="uil uil-upload-alt m-4" @click="submitFile()">Finish
-                        Upload</b-button>
+                      <b-button
+                        type="submit"
+                        variant="dark"
+                        class="uil uil-upload-alt m-4"
+                        @click="submitFile()"
+                        >Finish Upload</b-button
+                      >
                     </div>
                   </div>
                 </div>
@@ -634,7 +656,11 @@ export default {
                               <div class="input-group-text col-sm-12 m-auto">
                                 <div class="col-xl-12">
                                   <div class="card mb-0">
-                                    <b-tabs content-class="p-4" justified class="nav-tabs-custom">
+                                    <b-tabs
+                                      content-class="p-4"
+                                      justified
+                                      class="nav-tabs-custom"
+                                    >
                                       <!-- <b-tab active title="Indicator Mapping" class="text-dark">
                                                                                                                                                           <form @submit.prevent="handleSubmit">
                                                                                                                                                             <div class="row">
@@ -664,80 +690,144 @@ export default {
                                                                                                                                                             </div>
                                                                                                                                                           </form>
                                                                                                                                                         </b-tab> -->
-                                      <b-tab title="Indicator Mapping & Comparison" class="text-dark">
+                                      <b-tab
+                                        title="Indicator Mapping & Comparison"
+                                        class="text-dark"
+                                      >
                                         <form @submit.prevent="handleSubmit">
                                           <div class="row">
                                             <div class="col-sm-6 col-md-6">
-                                              <b-form-group label="County" label-for="county-input">
-                                                <multiselect class="form-control" v-model="county" :options="counties"
-                                                  placeholder="Kisumu County" :multiple="false" :editable="true">
+                                              <b-form-group
+                                                label="County"
+                                                label-for="county-input"
+                                              >
+                                                <multiselect
+                                                  class="form-control"
+                                                  v-model="county"
+                                                  :options="counties"
+                                                  placeholder="Kisumu County"
+                                                  :multiple="false"
+                                                  :editable="true"
+                                                >
                                                 </multiselect>
                                               </b-form-group>
                                             </div>
                                             <div class="col-sm-6 col-md-6">
-                                              <b-form-group label="Category" label-for="Category-input">
-                                                <multiselect class="form-control" v-model="category" :options="cats"
-                                                  placeholder="TX_CURR" :multiple="false" :editable="true"
-                                                  @input="getdataStatus()"></multiselect>
+                                              <b-form-group
+                                                label="Category"
+                                                label-for="Category-input"
+                                              >
+                                                <multiselect
+                                                  class="form-control"
+                                                  v-model="category"
+                                                  :options="cats"
+                                                  placeholder="TX_CURR"
+                                                  :multiple="false"
+                                                  :editable="true"
+                                                  @input="getdataStatus()"
+                                                ></multiselect>
                                               </b-form-group>
                                             </div>
                                             <div class="d-flex flex-column">
                                               <div class="row">
-                                                <div class="col-sm-6 col-md-6 mt-2" v-if="!togglequaters">
+                                                <div
+                                                  class="col-sm-6 col-md-6 mt-2"
+                                                  v-if="!togglequaters"
+                                                >
                                                   <div id="tickets-table-date-picker">
                                                     <label>
                                                       From&nbsp;
-                                                      <date-picker class="form-control" v-model="from"
-                                                        placeholder="2022-09-27" type="date"></date-picker>
+                                                      <date-picker
+                                                        class="form-control"
+                                                        v-model="from"
+                                                        placeholder="2022-09-27"
+                                                        type="date"
+                                                      ></date-picker>
                                                     </label>
                                                   </div>
                                                 </div>
-                                                <div class="col-sm-6 col-md-6 mt-2" v-if="!togglequaters">
+                                                <div
+                                                  class="col-sm-6 col-md-6 mt-2"
+                                                  v-if="!togglequaters"
+                                                >
                                                   <div id="tickets-table-date-picker">
                                                     <label>
                                                       To&nbsp;
-                                                      <date-picker class="form-control" v-model="to"
-                                                        placeholder="2022-09-27" type="date"></date-picker>
+                                                      <date-picker
+                                                        class="form-control"
+                                                        v-model="to"
+                                                        placeholder="2022-09-27"
+                                                        type="date"
+                                                      ></date-picker>
                                                     </label>
                                                   </div>
                                                 </div>
                                                 <div class="row">
-                                                  <div class="col-sm-6 col-md-6 mt-2" v-if="togglequaters">
-                                                    <div id="tickets-table">{{ qtryear }}
+                                                  <div
+                                                    class="col-sm-6 col-md-6 mt-2"
+                                                    v-if="togglequaters"
+                                                  >
+                                                    <div id="tickets-table">
+                                                      {{ qtryear }}
                                                       <label class="d-inline-flex m-auto">
                                                         Year&nbsp;
-                                                        <b-form-input type="number" class="mr-n2" v-model="qtryear">
+                                                        <b-form-input
+                                                          type="number"
+                                                          class="mr-n2"
+                                                          v-model="qtryear"
+                                                        >
                                                         </b-form-input>
                                                       </label>
                                                     </div>
                                                     <div id="tickets-table-date-picker">
                                                       <label class="d-inline-flex m-2">
                                                         Quater 1(Oct to Dec) &nbsp;
-                                                        <b-form-checkbox class="mr-n2" v-model="qt1">
+                                                        <b-form-checkbox
+                                                          class="mr-n2"
+                                                          v-model="qt1"
+                                                        >
                                                         </b-form-checkbox>
                                                       </label>
                                                     </div>
-                                                    <div id="tickets-table-date-picker" v-if="togglequaters">
+                                                    <div
+                                                      id="tickets-table-date-picker"
+                                                      v-if="togglequaters"
+                                                    >
                                                       <label class="d-inline-flex m-2">
                                                         Quater 2(Jan to Mar)&nbsp;
-                                                        <b-form-checkbox class="mr-n2" v-model="qt2">
+                                                        <b-form-checkbox
+                                                          class="mr-n2"
+                                                          v-model="qt2"
+                                                        >
                                                         </b-form-checkbox>
                                                       </label>
                                                     </div>
                                                   </div>
-                                                  <div class="col-sm-6 col-md-6 mt-2" v-if="togglequaters">
+                                                  <div
+                                                    class="col-sm-6 col-md-6 mt-2"
+                                                    v-if="togglequaters"
+                                                  >
                                                     <div id="tickets-table-date-picker">
                                                       <label class="d-inline-flex m-2">
                                                         Quater 3(Apr to Jun) &nbsp;
-                                                        <b-form-checkbox class="mr-n2" v-model="qt3">
+                                                        <b-form-checkbox
+                                                          class="mr-n2"
+                                                          v-model="qt3"
+                                                        >
                                                         </b-form-checkbox>
                                                       </label>
                                                     </div>
-                                                    <div id="tickets-table-date-picker" class="d-block"
-                                                      v-if="togglequaters">
+                                                    <div
+                                                      id="tickets-table-date-picker"
+                                                      class="d-block"
+                                                      v-if="togglequaters"
+                                                    >
                                                       <label class="d-inline-flex m-2">
                                                         Quater 4(Jul to Sept) &nbsp;
-                                                        <b-form-checkbox class="mr-n2" v-model="qt4">{{ qt4 }}
+                                                        <b-form-checkbox
+                                                          class="mr-n2"
+                                                          v-model="qt4"
+                                                          >{{ qt4 }}
                                                         </b-form-checkbox>
                                                       </label>
                                                     </div>
@@ -751,8 +841,13 @@ export default {
                                             <div class="col-sm-6 mb-2">
                                               <div class="border-top">
                                                 <div class="mt-lg-5">
-                                                  <b-button type="submit" variant="dark" class="uil uil-database-alt"
-                                                    @click="triggerComparison()">Initiate Action</b-button>
+                                                  <b-button
+                                                    type="submit"
+                                                    variant="dark"
+                                                    class="uil uil-database-alt"
+                                                    @click="triggerComparison()"
+                                                    >Initiate Action</b-button
+                                                  >
                                                 </div>
                                               </div>
                                             </div>
