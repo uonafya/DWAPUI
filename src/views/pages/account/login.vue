@@ -194,8 +194,8 @@ export default {
               <!-- end card -->
             </div>
             <div class="mt-5 text-center">
-              <p>TDBSoft © {{ new Date().getFullYear() }}. Crafted with
-                <i class="mdi mdi-heart text-danger"></i> by TDBSoft
+              <p>HealthIT © {{ new Date().getFullYear() }}. Crafted with
+                <i class="mdi mdi-heart text-danger"></i> by HealthIT
               </p>
             </div>
             <!-- end row -->

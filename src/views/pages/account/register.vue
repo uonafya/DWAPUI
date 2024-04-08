@@ -164,62 +164,140 @@ export default {
                   <b-form @submit.prevent="tryToRegisterIn">
                     <div class="row">
                       <div class="col-sm-6">
-                        <b-form-group id="email-group" label="Username" class="mb-3" label-for="username">
-                          <b-form-input id="username" v-model="user.username" type="text" placeholder="Enter username"
+                        <b-form-group
+                          id="email-group"
+                          label="Username"
+                          class="mb-3"
+                          label-for="username"
+                        >
+                          <b-form-input
+                            id="username"
+                            v-model="user.username"
+                            type="text"
+                            placeholder="Enter username"
                             :class="{
                               'is-invalid': submitted && $v.user.username.$error,
-                            }"></b-form-input>
-                          <div v-if="submitted && !$v.user.username.required" class="invalid-feedback">
+                            }"
+                          ></b-form-input>
+                          <div
+                            v-if="submitted && !$v.user.username.required"
+                            class="invalid-feedback"
+                          >
                             Username is required.
                           </div>
                         </b-form-group>
 
-                        <b-form-group id="fullname-group" label="Email" label-for="email" class="mb-3">
-                          <b-form-input id="email" v-model="user.email" type="email" placeholder="Enter email" :class="{
-                            'is-invalid': submitted && $v.user.email.$error,
-                          }"></b-form-input>
-                          <div v-if="submitted && $v.user.email.$error" class="invalid-feedback">
+                        <b-form-group
+                          id="fullname-group"
+                          label="Email"
+                          label-for="email"
+                          class="mb-3"
+                        >
+                          <b-form-input
+                            id="email"
+                            v-model="user.email"
+                            type="email"
+                            placeholder="Enter email"
+                            :class="{
+                              'is-invalid': submitted && $v.user.email.$error,
+                            }"
+                          ></b-form-input>
+                          <div
+                            v-if="submitted && $v.user.email.$error"
+                            class="invalid-feedback"
+                          >
                             <span v-if="!$v.user.email.required">Email is required.</span>
-                            <span v-if="!$v.user.email.email">Please enter valid email.</span>
+                            <span v-if="!$v.user.email.email"
+                              >Please enter valid email.</span
+                            >
                           </div>
                         </b-form-group>
 
-                        <b-form-group id="password-group" label="Password" class="mb-3" label-for="password">
-                          <b-form-input id="password" v-model="user.password" type="password" placeholder="Enter password"
+                        <b-form-group
+                          id="password-group"
+                          label="Password"
+                          class="mb-3"
+                          label-for="password"
+                        >
+                          <b-form-input
+                            id="password"
+                            v-model="user.password"
+                            type="password"
+                            placeholder="Enter password"
                             :class="{
                               'is-invalid': submitted && $v.user.password.$error,
-                            }"></b-form-input>
-                          <div v-if="submitted && !$v.user.password.required" class="invalid-feedback">
+                            }"
+                          ></b-form-input>
+                          <div
+                            v-if="submitted && !$v.user.password.required"
+                            class="invalid-feedback"
+                          >
                             Password is required.
                           </div>
                         </b-form-group>
                         <div class="form-check">
-                          <input type="checkbox" class="form-check-input" id="auth-terms-condition-check" />
-                          <label class="form-check-label" for="auth-terms-condition-check">I accept
-                            <a href="javascript: void(0);" class="text-dark">Terms and Conditions</a></label>
+                          <input
+                            type="checkbox"
+                            class="form-check-input"
+                            id="auth-terms-condition-check"
+                          />
+                          <label class="form-check-label" for="auth-terms-condition-check"
+                            >I accept
+                            <a href="javascript: void(0);" class="text-dark"
+                              >Terms and Conditions</a
+                            ></label
+                          >
                         </div>
                       </div>
                       <div class="col-sm-6">
-                        <b-form-group id="email-group" label="Firts Name" class="mb-3" label-for="fname">
-                          <b-form-input id="fname" v-model="fname" type="text"
-                            placeholder="Enter First Name"></b-form-input>
+                        <b-form-group
+                          id="email-group"
+                          label="Firts Name"
+                          class="mb-3"
+                          label-for="fname"
+                        >
+                          <b-form-input
+                            id="fname"
+                            v-model="fname"
+                            type="text"
+                            placeholder="Enter First Name"
+                          ></b-form-input>
                         </b-form-group>
 
-                        <b-form-group id="fullname-group" label="Last Name" label-for="lname" class="mb-3">
-                          <b-form-input id="lname" v-model="lname" type="text"
-                            placeholder="Enter Last Name"></b-form-input>
+                        <b-form-group
+                          id="fullname-group"
+                          label="Last Name"
+                          label-for="lname"
+                          class="mb-3"
+                        >
+                          <b-form-input
+                            id="lname"
+                            v-model="lname"
+                            type="text"
+                            placeholder="Enter Last Name"
+                          ></b-form-input>
                         </b-form-group>
 
-                        <b-form-group id="phone-group" label="Phone Number" class="mb-3" label-for="phone">
-                          <b-form-input id="phone" v-model="phone" type="text"
-                            placeholder="+2547 43 793 901"></b-form-input>
+                        <b-form-group
+                          id="phone-group"
+                          label="Phone Number"
+                          class="mb-3"
+                          label-for="phone"
+                        >
+                          <b-form-input
+                            id="phone"
+                            v-model="phone"
+                            type="text"
+                            placeholder="+2547 43 793 901"
+                          ></b-form-input>
                         </b-form-group>
                       </div>
                     </div>
 
-
                     <div class="mt-3 text-end">
-                      <b-button type="submit" variant="danger" class="w-sm">Register</b-button>
+                      <b-button type="submit" variant="danger" class="w-sm"
+                        >Register</b-button
+                      >
                     </div>
 
                     <div class="mt-4 text-center">
@@ -229,17 +307,26 @@ export default {
 
                       <ul class="list-inline">
                         <li class="list-inline-item">
-                          <a href="javascript:void()" class="social-list-item bg-primary text-white border-primary">
+                          <a
+                            href="javascript:void()"
+                            class="social-list-item bg-primary text-white border-primary"
+                          >
                             <i class="mdi mdi-facebook"></i>
                           </a>
                         </li>
                         <li class="list-inline-item">
-                          <a href="javascript:void()" class="social-list-item bg-info text-white border-info">
+                          <a
+                            href="javascript:void()"
+                            class="social-list-item bg-info text-white border-info"
+                          >
                             <i class="mdi mdi-twitter"></i>
                           </a>
                         </li>
                         <li class="list-inline-item">
-                          <a href="javascript:void()" class="social-list-item bg-danger text-white border-danger">
+                          <a
+                            href="javascript:void()"
+                            class="social-list-item bg-danger text-white border-danger"
+                          >
                             <i class="mdi mdi-google"></i>
                           </a>
                         </li>
@@ -248,7 +335,9 @@ export default {
                     <div class="mt-4 text-center">
                       <p class="text-white-50 mb-0">
                         Already have an account ?
-                        <router-link to="/login" class="fw-medium text-danger">Login</router-link>
+                        <router-link to="/login" class="fw-medium text-danger"
+                          >Login</router-link
+                        >
                       </p>
                     </div>
                   </b-form>
@@ -259,8 +348,8 @@ export default {
             </div>
             <div class="mt-5 text-center">
               <p>
-                © {{ new Date().getFullYear() }} TDBSoft. Crafted with
-                <i class="mdi mdi-heart text-danger"></i> by TDBSoft
+                © {{ new Date().getFullYear() }} HealthIT. Crafted with
+                <i class="mdi mdi-heart text-danger"></i> by HealthIT
               </p>
             </div>
           </div>
