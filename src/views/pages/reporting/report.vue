@@ -61,7 +61,7 @@ export default {
       ],
       exceldata: [],
       excelpdf: "",
-      county: "All",
+      county: "Migori County",
       counties: ["All"],
       cats: ["All", "TX_CURR"],
       category: "All",
@@ -75,7 +75,7 @@ export default {
       qt2: "",
       qt3: "",
       qt4: "",
-      qtryear: 2022,
+      qtryear: new Date().getFullYear(),
       from: new Date().getFullYear() + "-09-01",
       to: new Date().getFullYear() + "-10-01",
       //quater 1
@@ -118,6 +118,8 @@ export default {
       user: null,
       load: false,
       users: [],
+      show_one_date: false,
+      org_level: 4,
       fromhour: "00:00",
       hours: [
         "00:00",
@@ -267,12 +269,17 @@ export default {
       this.togglequaters = false;
       this.selected_report = false;
       this.toggleFilter = false;
+      this.show_one_date = false;
       if (this.category == "TX_CURR") {
         this.togglequaters = true;
       } else {
         this.togglequaters = false;
       }
-      if (this.report == "Comparison Data") {
+      if (this.report == "PMTCT Reports" || this.report == "EID/VL Reports") {
+        this.toggleFilter = true;
+        this.selected_report = true;
+        this.show_one_date = true;
+      } else if (this.report == "Comparison Data") {
         this.selected_report = true;
         this.toggleFilter = true;
       } else if (this.report == "Mapping Data" || this.mod == "Security") {
@@ -328,7 +335,12 @@ export default {
         },
       });
       axios
-        .post(`pmtct-data/?period=&org_level=&org_id=`, {})
+        .post(
+          `pmtct-data/?period=${moment(this.from).format("YYYYMM")}&org_level=${
+            "-" + this.org_level.toString()
+          }&org_name=${this.county}`,
+          {}
+        )
         .then((response) => {
           this.orderData = response.data["data"];
           Swal.close();
@@ -352,7 +364,7 @@ export default {
         "Initial test at ANC": row.moh_731_HV02_04,
         "Initial test at L&D": row.moh_731_HV02_05,
         "Initial test at PNC_PNC<=6wks": row.moh_731_HV02_06,
-        Priority: row.missed_opp_status,
+        Status: row.missed_opp_status,
         Total: row.moh_711_new + row.moh_731_HV02_01,
       }));
       //console.log(data);
@@ -385,7 +397,12 @@ export default {
         },
       });
       axios
-        .post(`eid-data/?period=&org_name=`, {})
+        .post(
+          `eid-data/?period=${moment(this.from).format("YYYYMM")}&org_name=${
+            this.county
+          }`,
+          {}
+        )
         .then((response) => {
           this.orderData = response.data;
           Swal.close();
@@ -840,7 +857,10 @@ export default {
                                               </multiselect>
                                             </b-form-group>
                                           </div>
-                                          <div class="col-sm-6 col-md-6">
+                                          <div
+                                            class="col-sm-6 col-md-6"
+                                            v-if="!show_one_date"
+                                          >
                                             <b-form-group
                                               label="Category"
                                               label-for="Category-input"
@@ -857,6 +877,26 @@ export default {
                                               </multiselect>
                                             </b-form-group>
                                           </div>
+                                          <div
+                                            class="col-sm-6 col-md-6"
+                                            v-if="show_one_date"
+                                          >
+                                            <b-form-group
+                                              label="Org Level"
+                                              label-for="Category-input"
+                                            >
+                                              <multiselect
+                                                class="form-control"
+                                                v-model="org_level"
+                                                :options="[1, 2, 3, 4, 5]"
+                                                placeholder="4"
+                                                :multiple="false"
+                                                :editable="true"
+                                                @input="getdataStatus()"
+                                              >
+                                              </multiselect>
+                                            </b-form-group>
+                                          </div>
                                         </div>
                                         <div class="row">
                                           <div
@@ -865,7 +905,13 @@ export default {
                                           >
                                             <div id="tickets-table-date-picker">
                                               <label>
-                                                From&nbsp;
+                                                {{
+                                                  `${
+                                                    show_one_date === false
+                                                      ? "From"
+                                                      : "Date"
+                                                  }`
+                                                }}&nbsp;
                                                 <date-picker
                                                   class="form-control"
                                                   v-model="from"
@@ -879,7 +925,10 @@ export default {
                                             class="col-sm-6 col-md-6 mt-2"
                                             v-if="!togglequaters"
                                           >
-                                            <div id="tickets-table-date-picker">
+                                            <div
+                                              id="tickets-table-date-picker"
+                                              v-if="!show_one_date"
+                                            >
                                               <label>
                                                 To&nbsp;
                                                 <date-picker
