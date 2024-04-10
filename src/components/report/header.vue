@@ -198,7 +198,6 @@ export default {
         //alert(csvData);
         const csvData = csvRows.join("\n");
         //alert(csvData);
-
         const blob = new Blob([csvData], { type: "textcsv" });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");

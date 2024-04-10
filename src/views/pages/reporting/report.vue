@@ -347,17 +347,71 @@ export default {
       let id = 1;
       data = this.orderData.map((row) => ({
         "Org Unit": row.ou_name,
-        //DATIM_Indicator_ID: row.DATIM_Indicator_ID,
         "New ANC Clients": row.moh_711_new,
-        "Known Positive at 1st ANC": row.moh_731_HV02_01,
-        "Initial test at ANC": 0,
-        "Initial test at L&D": 0,
-        "Initial test at PNC_PNC<=6wks": 0,
-        Priority: row.anc_status,
-        Total: row.moh_731_HV02_01 + row.moh_731_HV02_01,
+        "Known Positive at 1st ANC": row.moh_731_HV02_03,
+        "Initial test at ANC": row.moh_731_HV02_04,
+        "Initial test at L&D": row.moh_731_HV02_05,
+        "Initial test at PNC_PNC<=6wks": row.moh_731_HV02_06,
+        Priority: row.missed_opp_status,
+        Total: row.moh_711_new + row.moh_731_HV02_01,
       }));
-      console.log(data);
+      //console.log(data);
       //get headers
+      this.title = this.report;
+      const headers = Object.keys(data[0]);
+      const cars = [];
+      Object.entries(data).forEach((val) => {
+        const [key] = val;
+        console.log(key, val);
+        cars.push(Object.values(data[key]));
+      });
+      const uniqueCars = Array.from(new Set(cars));
+      this.headers = headers;
+      this.uniqueCars = uniqueCars;
+      this.records = data;
+      this.title = this.report;
+    },
+    getEIDVLData() {
+      var data = [];
+      Swal.fire({
+        position: "center",
+        icon: "info",
+        title: "Please wait...",
+        html: "Pulling EID/VL data...",
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        willOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      axios
+        .post(`eid-data/?period=&org_name=`, {})
+        .then((response) => {
+          this.orderData = response.data;
+          Swal.close();
+        })
+        .catch((e) => {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Error!" + e,
+            showConfirmButton: true,
+          }).then((e) => {
+            Swal.close(e);
+          });
+        });
+      let id = 1;
+      data = this.orderData.map((row) => ({
+        County: row.county,
+        Subcounty: row.subcounty,
+        Ward: row.ward,
+        Facility: row.facility,
+        "MFL Code": row.facilitycode,
+        Enrolled: row.enrolled,
+        Positives: row.positives,
+        Total: row.total,
+      }));
+      //console.log(data); //get headers
       this.title = this.report;
       const headers = Object.keys(data[0]);
       const cars = [];
