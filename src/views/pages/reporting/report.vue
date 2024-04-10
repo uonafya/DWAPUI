@@ -6,15 +6,13 @@
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 import appConfig from "@/app.config";
-
 import jsPDF from "jspdf";
-
 import DatePicker from "vue2-datepicker";
 import Multiselect from "vue-multiselect";
-
 import axios from "../../../Axiosconfig";
 import Swal from "sweetalert2";
 import reportdet from "@/components/report/header";
+import moment from "moment";
 
 export default {
   page: {
@@ -108,6 +106,7 @@ export default {
       status_checkbox: "",
       user_checkbox: "",
       report: null,
+      show_concodance: false,
       mod: "",
       picked: "",
       concodance: -1,
@@ -283,37 +282,6 @@ export default {
         this.selected_report = false;
       }
     },
-    getcurrentdate(mydate) {
-      let d = new Date(mydate);
-      let year = d.getFullYear();
-      let month = this.getmonth(d.getMonth() + 1);
-      let date = d.getDate();
-      date = this.getv(date);
-      //month = this.getv(month);
-
-      let hour = d.getHours();
-      let min = d.getMinutes();
-      let sec = d.getSeconds();
-      hour = this.getv(hour);
-      min = this.getv(min);
-      sec = this.getv(sec);
-
-      //const msec = d.getMilliseconds();
-      const datetime =
-        date + "/" + month + "/" + year + " " + hour + ":" + min + ":" + sec;
-      return datetime;
-    },
-    formatDate(date) {
-      var d = new Date(date),
-        month = "" + (d.getMonth() + 1),
-        day = "" + d.getDate(),
-        year = d.getFullYear();
-
-      if (month.length < 2) month = "0" + month;
-      if (day.length < 2) day = "0" + day;
-
-      return [year, month, day].join("-");
-    },
     genrpt(pl) {
       this.pl = pl;
       this.load = true;
@@ -325,6 +293,12 @@ export default {
       }
       if (this.report == "Users") {
         this.getUserdata();
+      }
+      if (this.report == "PMTCT Reports") {
+        this.getPMTCTData();
+      }
+      if (this.report == "EID/VL Reports") {
+        this.getEIDVLData();
       }
       if (this.excelpdf == "PDF") {
         this.$refs.uploadComponent.generatePDF("pdf");
@@ -339,6 +313,64 @@ export default {
         pl: this.pl,
         concodance: Number(this.concodance) - 0.17,
       });
+    },
+    getPMTCTData() {
+      var data = [];
+      Swal.fire({
+        position: "center",
+        icon: "info",
+        title: "Please wait...",
+        html: "Pulling PMTCT data...",
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        willOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      axios
+        .post(`pmtct-data/?period=&org_level=&org_id=`, {})
+        .then((response) => {
+          this.orderData = response.data["data"];
+          Swal.close();
+        })
+        .catch((e) => {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Error!" + e,
+            showConfirmButton: true,
+          }).then((e) => {
+            Swal.close(e);
+          });
+        });
+      console.log(this.orderData);
+      let id = 1;
+      data = this.orderData.map((row) => ({
+        "Org Unit": row.ou_name,
+        //DATIM_Indicator_ID: row.DATIM_Indicator_ID,
+        "New ANC Clients": row.moh_711_new,
+        "Known Positive at 1st ANC": row.moh_731_HV02_01,
+        "Initial test at ANC": 0,
+        "Initial test at L&D": 0,
+        "Initial test at PNC_PNC<=6wks": 0,
+        Priority: row.anc_status,
+        Total: row.moh_731_HV02_01 + row.moh_731_HV02_01,
+      }));
+      console.log(data);
+      //get headers
+      this.title = this.report;
+      const headers = Object.keys(data[0]);
+      const cars = [];
+      Object.entries(data).forEach((val) => {
+        const [key] = val;
+        console.log(key, val);
+        cars.push(Object.values(data[key]));
+      });
+      const uniqueCars = Array.from(new Set(cars));
+      this.headers = headers;
+      this.uniqueCars = uniqueCars;
+      this.records = data;
+      this.title = this.report;
     },
     getUserdata() {
       var data = [];
@@ -568,10 +600,7 @@ export default {
         );
       }
       if (this.mod === "DataQuality") {
-        this.reports.push();
-      }
-      if (this.mod == "DataQuality") {
-        this.reports.push();
+        this.reports.push("PMTCT Reports", "EID/VL Reports");
       }
       if (this.mod == "Indicators") {
         this.reports.push("Indicators");
@@ -927,6 +956,7 @@ export default {
     <reportdet
       :title="report"
       :reportfor="report"
+      :show_concodance="show_concodance"
       :orderData="orderData"
       :pl="pl"
       :headers="headers"
@@ -954,7 +984,8 @@ export default {
         :exceldata="exceldata"
         :mail_checkbox="mail_checkbox"
         :concodance="concodance"
-      ></reportdet>
+      >
+      </reportdet>
     </b-modal>
   </Layout>
 </template>

@@ -10,8 +10,10 @@
                   <h5 class="my-4">
                     Do you want to generate PDF document for {{ title }}
                   </h5>
-                  <h4 class="my4 d-inline" v-if="concodance">
-                    Concodance:&nbsp;<span class="text-info">{{ concodance }}&nbsp;%</span>
+                  <h4 class="my4 d-inline" v-if="show_concodance">
+                    Concodance:&nbsp;<span class="text-info"
+                      >{{ concodance }}&nbsp;%</span
+                    >
                   </h4>
                 </div>
               </div>
@@ -24,23 +26,34 @@
     <div class="row">
       <div class="col-sm-12 mb-2 d-flex flex-row">
         <div class="col-sm-3 mb-2">
-          <b-button variant="dark" @click="generatePDF('Excel'), $bvModal.hide('modal-1')">Print Excel
+          <b-button variant="dark" @click="generatePDF('Excel'), $bvModal.hide('modal-1')"
+            >Print Excel
           </b-button>
         </div>
         <div class="col-sm-3 mb-2">
-          <b-button variant="dark" @click="generatePDF('pdf'), $bvModal.hide('modal-1')">Print PDF
+          <b-button variant="dark" @click="generatePDF('pdf'), $bvModal.hide('modal-1')"
+            >Print PDF
           </b-button>
         </div>
       </div>
       <div class="col-sm-6 mb-2">
-        <p class="text-dark fw-bold text-decoration-underline">
-          PDF page options
-        </p>
+        <p class="text-dark fw-bold text-decoration-underline">PDF page options</p>
         <div class="d-flex flex-row">
-          <b-form-checkbox id="checkbox-1" v-model="pagelayout" name="checkbox-1" value="l" unchecked-value="p">&nbsp;
-            Landscape </b-form-checkbox>&nbsp;
-          <b-form-checkbox id="checkbox-2" v-model="pagelayout" name="checkbox-2" value="p" unchecked-value="p">&nbsp;
-            Potrait
+          <b-form-checkbox
+            id="checkbox-1"
+            v-model="pagelayout"
+            name="checkbox-1"
+            value="l"
+            unchecked-value="p"
+            >&nbsp; Landscape </b-form-checkbox
+          >&nbsp;
+          <b-form-checkbox
+            id="checkbox-2"
+            v-model="pagelayout"
+            name="checkbox-2"
+            value="p"
+            unchecked-value="p"
+            >&nbsp; Potrait
           </b-form-checkbox>
         </div>
       </div>
@@ -68,6 +81,10 @@ export default {
     uniqueCars: Object,
     showme: Boolean,
     printedpdf: Boolean,
+    show_concodance: {
+      type: Boolean,
+      default: false,
+    },
     concodance: Number,
   },
   data() {
@@ -102,19 +119,7 @@ export default {
       const msec = d.getMilliseconds();
 
       const filename =
-        year +
-        "-" +
-        month +
-        "-" +
-        date +
-        "-" +
-        hour +
-        "-" +
-        min +
-        "-" +
-        sec +
-        "-" +
-        msec;
+        year + "-" + month + "-" + date + "-" + hour + "-" + min + "-" + sec + "-" + msec;
 
       var doc = new jsPDF(this.pagelayout);
 
@@ -147,20 +152,11 @@ export default {
       doc.addImage(imgKLogo, "PNG", 1, 1, 12, 7, 3, 3);
 
       //doc.addImage(img, "PNG", 10, 10);
-      if (this.concodance != null) {
-        doc.text(
-          10,
-          40,
-          this.title + "\t\t\tConcodance: " + this.concodance + " %"
-        );
+      if (this.show_concodance) {
+        doc.text(10, 40, this.title + "\t\t\tConcodance: " + this.concodance + " %");
       } else {
-        doc.text(
-          10,
-          40,
-          this.title
-        );
+        doc.text(10, 40, this.title);
       }
-
 
       doc.setFillColor(0, 255, 0);
       doc.addFont("Tahoma", "Tahoma", "bold");
@@ -256,10 +252,10 @@ export default {
           doc.setPage(i);
           doc.text(
             "USAID Kenya | UNES | UoN | Ministry of Health                            Prepared by:titusowuor30@gmail.com" +
-            "                                 Page " +
-            String(i) +
-            " of " +
-            String(pageCount),
+              "                                 Page " +
+              String(i) +
+              " of " +
+              String(pageCount),
             height,
             width,
             null,
