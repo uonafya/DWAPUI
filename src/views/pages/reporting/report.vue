@@ -12,6 +12,7 @@ import Multiselect from "vue-multiselect";
 import axios from "../../../Axiosconfig";
 import Swal from "sweetalert2";
 import reportdet from "@/components/report/header";
+import PMTCTReport from "@/views/pages/reporting/PMTCT_Reports";
 import moment from "moment";
 
 export default {
@@ -30,6 +31,7 @@ export default {
     DatePicker,
     Multiselect,
     reportdet,
+    PMTCTReport,
   },
   data() {
     return {
@@ -275,7 +277,7 @@ export default {
       } else {
         this.togglequaters = false;
       }
-      if (this.report == "PMTCT Reports" || this.report == "EID/VL Reports") {
+      if (this.report == "PMTCT Reports") {
         this.toggleFilter = true;
         this.selected_report = true;
         this.show_one_date = true;
@@ -301,12 +303,6 @@ export default {
       if (this.report == "Users") {
         this.getUserdata();
       }
-      if (this.report == "PMTCT Reports") {
-        this.getPMTCTData();
-      }
-      if (this.report == "EID/VL Reports") {
-        this.getEIDVLData();
-      }
       if (this.excelpdf == "PDF") {
         this.$refs.uploadComponent.generatePDF("pdf");
       } else {
@@ -320,128 +316,6 @@ export default {
         pl: this.pl,
         concodance: Number(this.concodance) - 0.17,
       });
-    },
-    getPMTCTData() {
-      var data = [];
-      Swal.fire({
-        position: "center",
-        icon: "info",
-        title: "Please wait...",
-        html: "Pulling PMTCT data...",
-        showConfirmButton: false,
-        allowOutsideClick: false,
-        willOpen: () => {
-          Swal.showLoading();
-        },
-      });
-      axios
-        .post(
-          `pmtct-data/?period=${moment(this.from).format("YYYYMM")}&org_level=${
-            "-" + this.org_level.toString()
-          }&org_name=${this.county}`,
-          {}
-        )
-        .then((response) => {
-          this.orderData = response.data["data"];
-          Swal.close();
-        })
-        .catch((e) => {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: "Error!" + e,
-            showConfirmButton: true,
-          }).then((e) => {
-            Swal.close(e);
-          });
-        });
-      console.log(this.orderData);
-      let id = 1;
-      data = this.orderData.map((row) => ({
-        "Org Unit": row.ou_name,
-        "New ANC Clients": row.moh_711_new,
-        "Known Positive at 1st ANC": row.moh_731_HV02_03,
-        "Initial test at ANC": row.moh_731_HV02_04,
-        "Initial test at L&D": row.moh_731_HV02_05,
-        "Initial test at PNC_PNC<=6wks": row.moh_731_HV02_06,
-        Status: row.missed_opp_status,
-        Total: row.moh_711_new + row.moh_731_HV02_01,
-      }));
-      //console.log(data);
-      //get headers
-      this.title = this.report;
-      const headers = Object.keys(data[0]);
-      const cars = [];
-      Object.entries(data).forEach((val) => {
-        const [key] = val;
-        console.log(key, val);
-        cars.push(Object.values(data[key]));
-      });
-      const uniqueCars = Array.from(new Set(cars));
-      this.headers = headers;
-      this.uniqueCars = uniqueCars;
-      this.records = data;
-      this.title = this.report;
-    },
-    getEIDVLData() {
-      var data = [];
-      Swal.fire({
-        position: "center",
-        icon: "info",
-        title: "Please wait...",
-        html: "Pulling EID/VL data...",
-        showConfirmButton: false,
-        allowOutsideClick: false,
-        willOpen: () => {
-          Swal.showLoading();
-        },
-      });
-      axios
-        .post(
-          `eid-data/?period=${moment(this.from).format("YYYYMM")}&org_name=${
-            this.county
-          }`,
-          {}
-        )
-        .then((response) => {
-          this.orderData = response.data;
-          Swal.close();
-        })
-        .catch((e) => {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: "Error!" + e,
-            showConfirmButton: true,
-          }).then((e) => {
-            Swal.close(e);
-          });
-        });
-      let id = 1;
-      data = this.orderData.map((row) => ({
-        County: row.county,
-        Subcounty: row.subcounty,
-        Ward: row.ward,
-        Facility: row.facility,
-        "MFL Code": row.facilitycode,
-        Enrolled: row.enrolled,
-        Positives: row.positives,
-        Total: row.total,
-      }));
-      //console.log(data); //get headers
-      this.title = this.report;
-      const headers = Object.keys(data[0]);
-      const cars = [];
-      Object.entries(data).forEach((val) => {
-        const [key] = val;
-        console.log(key, val);
-        cars.push(Object.values(data[key]));
-      });
-      const uniqueCars = Array.from(new Set(cars));
-      this.headers = headers;
-      this.uniqueCars = uniqueCars;
-      this.records = data;
-      this.title = this.report;
     },
     getUserdata() {
       var data = [];
@@ -1027,7 +901,7 @@ export default {
                   <!-- ///buttons -->
                   <div class="row">
                     <div class="col-sm-8 text-right">{{ report }}</div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-2" v-show="!show_one_date">
                       <b-button
                         pill
                         variant="outline-primary"
@@ -1048,6 +922,16 @@ export default {
                         Generate Report</b-button
                       >
                     </div>
+                    <PMTCTReport
+                      :from="from"
+                      :title="report"
+                      :report="report"
+                      :org_level="org_level"
+                      :county="county"
+                      v-show="show_one_date"
+                      @send-email="sendEmail"
+                    >
+                    </PMTCTReport>
                   </div>
                 </div>
               </div>
@@ -1071,25 +955,22 @@ export default {
       v-show="false"
       ref="uploadComponent"
     ></reportdet>
-    <b-modal id="modal-Print" :title="report" hide-footer size="bg" centered>
-      <reportdet
-        :title="report"
-        :reportfor="report"
-        :orderData="orderData"
-        :pl="pl"
-        :headers="headers"
-        :uniqueCars="uniqueCars"
-        :shome="showme"
-        :printedpdf="printedpdf"
-        :rpt="rpt"
-        :v-show="showme"
-        @sendEmail="sendEmail"
-        :exceldata="exceldata"
-        :mail_checkbox="mail_checkbox"
-        :concodance="concodance"
-      >
-      </reportdet>
-    </b-modal>
+    <reportdet
+      :title="report"
+      :reportfor="report"
+      :show_concodance="show_concodance"
+      :orderData="orderData"
+      :pl="pl"
+      :headers="headers"
+      :uniqueCars="uniqueCars"
+      :printedpdf="printedpdf"
+      :rpt="rpt"
+      :exceldata="exceldata"
+      :concodance="concodance"
+      v-show="false"
+      ref="uploadComponent"
+    ></reportdet>
+    <b-modal id="modal-Print" :title="report" hide-footer size="bg" centered> </b-modal>
   </Layout>
 </template>
 <style scoped>
