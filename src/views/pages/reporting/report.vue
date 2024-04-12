@@ -63,7 +63,7 @@ export default {
       ],
       exceldata: [],
       excelpdf: "",
-      county: "Migori County",
+      county: "Kisii County",
       counties: ["All"],
       cats: ["All", "TX_CURR"],
       category: "All",
@@ -121,7 +121,7 @@ export default {
       load: false,
       users: [],
       show_one_date: false,
-      org_level: 4,
+      org_level: 5,
       fromhour: "00:00",
       hours: [
         "00:00",

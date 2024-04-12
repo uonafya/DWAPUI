@@ -18,11 +18,11 @@ export default {
     },
     county: {
       type: String,
-      default: "all",
+      default: "kisii",
     },
     org_level: {
       type: String,
-      default: "-4",
+      default: "-5",
     },
     report: String,
     title: String,
@@ -53,14 +53,14 @@ export default {
     // Function to fetch PMTCT data
     async fetchPMTCTData() {
       const username = JSON.parse(localStorage.user).username;
-      console.log(username);
+      //console.log(username);
       const selectedCounty = this.county;
       const orgLevel = this.org_level;
       let period = moment(this.from).format("YYYYMM");
       const cacheKey = `pmtct_data_${username}_${selectedCounty}_${orgLevel}_${period}`;
       const cachedData = JSON.parse(localStorage.getItem(cacheKey));
       console.log(cacheKey);
-      //console.log(cachedData.timestamp);
+      console.log(cachedData);
       const currentTime = Date.now();
       // Check if cached data is available and not expired
       if (cachedData && currentTime - cachedData.timestamp < 24 * 60 * 60 * 1000) {
@@ -85,23 +85,23 @@ export default {
       }
     },
     // Function to fetch EID data
+    //Sections 1: Intro 2:definition 3: data {a:hiv testing,b:maternal HAART,c:infant prophylaxis,d:eid testing} 4:actions
     async fetchEIDData() {
       const username = JSON.parse(localStorage.user).username;
-      console.log(username);
+      //console.log(username);
       let selectedCounty = this.county;
-      selectedCounty = "all";
       const period = moment(this.from).format("YYYYMM");
       const cacheKey = `eid_data_${username}_${selectedCounty}_${period}`;
       const cachedData = JSON.parse(localStorage.getItem(cacheKey));
-      console.log(localStorage);
-      //console.log(cachedData);
+      console.log(cacheKey);
+      console.log(cachedData);
       const currentTime = Date.now();
       // Check if cached data is available and not expired
       if (cachedData && currentTime - cachedData.timestamp < 24 * 60 * 60 * 1000) {
         this.eid_vl_data = cachedData.data;
       } else {
         localStorage.removeItem(cacheKey);
-        axios.post(`eid-data/?period=${period}&org_name=all`, {}).then((response) => {
+        axios.post(`eid-data/?period=${period}&org_name=${selectedCounty}`, {}).then((response) => {
           this.eid_vl_data = response.data;
           localStorage.setItem(
             cacheKey,
@@ -136,8 +136,8 @@ export default {
         "Initial test at ANC": row.moh_731_HV02_04,
         "Initial test at L&D": row.moh_731_HV02_05,
         "Initial test at PNC_PNC<=6wks": row.moh_731_HV02_06,
+        "Missed Opportuanities": row.missed_opp,
         Status: row.missed_opp_status,
-        Total: row.moh_711_new + row.moh_731_HV02_01,
       }));
       data1 = this.eid_vl_data.map((row) => ({
         County: row.county,
@@ -172,8 +172,10 @@ export default {
     },
     generateReport(h, d, h1, d1) {
       //print doc
+      //Sections 1: Intro 2:definition 3: data {a:hiv testing,b:maternal HAART,c:infant prophylaxis,d:eid testing} 4:actions
       const filename = moment(new Date()).format("YYYY-MM-DD-HH:MM:SS");
       var doc = new jsPDF(this.pl);
+      var doc_width=doc.internal.pageSize.width;
       doc.setFillColor(255, 255, 255);
       doc.roundedRect(5, 5, 200, 30, 1, 1, "FD");
       doc.setTextColor(0, 0, 0);
@@ -209,30 +211,31 @@ export default {
         doc.text(
           5,
           40,
-          this.report +
+          this.county+" "+this.report +
             `\t\t\t\t\tReporting Period: ${moment(this.from).format("YYYY/MM")}`
         );
       } catch (e) {
         console.log(e);
       }
+      doc.line(2,42,doc_width-5,42)
       //report intro
-      doc.text(5, 50, "INTRODUCTION");
-      doc.line(5, 51, 42, 51);
+      doc.text(5, 50, "SECTION 1: INTRODUCTION");
+      doc.line(5, 51, 70, 51);
       doc.addFont("Tahoma", "Tahoma", "light");
       doc.setFontSize(12);
       let intro =
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.";
-      var introp = doc.splitTextToSize(intro, this.pl === "l" ? 280 : 200);
+      var introp = doc.splitTextToSize(intro, doc_width-5);
       doc.text(5, 56, introp);
       doc.addFont("Tahoma", "Tahoma", "bold");
       doc.setFontSize(14);
       //section 1A - Indicator Defination
-      doc.text(5, 85, "Section 1A: Indicator Defination");
+      doc.text(5, 85, "SECTION 2: INDICATOR DEFINITION");
       doc.setFontSize(12);
-      let table_heads = ["Indicator", "Defination"];
+      let table_heads = ["Indicator","Definition","Description"];
       let table_body = [
-        ["A", ""],
-        ["B", ""],
+        ["A", "",""],
+        ["B","" ,""],
       ];
       doc.autoTable({
         head: [table_heads],
@@ -259,11 +262,11 @@ export default {
         bodyStyles: { lineColor: [0, 0, 0] },
         theme: "grid",
       });
-      var startY = doc.autoTable.previous.finalY + 10;
+      var startY = doc.autoTable.previous.finalY + 20;
       doc.addFont("Tahoma", "Tahoma", "bold");
       doc.setFontSize(14);
       //section A - Indicator Defination
-      doc.text(5, startY, "Section 1B: PMTCT Reports");
+      doc.text(5, startY, "SECTION 3A: HIV TESTING REPORTS");
       doc.setFontSize(9);
       // Simple data example
       var head = [h];
@@ -334,19 +337,49 @@ export default {
           bodyStyles: { lineColor: [0, 0, 0] },
           theme: "grid",
           createdCell: function (data) {
-            if (data.row.raw[h.indexOf("Status")] === "critical") {
+            if (data.row.raw[h.indexOf("Status")] === "missed") {
               data.cell.styles.fillColor = [255, 0, 0]; // Danger background for critical status
-            } else if (data.row.raw[h.indexOf("Status")] === "stable") {
+            } else if (data.row.raw[h.indexOf("Status")] === "okay") {
               data.cell.styles.fillColor = [255, 255, 255]; // Success background for stable status
             }
           },
         });
         // Simple html example
-        var startY = doc.autoTable.previous.finalY + 10;
+        doc.addPage();
+        startY =20;
         doc.addFont("Tahoma", "Tahoma", "bold");
         doc.setFontSize(14);
+        //Sections 1: Intro 2:definition 3: data {a:hiv testing,b:maternal HAART,c:infant prophylaxis,d:eid testing} 4:actions
         //section A - Indicator Defination
-        doc.text(5, startY, "Section 1C: EID/VL Reports");
+        doc.text(5, startY, "SECTION 3B: MATERNAL HAART REPORTS");
+        doc.setFontSize(9);
+        doc.autoTable({
+        head: [["A","B"]],
+        body: [["",""],],
+        startY: startY + 4,
+        margin: { horizontal: 1 },
+        theme:"grid",
+        });
+        startY = doc.autoTable.previous.finalY + 20;
+        doc.addFont("Tahoma", "Tahoma", "bold");
+        doc.setFontSize(14);
+        //Sections 1: Intro 2:definition 3: data {a:hiv testing,b:maternal HAART,c:infant prophylaxis,d:eid testing} 4:actions
+        //section A - Indicator Defination
+        doc.text(5, startY, "SECTION 3C: INFANT PROPHYLAXIS REPORTS");
+        doc.setFontSize(9);
+        doc.autoTable({
+        head: [["A","B"]],
+        body: [["",""],],
+        startY: startY + 4,
+        margin: { horizontal: 1 },
+        theme:"grid",
+        });
+        //Sections 1: Intro 2:definition 3: data {a:hiv testing,b:maternal HAART,c:infant prophylaxis,d:eid testing} 4:actions
+        //section A - Indicator Defination
+        startY = doc.autoTable.previous.finalY + 20;
+        doc.addFont("Tahoma", "Tahoma", "bold");
+        doc.setFontSize(14);
+        doc.text(5, startY, "SECTION 3C: EID/VL TESTING REPORTS");
         doc.setFontSize(9);
         doc.autoTable({
           head: [h1],
