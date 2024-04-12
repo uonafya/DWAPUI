@@ -12,9 +12,18 @@ import moment from "moment";
 
 export default {
   props: {
-    from: Date,
-    county: String,
-    org_level: String,
+    from: {
+      type: Date,
+      default: new Date("2024-04-01"),
+    },
+    county: {
+      type: String,
+      default: "all",
+    },
+    org_level: {
+      type: String,
+      default: "-4",
+    },
     report: String,
     title: String,
   },
@@ -38,11 +47,75 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    this.getPMTCTData();
+    this.getReportData();
   },
   methods: {
-    getPMTCTData() {
+    // Function to fetch PMTCT data
+    async fetchPMTCTData() {
+      const userId = localStorage.getItem("userId");
+      const selectedCounty = this.county;
+      const orgLevel = this.org_level;
+      let period = moment(this.from).format("YYYYMM");
+      period = "202402";
+      const cacheKey = `pmtct_data_${userId}_${selectedCounty}_${orgLevel}_${period}`;
+      const cachedData = JSON.parse(localStorage.getItem(cacheKey));
+      console.log(cacheKey);
+      //console.log(cachedData.timestamp);
+      console.log(cachedData);
+      const currentTime = Date.now();
+      //localStorage.clear();
+      // Check if cached data is available and not expired
+      if (cachedData && currentTime - cachedData.timestamp < 24 * 60 * 60 * 1000) {
+        this.pmtct_data = cachedData.data;
+      } else {
+        localStorage.clear();
+        await axios
+          .post(
+            `pmtct-data/?period=202402&org_level=${
+              "-" + orgLevel.toString()
+            }&org_name=${selectedCounty}`,
+            {}
+          )
+          .then((response) => {
+            this.pmtct_data = response.data["data"];
+            localStorage.setItem(
+              cacheKey,
+              JSON.stringify({ data: this.pmtct_data, timestamp: currentTime })
+            );
+            Swal.close();
+          });
+      }
+    },
+    // Function to fetch EID data
+    async fetchEIDData() {
+      const userId = localStorage.getItem("userId");
+      let selectedCounty = this.county;
+      selectedCounty = "all";
+      const period = moment(this.from).format("YYYYMM");
+      const cacheKey = `eid_data_${userId}_${selectedCounty}_${period}`;
+      const cachedData = JSON.parse(localStorage.getItem(cacheKey));
+      console.log(cacheKey);
+      console.log(cachedData);
+      const currentTime = Date.now();
+      // Check if cached data is available and not expired
+      //localStorage.clear();
+      if (cachedData && currentTime - cachedData.timestamp < 24 * 60 * 60 * 1000) {
+        this.eid_vl_data = cachedData.data;
+      } else {
+        localStorage.clear();
+        axios.post(`eid-data/?period=${period}&org_name=all`, {}).then((response) => {
+          this.eid_vl_data = response.data;
+          localStorage.setItem(
+            cacheKey,
+            JSON.stringify({ data: this.eid_vl_data, timestamp: currentTime })
+          );
+          Swal.close();
+        });
+      }
+    },
+    getReportData() {
       var data = [];
+      var data1 = [];
       Swal.fire({
         position: "center",
         icon: "info",
@@ -54,47 +127,20 @@ export default {
           Swal.showLoading();
         },
       });
-      //   axios
-      //     .post(
-      //       `pmtct-data/?period=${moment(this.from).format("YYYYMM")}&org_level=${
-      //         "-" + this.org_level.toString()
-      //       }&org_name=${this.county}`,
-      //       {}
-      //     )
-      //     .then((response) => {
-      //       this.pmtct_data = response.data["data"];
-      axios
-        .post(
-          `eid-data/?period=${moment(this.from).format("YYYYMM")}&org_name=nyandarua`,
-          {}
-        )
-        .then((response) => {
-          this.eid_vl_data = response.data;
-          Swal.close();
-        })
-        //})
-        .catch((e) => {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: "Error!" + e,
-            showConfirmButton: true,
-          }).then((e) => {
-            Swal.close(e);
-          });
-        });
-      let id = 1;
-      //   data = this.pmtct_data.map((row) => ({
-      //     "Org Unit": row.ou_name,
-      //     "New ANC Clients": row.moh_711_new,
-      //     "Known Positive at 1st ANC": row.moh_731_HV02_03,
-      //     "Initial test at ANC": row.moh_731_HV02_04,
-      //     "Initial test at L&D": row.moh_731_HV02_05,
-      //     "Initial test at PNC_PNC<=6wks": row.moh_731_HV02_06,
-      //     Status: row.missed_opp_status,
-      //     Total: row.moh_711_new + row.moh_731_HV02_01,
-      //   }));
-      data = this.eid_vl_data.map((row) => ({
+      this.fetchPMTCTData();
+      this.fetchEIDData();
+      Swal.close();
+      data = this.pmtct_data.map((row) => ({
+        "Org Unit": row.ou_name,
+        "New ANC Clients": row.moh_711_new,
+        "Known Positive at 1st ANC": row.moh_731_HV02_03,
+        "Initial test at ANC": row.moh_731_HV02_04,
+        "Initial test at L&D": row.moh_731_HV02_05,
+        "Initial test at PNC_PNC<=6wks": row.moh_731_HV02_06,
+        Status: row.missed_opp_status,
+        Total: row.moh_711_new + row.moh_731_HV02_01,
+      }));
+      data1 = this.eid_vl_data.map((row) => ({
         County: row.county,
         Subcounty: row.subcounty,
         Ward: row.ward,
@@ -102,13 +148,13 @@ export default {
         "MFL Code": row.facilitycode,
         Enrolled: row.enrolled,
         Positives: row.positives,
-        Total: row.total,
+        "Pending Enrollment": Number(row.positives) - Number(row.enrolled),
       }));
       //console.log(data);
       //get headers
       this.title = this.report;
       const headers = Object.keys(data[0]);
-      const headers1 = headers;
+      const headers1 = Object.keys(data1[0]);
       const cars = [];
       const cars1 = [];
       Object.entries(data).forEach((val) => {
@@ -116,13 +162,13 @@ export default {
         //console.log(key, val);
         cars.push(Object.values(data[key]));
       });
-      Object.entries(data).forEach((val) => {
+      Object.entries(data1).forEach((val) => {
         const [key] = val;
         //console.log(key, val);
-        cars1.push(Object.values(data[key]));
+        cars1.push(Object.values(data1[key]));
       });
       const uniqueCars = Array.from(new Set(cars));
-      const uniqueCars1 = Array.from(new Set(cars));
+      const uniqueCars1 = Array.from(new Set(cars1));
       this.generateReport(headers, uniqueCars, headers1, uniqueCars1);
     },
     generateReport(h, d, h1, d1) {
@@ -163,7 +209,12 @@ export default {
       doc.addFont("Tahoma", "Tahoma", "bold");
       doc.setFontSize(14);
       try {
-        doc.text(5, 40, this.report);
+        doc.text(
+          5,
+          40,
+          this.report +
+            `\t\t\t\t\tReporting Period: ${moment(this.from).format("YYYY/MM")}`
+        );
       } catch (e) {
         console.log(e);
       }
@@ -199,8 +250,8 @@ export default {
         },
         columnStyles: {
           2: { cellWidth: "auto" },
-          nil: { halign: "left" },
-          tgl: { halign: "left" },
+          nil: { halign: "center" },
+          tgl: { halign: "center" },
         },
         headerStyles: {
           halign: "center",
@@ -365,7 +416,7 @@ export default {
       <b-button
         pill
         variant="outline-primary"
-        @click="getPMTCTData()"
+        @click="getReportData()"
         style="margin-right: 10px"
       >
         Generate PMCT Report

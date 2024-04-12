@@ -27,6 +27,7 @@ function login(username, password) {
     return fetch(window.$http + "login/", requestOptions)
         .then(handleResponse)
         .then((user) => {
+            localStorage.setItem("userID", user.user.id);
             // let accessScreens = [
             //     "Dashboard",
             //     "DataAlignment",
