@@ -14,7 +14,7 @@ export default {
   props: {
     from: {
       type: Date,
-      default: new Date("2024-04-01"),
+      default: new Date("2024-02-01"),
     },
     county: {
       type: String,
@@ -52,26 +52,24 @@ export default {
   methods: {
     // Function to fetch PMTCT data
     async fetchPMTCTData() {
-      const userId = localStorage.getItem("userId");
+      const username = JSON.parse(localStorage.user).username;
+      console.log(username);
       const selectedCounty = this.county;
       const orgLevel = this.org_level;
       let period = moment(this.from).format("YYYYMM");
-      period = "202402";
-      const cacheKey = `pmtct_data_${userId}_${selectedCounty}_${orgLevel}_${period}`;
+      const cacheKey = `pmtct_data_${username}_${selectedCounty}_${orgLevel}_${period}`;
       const cachedData = JSON.parse(localStorage.getItem(cacheKey));
       console.log(cacheKey);
       //console.log(cachedData.timestamp);
-      console.log(cachedData);
       const currentTime = Date.now();
-      //localStorage.clear();
       // Check if cached data is available and not expired
       if (cachedData && currentTime - cachedData.timestamp < 24 * 60 * 60 * 1000) {
         this.pmtct_data = cachedData.data;
       } else {
-        localStorage.clear();
+        localStorage.removeItem(cacheKey);
         await axios
           .post(
-            `pmtct-data/?period=202402&org_level=${
+            `pmtct-data/?period=${period}&org_level=${
               "-" + orgLevel.toString()
             }&org_name=${selectedCounty}`,
             {}
@@ -88,21 +86,21 @@ export default {
     },
     // Function to fetch EID data
     async fetchEIDData() {
-      const userId = localStorage.getItem("userId");
+      const username = JSON.parse(localStorage.user).username;
+      console.log(username);
       let selectedCounty = this.county;
       selectedCounty = "all";
       const period = moment(this.from).format("YYYYMM");
-      const cacheKey = `eid_data_${userId}_${selectedCounty}_${period}`;
+      const cacheKey = `eid_data_${username}_${selectedCounty}_${period}`;
       const cachedData = JSON.parse(localStorage.getItem(cacheKey));
-      console.log(cacheKey);
-      console.log(cachedData);
+      console.log(localStorage);
+      //console.log(cachedData);
       const currentTime = Date.now();
       // Check if cached data is available and not expired
-      //localStorage.clear();
       if (cachedData && currentTime - cachedData.timestamp < 24 * 60 * 60 * 1000) {
         this.eid_vl_data = cachedData.data;
       } else {
-        localStorage.clear();
+        localStorage.removeItem(cacheKey);
         axios.post(`eid-data/?period=${period}&org_name=all`, {}).then((response) => {
           this.eid_vl_data = response.data;
           localStorage.setItem(
@@ -114,6 +112,7 @@ export default {
       }
     },
     getReportData() {
+      //localStorage.clear();
       var data = [];
       var data1 = [];
       Swal.fire({
@@ -172,8 +171,6 @@ export default {
       this.generateReport(headers, uniqueCars, headers1, uniqueCars1);
     },
     generateReport(h, d, h1, d1) {
-      console.log(h1);
-      console.log(d1);
       //print doc
       const filename = moment(new Date()).format("YYYY-MM-DD-HH:MM:SS");
       var doc = new jsPDF(this.pl);
@@ -184,13 +181,13 @@ export default {
       doc.setFontSize(10);
       doc.addFont("Tahoma", "Tahoma", "bold");
       doc.setFont("Tahoma");
-      doc.text(70, 10, "MINISTRY OF HEALTH");
-      doc.text(70, 15, "Division of National AIDs & STI Control Program");
-      doc.text(70, 20, "P.O. Box 19361 – 00202 NAIROBI, KENYA");
-      doc.text(70, 25, "Phone: 1-800-7878-09 | Email: info@nascop.or.ke");
+      doc.text(72, 10, "MINISTRY OF HEALTH");
+      doc.text(72, 15, "Division of National AIDs & STI Control Program");
+      doc.text(72, 20, "P.O. Box 19361 – 00202 NAIROBI, KENYA");
+      doc.text(72, 25, "Phone: 1-800-7878-09 | Email: info@nascop.or.ke");
       doc.text(155, 30, "Print Date: " + moment(new Date()).format("DD-MM-YYYY HH:MM"));
       //doc.text(10, 40, this.title);
-      doc.text(70, 33, "System Unit: Integrated Data IL");
+      doc.text(72, 33, "System Unit: Integrated Data IL");
       doc.setFontSize(14);
       doc.addFont("Tahoma", "Tahoma", "bold");
 
@@ -244,7 +241,7 @@ export default {
         margin: { horizontal: 4 },
         styles: {
           columnWidth: "wrap",
-          fontSize: 7,
+          fontSize: 9,
           overflow: "linebreak",
           cellWidth: "auto",
         },
@@ -319,7 +316,7 @@ export default {
           },
           styles: {
             columnWidth: "wrap",
-            fontSize: 7,
+            fontSize: 9,
             overflow: "linebreak",
             cellWidth: "auto",
           },
@@ -336,6 +333,13 @@ export default {
           },
           bodyStyles: { lineColor: [0, 0, 0] },
           theme: "grid",
+          createdCell: function (data) {
+            if (data.row.raw[h.indexOf("Status")] === "critical") {
+              data.cell.styles.fillColor = [255, 0, 0]; // Danger background for critical status
+            } else if (data.row.raw[h.indexOf("Status")] === "stable") {
+              data.cell.styles.fillColor = [255, 255, 255]; // Success background for stable status
+            }
+          },
         });
         // Simple html example
         var startY = doc.autoTable.previous.finalY + 10;
@@ -355,7 +359,7 @@ export default {
           },
           styles: {
             columnWidth: "wrap",
-            fontSize: 7,
+            fontSize: 9,
             overflow: "linebreak",
             cellWidth: "auto",
           },
