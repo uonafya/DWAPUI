@@ -379,7 +379,7 @@ export default {
         startY = doc.autoTable.previous.finalY + 20;
         doc.addFont("Tahoma", "Tahoma", "bold");
         doc.setFontSize(14);
-        doc.text(5, startY, "SECTION 3C: EID/VL TESTING REPORTS");
+        doc.text(5, startY, "SECTION 3D: EID/VL TESTING REPORTS");
         doc.setFontSize(9);
         doc.autoTable({
           head: [h1],
