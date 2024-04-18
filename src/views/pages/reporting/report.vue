@@ -121,7 +121,7 @@ export default {
       load: false,
       users: [],
       show_one_date: false,
-      org_level: 5,
+      org_level: 4,
       fromhour: "00:00",
       hours: [
         "00:00",

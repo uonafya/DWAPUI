@@ -22,7 +22,7 @@ export default {
     },
     org_level: {
       type: String,
-      default: "-5",
+      default: "-4",
     },
     report: String,
     title: String,
@@ -41,7 +41,7 @@ export default {
     return {
       pmtct_data: [],
       eid_vl_data: [],
-      pl: "p",
+      pl: "l",
     };
   },
   watch: {},
@@ -52,6 +52,7 @@ export default {
   methods: {
     // Function to fetch PMTCT data
     async fetchPMTCTData() {
+      //localStorage.clear()
       const username = JSON.parse(localStorage.user).username;
       //console.log(username);
       const selectedCounty = this.county;
@@ -87,6 +88,7 @@ export default {
     // Function to fetch EID data
     //Sections 1: Intro 2:definition 3: data {a:hiv testing,b:maternal HAART,c:infant prophylaxis,d:eid testing} 4:actions
     async fetchEIDData() {
+      //localStorage.clear()
       const username = JSON.parse(localStorage.user).username;
       //console.log(username);
       let selectedCounty = this.county;
@@ -113,8 +115,11 @@ export default {
     },
     getReportData() {
       //localStorage.clear();
-      var data = [];
-      var data1 = [];
+      var testing_data = [];
+      var eid_data = [];
+      var maternal_data=[];
+      var infant_data=[];
+
       Swal.fire({
         position: "center",
         icon: "info",
@@ -129,7 +134,7 @@ export default {
       this.fetchPMTCTData();
       this.fetchEIDData();
       Swal.close();
-      data = this.pmtct_data.map((row) => ({
+      testing_data = this.pmtct_data.map((row) => ({
         "Org Unit": row.ou_name,
         "New ANC Clients": row.moh_711_new,
         "Known Positive at 1st ANC": row.moh_731_HV02_03,
@@ -139,7 +144,32 @@ export default {
         "Missed Opportuanities": row.missed_opp,
         Status: row.missed_opp_status,
       }));
-      data1 = this.eid_vl_data.map((row) => ({
+      // missed_maternal = (moh_731_HV02_10_sum + moh_731_HV02_11_sum + moh_731_HV02_12_sum + moh_731_HV02_13_sum + moh_731_HV02_14_sum)
+      // - (moh_731_HV02_16_sum + moh_731_HV02_17_sum + moh_731_HV02_18_sum + moh_731_HV02_19_sum + moh_731_HV02_21_sum)
+      maternal_data=this.pmtct_data.map((row) => ({
+        "Org Unit": row.ou_name,
+        "Total Positive(HV02-10-HV02-14)": (row.moh_731_HV02_10+row.moh_731_HV02_11+row.moh_731_HV02_12+row.moh_731_HV02_13+row.moh_731_HV02_14),
+        "On HAART at 1st ANC HV02-16": row.moh_731_HV02_16,
+        "Start HAART_ANC HV02-17": row.moh_731_HV02_17,
+        "Start HAART_L&D HV02-18": row.moh_731_HV02_18,
+        "Start HAART_PNC<=6wks HV02-19": row.moh_731_HV02_19,
+        "Start HAART_PNC> 6weeks to 6 months HV02-21":row.moh_731_HV02_21,
+        "Missed Opportuanities": row.missed_maternal,
+        Status: row.missed_maternal_status,
+      }));
+      console.log(maternal_data)
+      //infant_missed = (moh_731_HV02_10_sum + moh_731_HV02_11_sum + moh_731_HV02_12_sum + moh_731_HV02_13_sum + moh_731_HV02_14_sum) -
+      //(moh_731_HV02_39_sum + moh_731_HV02_40_sum + moh_731_HV02_41_sum)
+      infant_data=this.pmtct_data.map((row) => ({
+        "Org Unit": row.ou_name,
+        "HIV Positive Results (PMTCT)": (row.moh_731_HV02_10+row.moh_731_HV02_11+row.moh_731_HV02_12+row.moh_731_HV02_13+row.moh_731_HV02_14),
+        "Infant ARV Prophyl_ANC HV02-39": row.moh_731_HV02_39,
+        "Infant ARV Prophyl_L&D HV02-40": row.moh_731_HV02_40,
+        "Infant ARV Prophyl<8wks_PNC HV02-41": row.moh_731_HV02_41,
+        "Missed Opportuanities": row.infant_missed,
+        Status: row.infant_missed_status,
+      }));
+      eid_data = this.eid_vl_data.map((row) => ({
         County: row.county,
         Subcounty: row.subcounty,
         Ward: row.ward,
@@ -152,25 +182,41 @@ export default {
       //console.log(data);
       //get headers
       this.title = this.report;
-      const headers = Object.keys(data[0]);
-      const headers1 = Object.keys(data1[0]);
-      const cars = [];
-      const cars1 = [];
-      Object.entries(data).forEach((val) => {
+      const testing_headers = Object.keys(testing_data[0]);
+      const maternal_headers = Object.keys(maternal_data[0]);
+      const infant_headers = Object.keys(infant_data[0]);
+      const eid_headers = Object.keys(eid_data[0]);
+      const testing_cars = [];
+      const maternal_cars = [];
+      const infant_cars = [];
+      const eid_cars = [];
+      Object.entries(testing_data).forEach((val) => {
         const [key] = val;
         //console.log(key, val);
-        cars.push(Object.values(data[key]));
+        testing_cars.push(Object.values(testing_data[key]));
       });
-      Object.entries(data1).forEach((val) => {
+      Object.entries(maternal_data).forEach((val) => {
         const [key] = val;
         //console.log(key, val);
-        cars1.push(Object.values(data1[key]));
+        maternal_cars.push(Object.values(maternal_data[key]));
       });
-      const uniqueCars = Array.from(new Set(cars));
-      const uniqueCars1 = Array.from(new Set(cars1));
-      this.generateReport(headers, uniqueCars, headers1, uniqueCars1);
+      Object.entries(infant_data).forEach((val) => {
+      const [key] = val;
+      //console.log(key, val);
+      infant_cars.push(Object.values(infant_data[key]));
+      });
+      Object.entries(eid_data).forEach((val) => {
+      const [key] = val;
+      //console.log(key, val);
+      eid_cars.push(Object.values(eid_data[key]));
+      });
+      const testing_uniqueCars = Array.from(new Set(testing_cars));
+      const maternal_uniqueCars = Array.from(new Set(maternal_cars));
+      const infant_uniqueCars = Array.from(new Set(infant_cars));
+      const eid_uniqueCars = Array.from(new Set(eid_cars));
+      this.generateReport(testing_headers, testing_uniqueCars, maternal_headers, maternal_uniqueCars,infant_headers,infant_uniqueCars,eid_headers,eid_uniqueCars);
     },
-    generateReport(h, d, h1, d1) {
+    generateReport(h,d,h1,d1,h2,d2,h3,d3) {
       //print doc
       //Sections 1: Intro 2:definition 3: data {a:hiv testing,b:maternal HAART,c:infant prophylaxis,d:eid testing} 4:actions
       const filename = moment(new Date()).format("YYYY-MM-DD-HH:MM:SS");
@@ -241,7 +287,7 @@ export default {
         head: [table_heads],
         body: table_body,
         startY: 90,
-        margin: { horizontal: 4 },
+        margin: { horizontal: 1 },
         styles: {
           columnWidth: "wrap",
           fontSize: 9,
@@ -339,8 +385,7 @@ export default {
           createdCell: function (data) {
             if (data.row.raw[h.indexOf("Status")] === "missed") {
               data.cell.styles.fillColor = [255, 0, 0]; // Danger background for critical status
-            } else if (data.row.raw[h.indexOf("Status")] === "okay") {
-              data.cell.styles.fillColor = [255, 255, 255]; // Success background for stable status
+              data.cell.styles.textColor=[255, 255, 255]
             }
           },
         });
@@ -354,13 +399,38 @@ export default {
         doc.text(5, startY, "SECTION 3B: MATERNAL HAART REPORTS");
         doc.setFontSize(9);
         doc.autoTable({
-        head: [["A","B"]],
-        body: [["",""],],
+        head: [h1],
+        body:d1,
         startY: startY + 4,
         margin: { horizontal: 1 },
-        theme:"grid",
+        styles: {
+        columnWidth: "wrap",
+        fontSize: 9,
+        overflow: "linebreak",
+        cellWidth: "auto",
+        },
+        columnStyles: {
+        2: { cellWidth: "auto" },
+        nil: { halign: "center" },
+        tgl: { halign: "center" },
+        },
+        headerStyles: {
+        halign: "center",
+        fillColor: [0, 150, 120],
+        textColor: [255, 255, 255],
+        lineColor: [0, 0, 0],
+        },
+        bodyStyles: { lineColor: [0, 0, 0] },
+        theme: "grid",
+        createdCell: function (data) {
+          if (data.row.raw[h1.indexOf("Status")] === "missed") {
+          data.cell.styles.fillColor = [255, 0, 0]; // Danger background for critical status
+          data.cell.styles.textColor=[255, 255, 255]
+          }
+        },
         });
-        startY = doc.autoTable.previous.finalY + 20;
+        doc.addPage();
+        startY = 20;
         doc.addFont("Tahoma", "Tahoma", "bold");
         doc.setFontSize(14);
         //Sections 1: Intro 2:definition 3: data {a:hiv testing,b:maternal HAART,c:infant prophylaxis,d:eid testing} 4:actions
@@ -368,22 +438,47 @@ export default {
         doc.text(5, startY, "SECTION 3C: INFANT PROPHYLAXIS REPORTS");
         doc.setFontSize(9);
         doc.autoTable({
-        head: [["A","B"]],
-        body: [["",""],],
+        head: [h2],
+        body: d2,
         startY: startY + 4,
         margin: { horizontal: 1 },
-        theme:"grid",
+        styles: {
+        columnWidth: "wrap",
+        fontSize: 9,
+        overflow: "linebreak",
+        cellWidth: "auto",
+        },
+        columnStyles: {
+        2: { cellWidth: "auto" },
+        nil: { halign: "center" },
+        tgl: { halign: "center" },
+        },
+        headerStyles: {
+        halign: "center",
+        fillColor: [0, 150, 120],
+        textColor: [255, 255, 255],
+        lineColor: [0, 0, 0],
+        },
+        bodyStyles: { lineColor: [0, 0, 0] },
+        theme: "grid",
+        createdCell: function (data) {
+        if (data.row.raw[h2.indexOf("Status")] === "missed") {
+           data.cell.styles.fillColor = [255, 0, 0]; // Danger background for missed status
+           data.cell.styles.textColor=[255, 255, 255]
+        }
+        },
         });
         //Sections 1: Intro 2:definition 3: data {a:hiv testing,b:maternal HAART,c:infant prophylaxis,d:eid testing} 4:actions
         //section A - Indicator Defination
-        startY = doc.autoTable.previous.finalY + 20;
+        doc.addPage();
+        startY = 20;
         doc.addFont("Tahoma", "Tahoma", "bold");
         doc.setFontSize(14);
         doc.text(5, startY, "SECTION 3D: EID/VL TESTING REPORTS");
         doc.setFontSize(9);
         doc.autoTable({
-          head: [h1],
-          body: d1,
+          head: [h3],
+          body: d3,
           // margin: { left: 5.5, top: 52 },
           startY: startY + 4,
           margin: { horizontal: 1 },
@@ -409,6 +504,13 @@ export default {
           },
           bodyStyles: { lineColor: [0, 0, 0] },
           theme: "grid",
+          createdCell: function (data) {
+            console.log(data.row.raw["Pending Enrollment"])
+            if (data.row.raw[h3.indexOf("Pending Enrollment")] > 0) {
+              data.cell.styles.fillColor = [235,237,209]; // Danger background for critical status
+              //data.cell.styles.textColor=[255, 255, 255]
+            }
+          }
         });
         //page numbering
         var height = 190;
