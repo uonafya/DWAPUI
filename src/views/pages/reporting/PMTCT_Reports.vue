@@ -9,7 +9,7 @@ import "jspdf-autotable";
 import axios from "@/Axiosconfig";
 import Swal from "sweetalert2";
 import moment from "moment";
-
+import definations from "./indicator_defination.js";
 export default {
   props: {
     from: {
@@ -41,7 +41,7 @@ export default {
     return {
       pmtct_data: [],
       eid_vl_data: [],
-      pl: "l",
+      pl: "p",
     };
   },
   watch: {},
@@ -270,45 +270,90 @@ export default {
       doc.addFont("Tahoma", "Tahoma", "light");
       doc.setFontSize(12);
       let intro =
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.";
-      var introp = doc.splitTextToSize(intro, doc_width-5);
+      "Routine antenatal care (ANC) offers an important opportunity to provide high quality combined HIV prevention through targeted health education and counselling; HIV testing for the woman, partners and family members; linkage to HIV prevention and treatment; and to discuss and plan for future conception and contraception needs. Prevention of mother-to-child transmission of HIV (PMTCT)/Syphilis/Hepatitis B should be offered as part of a comprehensive package of fully integrated, routine antenatal care interventions. In financial year 2023/2024, NASCOP undertook an PMTCT RRI to address missed opportunities focusing on data reported in February 2022 to August 2023. A need to routinized the process of data review for immediate action was identified as important in achieving elimination of mother to child HIV transmission.\n\nThis bulletin provides a summary of indicators for monitoring the PMTCT Program at site level.\n\nYour immediate attention on highlighted rows in the report will be appreciated. You raise questions or provide feedback to (email). The report will be automatically shared every Monday";
+      var introp = doc.splitTextToSize(intro, doc_width - 5);
       doc.text(5, 56, introp);
       doc.addFont("Tahoma", "Tahoma", "bold");
       doc.setFontSize(14);
       //section 1A - Indicator Defination
-      doc.text(5, 85, "SECTION 2: INDICATOR DEFINITION");
+      doc.text(5, 125, "SECTION 2: INDICATOR DEFINITION");
       doc.setFontSize(12);
-      let table_heads = ["Indicator","Definition","Description"];
-      let table_body = [
-        ["A", "",""],
-        ["B","" ,""],
-      ];
-      doc.autoTable({
-        head: [table_heads],
-        body: table_body,
-        startY: 90,
-        margin: { horizontal: 1 },
-        styles: {
-          columnWidth: "wrap",
-          fontSize: 9,
-          overflow: "linebreak",
-          cellWidth: "auto",
-        },
-        columnStyles: {
-          2: { cellWidth: "auto" },
-          nil: { halign: "center" },
-          tgl: { halign: "center" },
-        },
-        headerStyles: {
-          halign: "center",
-          fillColor: [0, 150, 120],
-          textColor: [255, 255, 255],
-          lineColor: [0, 0, 0],
-        },
-        bodyStyles: { lineColor: [0, 0, 0] },
-        theme: "grid",
+      var startY=130;
+      var maxColumnWidths = [0, 0, 0];
+      var pl_w=0.794
+      if(this.pl==='l'){
+        pl_w=1.68;
+      }
+      // Iterate through the data to calculate maximum column widths
+      definations.forEach(section => {
+          section.indicators.forEach(indicator => {
+          maxColumnWidths[0] = Math.max(maxColumnWidths[0], indicator.Indicator.length);
+          maxColumnWidths[1] = Math.max(maxColumnWidths[1], indicator.Source.join('\n').length);
+          maxColumnWidths[2] = Math.max(maxColumnWidths[2], indicator.Definition.length);
+          });
       });
-      var startY = doc.autoTable.previous.finalY + 20;
+      // Create table headers
+      const headers = ['Indicator', 'Source', 'Definition'];
+      // Add table headers
+      doc.setFontSize(12);
+      doc.autoTable({
+      head: [headers],
+      startY: startY,
+      margin: { horizontal:1,top: 0 },
+      styles: { fontSize: 12 },
+      headerStyles: {
+      halign: "left",
+      fillColor: [0, 150, 120],
+      textColor: [255, 255, 255],
+      lineColor: [255, 255, 255],
+      },
+      columnStyles: {
+      0: { cellWidth: maxColumnWidths[0] * 1.2 }, // Multiply by a factor to adjust width
+      1: { cellWidth: maxColumnWidths[1] * 0.8 },
+      2: { cellWidth: maxColumnWidths[2] * 1.68 }
+      },
+      theme: 'grid'
+      });
+      startY = doc.autoTable.previous.finalY;
+      // Iterate through the data
+      definations.forEach(section => {
+      // Add section title as a row with colspan
+      doc.autoTable({
+      body: [[{ content: section.section_title, colSpan: 3, styles: { fontSize: 12,fontStyle: 'bold', halign: 'left' } }]],
+      startY: startY,
+      margin: { horizontal:1,top: 2 },
+      theme: 'grid'
+      });
+      startY = doc.autoTable.previous.finalY;
+      // Create table data for indicators within the section
+      const tableData = [];
+      section.indicators.forEach(indicator => {
+      tableData.push([indicator.Indicator, indicator.Source.join('\n'), indicator.Definition]);
+      });
+      // Add table data
+      doc.autoTable({
+      body: tableData,
+      startY: startY,
+      margin: { horizontal:1,top: 2 },
+      styles: {
+      columnWidth: "wrap",
+      fontSize: 10,
+      overflow: "linebreak",
+      cellWidth: "auto",
+      },
+      columnStyles: {
+      0: { cellWidth: maxColumnWidths[0] * 1.2 }, // Multiply by a factor to adjust width
+      1: { cellWidth: maxColumnWidths[1] * 0.8 },
+      2: { cellWidth: maxColumnWidths[2] * pl_w }
+      },
+      theme: 'grid'
+      });
+      startY = doc.autoTable.previous.finalY;
+      });
+
+      ///next section
+      doc.addPage();
+      var startY = 20;
       doc.addFont("Tahoma", "Tahoma", "bold");
       doc.setFontSize(14);
       //section A - Indicator Defination
@@ -538,7 +583,7 @@ export default {
         const previewLink = doc.output("bloburl");
         var openeddoc = window.open(
           previewLink,
-          "Report",
+          this.title,
           "toolbar=no,status=no,menubar=no,scrollbars=no,resizable=no,modal=yes,top=000,left=500,width=1000,height=1500"
         );
         openeddoc.focus();

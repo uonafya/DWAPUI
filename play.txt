@@ -1,0 +1,83 @@
+Indicator                            Source                                 Definition
+                 Indicator: Missed Opportunities for HIV Testing (PMTCT)
+New ANC clients	                    KHIS: MOH711			           These are New ANC Clients numbers from KHIS MOH711. The numbers will be provided
+                                    KHIS: MOH731			           These are New ANC Clients numbers from KHIS MOH731. The numbers will be provided
+                                    Facility(MOH 711)			       These are New ANC Clients numbers  as captured in the facility MOH711 summary report
+                                    Facility(MOH 731): HV02-01	       These are New ANC Clients numbers  as captured in the facility MOH731 summary report : Indicator HV02-01
+                                    ANC register			           This is a Count of New ANC Client from ANC register. Report monthly numbers for the period February 2022 to March 2023
+
+Known Positive at 1st ANC HV02-03	KHIS: HV02-03			            These are Known Positive at 1st ANC clients numbers from KHIS MOH 731 indicator HV02-03. The numbers will be provided
+                                    Facility(MOH 731): HV02-03			These are Known Positive at 1st ANC clients numbers as captured in the facility MOH 731 indicator HV02-03.
+                                    ANC register			            This is a Count of Known Positive at 1st ANC from ANC register. Report monthly numbers for the period February 2022 to March 2023
+Initial test at ANC HV02-04	        KHIS: HV02-04			            These are Initial test at ANC clients numbers from KHIS MOH 731 indicator HV02-04. The numbers will be provided
+                                    Facility(MOH 731): HV02-04			These are Initial test at ANC clients numbers as captured in the facility MOH 731 indicator HV02-04.
+                                    ANC register			            This is a Count of Initial test at ANC from ANC register. Report monthly numbers for the period February 2022 to March 2023
+Initial test at L&D HV02-05	        KHIS: HV02-05			            These are Initial test at L&D clients numbers from KHIS MOH 731 indicator HV02-05. The numbers will be provided
+                                    Facility(MOH 731): HV02-05			These are Initial test at L&D clients numbers as captured in the facility MOH 731 indicator HV02-05.
+                                    Maternity register			        This is a Count of Initial test at L&D from maternity register. Report monthly numbers for the period February 2022 to March 2023
+Initial test at PNC_PNC<=6wks
+HV02-06	                            KHIS: HV02-06			            These are Initial test at PNC_PNC<=6wks  clients numbers from KHIS MOH 731 indicator HV02-06. The numbers will be provided
+                                    Facility(MOH 731): HV02-06			These are Initial test at PNC_PNC<=6wks  clients numbers as captured in the facility MOH 731 indicator HV02-06.
+                                    Post Natal Register			        This is a Count of Initial test at PNC_PNC<=6wks  from post natal register. Report monthly numbers for the period February 2022 to March 2023
+Known HIV Status_Total
+HV02-07:Sum(HV02-03 to HV02-06)	    KHIS total: HV02-07			        These are Known HIV Status_Total   clients numbers from KHIS MOH 731 indicator HV02-07. The numbers will be provided
+	                                Facility MOH 731: total (HV02-07)	These are Known HIV Status_Total  clients numbers as captured in the facility MOH 731 indicator HV02-07.
+                                                                    Indicator: Missed Maternal HAART
+Known Positive at 1st ANC
+HV02-10	                            KHIS: HV02-10			             These are Known Positive at 1st ANC clients numbers from KHIS MOH 731 indicator HV02-10. The numbers will be provided
+                                    Facility(MOH 731): HV02-10			 These are Known Positive at 1st ANC clients numbers as captured in the facility MOH 731 indicator HV02-10.
+                                    ANC register			             This is a Count of Known Positive at 1st ANC from ANC register. Report monthly numbers for the period February 2022 to March 2023
+Positive Results_ANC
+HV02-11	                            KHIS: HV02-11			             These are clients with Positive Results at ANC from KHIS MOH 731 indicator HV02-11. The numbers will be provided
+                                    Facility(MOH 731): HV02-11			 These are clients with Positive Results at ANC  as captured in the facility MOH 731 indicator HV02-11.
+                                    ANC register			             This is a Count of clients with Positive Results at ANC as documented in the ANC register. Report monthly numbers for the period February 2022 to March 2023
+Positive Results _L&D
+HV02-12	                            KHIS: HV02-12			             These are clients with Positive Results at L&D from KHIS MOH 731 indicator HV02-12. The numbers will be provided
+                                    Facility(MOH 731): HV02-12			 These are clients with Positive Results at L&D  as captured in the facility MOH 731 indicator HV02-12.
+                                    Maternity Register			         This is a Count of clients with Positive Results at L&D as documented in the maternity register. Report monthly numbers for the period February 2022 to March 2023
+Positive Results_PNC<=6wks
+HV02-13	                            KHIS: HV02-13			              These are clients with Positive Results at PNC<=6weeks from KHIS MOH 731 indicator HV02-13. The numbers will be provided
+                                    Facility(MOH 731): HV02-13			  These are clients  with Positive Results at PNC<=6weeks  as captured in the facility MOH 731 indicator HV02-13.
+                                    Postnatal Register			          This is a Count of clients with Positive Results at at PNC<=6weeks  as documented in the post natal register. Report monthly numbers for the period February 2022 to March 2023
+Positive_PNC> 6weeks to 6 months
+HV02-14	                            KHIS: HV02-14			               These are clients with Positive Results at PNC> 6weeks to 6 months from KHIS MOH 731 indicator HV02-14. The numbers will be provided
+                                    Facility(MOH 731): HV02-14			   These are clients  with Positive Results at PNC> 6weeks to 6 months as captured in the facility MOH 731 indicator HV02-14.
+                                    Postnatal Register			           This is a Count of clients with Positive Results at at PNC> 6weeks to 6 months as documented in the post natal register. Report monthly numbers for the period February 2022 to March 2023
+Total Positive
+(Add HV02-10 - HV02-14) HV02-15	    KHIS total: HV02-15			            These are Total Positive clients numbers from KHIS MOH 731 indicator HV02-15. The numbers will be provided
+                                    MOH 731: total (HV02-15)			    These are Total Positive clients numbers as captured in the facility MOH 731 indicator HV02-015.
+On HAART at 1st ANC HV02-16	        KHIS: HV02-16	                   		This is the number of pregnant women who were already on HAART by the time they started ANC from KHIS MOH 731 :Indicator HV01-16: This number will be provided
+                                    Facility(MOH 731): HV02-16			    This is the number of pregnant women who were already on HAART by the time they started ANC from Facility MOH 731 :Indicator HV01-16
+                                    ANC register			                This is the count of pregnant women who were already on HAART by the time they started ANC from  ANC Register for the period February 2022 to March 2023
+Start HAART_ANC HV02-17	            KHIS: HV02-17			                This is the number of pregnant women who started HAART in ANC for their health and also to prevent  MTCT from KHIS MOH 731 :Indicator HV01-17: This number will be provided
+                                    Facility(MOH 731): HV02-17			    This is the number of pregnant women who started HAART in ANC for their health and also to prevent MTCT from facility MOH 731 :Indicator HV01-17
+                                    ANC register			                This is the count of pregnant women who started HAART in ANC for their health and also to prevent  MTCT from  ANC Register for the period February 2022 to March 2023
+Start HAART_L&D HV02-18	            KHIS: HV02-18			                This is the number of pregnant women who started HAART in L&D from KHIS MOH 731 :Indicator HV01-18: This number will be provided
+                                    Facility(MOH 731): HV02-18			    This is the number of women who started HAART in L&D from facility MOH 731 :Indicator HV01-18
+                                    Maternity Register			            This is the count of women who started HAART in L&D from  Maternity Register for the period February 2022 to March 2023
+Start HAART_PNC<=6wks HV02-19	    KHIS: HV02-19			                This is the number of  women who started HAART within 6 weeks postnatal to prevent MTCT and for their own health from KHIS MOH 731 :Indicator HV01-19: This number will be provided
+                                    Facility(MOH 731): HV02-19			    This is the number of women who started HAART within 6 weeks postnatal to prevent MTCT and for their own health from facility MOH 731 :Indicator HV01-19
+                                    Postnatal Register			            This is the count of women who started HAART within 6 weeks postnatal to prevent MTCT and for their own health from  postnatal Register for the period February 2022 to March 2023
+Start HAART_PNC> 6weeks to 6 months
+HV02-21	                            KHIS: HV02-21			                This is the number of  women who started HAART after 6 weeks of delivery as an intervention to prevent MTCT during breastfeeding period and for their own health from KHIS MOH 731 :Indicator HV01-21: This number will be provided
+                                    Facility(MOH 731): HV02-21			    This is the number of women who started HAART after 6 weeks of delivery as an intervention to prevent MTCT during breastfeeding period and for their own health  from facility MOH 731 :Indicator HV01-21
+                                    Postnatal Register			            This is the count of women who started HAART after 6 weeks of delivery as an intervention to prevent MTCT during breastfeeding period and for their own health from  postnatal Register for the period February 2022 to March 2023
+On maternal HAART_Total
+HV02-20	                            KHIS total: HV02-20			            This is the sum  of  all women who were  on maternal HAART  at ANC,L&D and 6weeks postnatal from KHIS MOH 731 :Indicator HV01-20: This number will be provided
+		                            MOH 731: total (HV02-20)			    This is the sum  of  all women who were  on maternal HAART  at ANC,L&D and 6weeks postnatal  from facility MOH 731 :Indicator HV01-20
+                                Indicator: Missed Infant Prophylaxis
+Infant ARV Prophyl_ANC
+HV02-39                         	KHIS: HV02-39			                This is the number of infant prophylaxis issued to pregnant women at ANC from KHIS MOH 731 :Indicator HV01-39: This number will be provided
+                                    Facility(MOH 731): HV02-39			    This is the number of infant prophylaxis issued to pregnant women at ANC from Facility MOH 731 :Indicator HV02-39
+                                    ANC register			                This is the count of infant prophylaxs offered to pregnant women at ANC from ANC Register for the period February 2022 to March 2023
+Infant ARV Prophyl_L&D
+HV02-40	                            KHIS: HV02-40			                This is the number of infant prophylaxis issued to pregnant women at L&D from KHIS MOH 731 :Indicator HV01-40: This number will be provided
+                                    Facility(MOH 731): HV02-40			    This is the number of infant prophylaxis issued to pregnant women at L&D from Facility MOH 731 :Indicator HV02-40
+                                    Maternity Register			            This is the count of infant prophylaxs offered to pregnant women at L&D from maternity Register for the period February 2022 to March 2023
+Infant ARV Prophyl<8wks_PNC
+HV02-41	                            KHIS: HV02-41			                This is the number of infant prophylaxis issued to pregnant women at PNC from KHIS MOH 731 :Indicator HV02-41: This number will be provided
+                                    Facility(MOH 731): HV02-41			    This is the number of infant prophylaxis issued to pregnant women at PNC from Facility MOH 731 :Indicator HV02-41
+                                    Postnatal Register			            This is the count of infant prophylaxs offered to pregnant women at L&D from maternity Register for the period February 2022 to March 2023
+Total Infant ARV prophylaxis
+HV02-42	                            KHIS total: HV02-42			This is the count of all Infant prophylaxis issued to women at ANC plus those issue during L&D and those issue/administered  to the baby within 8 weeks of delivery from KHIS 731:Indicator HV02-42
+                                    MOH 731: total (HV02-42)			This is the count of all Infant prophylaxis issued to women at ANC plus those issue during L&D and those issue/administered  to the baby within 8 weeks of delivery from facility 731:Indicator HV01-42
