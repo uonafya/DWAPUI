@@ -8,7 +8,7 @@ export const state = {
 export const getters = {
     getUserScreens(state) {
         console.log(state.userScreens);
-        localStorage.setItem('screens', state.userScreens);
+        //localStorage.setItem('screens', state.userScreens);
         return state.userScreens;
     },
     getUserToken(state) {
@@ -408,6 +408,8 @@ export const mutations = {
         state.userScreens = state.userScreens.sort((a, b) =>
             a.id > b.id ? 1 : b.id > a.id ? -1 : 0,
         );
+        localStorage.setItem('screens', JSON.stringify(state.userScreens));
+
     },
     SET_TOKEN_VALUE(state, userToken) {
         state.userToken = userToken;

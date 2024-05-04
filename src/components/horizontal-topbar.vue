@@ -1,7 +1,7 @@
 <script>
 import simplebar from "simplebar-vue";
 import { menuItems } from "./horizontal-menu";
-
+import store from "@/state/store";
 import { layoutComputed, dataILMethods } from "@/state/helpers";
 
 /**
@@ -234,10 +234,7 @@ export default {
       element.classList.toggle("show");
     },
     logoutUser() {
-      this.logout();
-      this.$router.push({
-        path: "/",
-      });
+      store.dispatch("authfack/logout");
     },
   },
   watch: {

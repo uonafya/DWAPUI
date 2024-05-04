@@ -45,8 +45,8 @@ export default {
     },
   },
   created() {
-    console.log("created");
-    window.addEventListener("beforeunload", this.removeUser);
+    //console.log("created");
+    //window.addEventListener("beforeunload", this.removeUser);
   },
   computed: {
     // isIdle() {
@@ -54,7 +54,7 @@ export default {
     // },
   },
   mounted() {
-    this.$store.dispatch("screens/clearScreens");
+    //this.$store.dispatch("screens/clearScreens");
 
     // document.getElementsByTagName("html")[0].setAttribute("dir", "rtl");
   },

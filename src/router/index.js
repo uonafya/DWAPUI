@@ -69,7 +69,7 @@ router.beforeEach((routeTo, routeFrom, next) => {
     } else if (process.env.VUE_APP_DEFAULT_AUTH === "dataILauth") {
         const publicPages = ['/', '/login', '/register', '/forgot-password'];
         const authpage = !publicPages.includes(routeTo.path);
-        const loggeduser = localStorage.getItem('user');
+        const loggeduser = localStorage.user;
 
         if (authpage && !loggeduser) {
             return next('/login');

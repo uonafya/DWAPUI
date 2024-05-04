@@ -1,5 +1,6 @@
-import store from "@/state/store";
-const AccessScreens = store.getters["screens/getUserScreens"] || localStorage.getItem("screens")
+//import store from "@/state/store";
+const AccessScreens =JSON.parse(localStorage.getItem("screens"))//store.getters["screens/getUserScreens"] || 
+console.log(AccessScreens)
 export const menuItems = AccessScreens;
 console.log(AccessScreens);
 

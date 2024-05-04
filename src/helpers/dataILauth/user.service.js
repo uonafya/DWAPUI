@@ -48,6 +48,7 @@ function login(username, password) {
             axios.defaults.timeout = 720000;
             let accessScreens = user.screens.toString().split(",");
             store.dispatch("screens/loadUserScreens", { userScreen: accessScreens });
+            //localStorage.setItem("screens",accessScreens)
 
             // for (var i = 0; i < accessScreens.length; i++) {
             //     store.dispatch("screens/loadUserScreens", { userScreen: accessScreens[i] });
@@ -76,7 +77,7 @@ function login(username, password) {
 
 function logout() {
     // remove user from local storage to log user out
-    localStorage.removeItem("user");
+    localStorage.clear();
     window.location.reload()
 }
 

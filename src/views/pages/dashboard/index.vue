@@ -40,6 +40,15 @@ export default {
       ],
     };
   },
+  mounted(){
+    const shouldReload = sessionStorage.getItem('reloadOnce');
+      if (shouldReload !== 'true') {
+        // Perform the reload
+        window.location.reload();
+        // Set the flag to indicate that the window has been reloaded once
+        sessionStorage.setItem('reloadOnce', 'true');
+      }
+  }
 };
 </script>
 

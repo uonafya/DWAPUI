@@ -63,7 +63,7 @@ export default {
       ],
       exceldata: [],
       excelpdf: "",
-      county: "Kisii County",
+      county: "Nairobi County",
       counties: ["All"],
       cats: ["All", "TX_CURR"],
       category: "All",
@@ -78,7 +78,7 @@ export default {
       qt3: "",
       qt4: "",
       qtryear: new Date().getFullYear(),
-      from: new Date().getFullYear() + "-09-01",
+      from: new Date().getFullYear() + "-01-01",
       to: new Date().getFullYear() + "-10-01",
       //quater 1
       qt1from: "",
@@ -109,7 +109,7 @@ export default {
       user_checkbox: "",
       report: null,
       show_concodance: false,
-      mod: "",
+      mod: "DataQuality",
       picked: "",
       concodance: -1,
       modules: ["All", "Data Alignment", "DataQuality", "Indicators", "Security"],
@@ -121,7 +121,7 @@ export default {
       load: false,
       users: [],
       show_one_date: false,
-      org_level: 4,
+      org_level: 5,
       fromhour: "00:00",
       hours: [
         "00:00",
@@ -789,7 +789,7 @@ export default {
                                                 <date-picker
                                                   class="form-control"
                                                   v-model="from"
-                                                  placeholder="2022-09-27"
+                                                  placeholder="2024-01-01"
                                                   type="date"
                                                 ></date-picker>
                                               </label>
