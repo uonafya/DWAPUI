@@ -3,11 +3,6 @@ import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 import appConfig from "@/app.config";
 
-import Stat from "@/components/widgets/stat";
-import DataAnalytics from "./data-analytics";
-import TopCounties from "./TopCounties";
-import News from "./news.vue";
-
 export default {
   page: {
     title: "Dashboard",
@@ -21,10 +16,6 @@ export default {
   components: {
     Layout,
     PageHeader,
-    Stat,
-    DataAnalytics,
-    TopCounties,
-    News,
   },
   data() {
     return {
@@ -55,13 +46,6 @@ export default {
 <template>
   <Layout>
     <PageHeader :title="title" :items="items" />
-    <Stat />
-    <div class="row">
-      <DataAnalytics />
-      <div class="col-xl-4">
-        <News />
-        <TopCounties />
-      </div>
-    </div>
+    
   </Layout>
 </template>
