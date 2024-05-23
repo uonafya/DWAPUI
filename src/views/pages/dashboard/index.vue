@@ -2,6 +2,7 @@
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 import appConfig from "@/app.config";
+import DataAnalytics from "./data-analytics";
 
 export default {
   page: {
@@ -16,6 +17,7 @@ export default {
   components: {
     Layout,
     PageHeader,
+    DataAnalytics,
   },
   data() {
     return {
@@ -46,6 +48,8 @@ export default {
 <template>
   <Layout>
     <PageHeader :title="title" :items="items" />
-    
+    <div class="row">
+      <DataAnalytics />
+    </div>
   </Layout>
 </template>
