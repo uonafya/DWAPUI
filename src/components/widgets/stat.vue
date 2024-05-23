@@ -1,10 +1,10 @@
 <script>
-import countTo from "vue-count-to";
+// import countTo from "vue-count-to";
 import Swal from "sweetalert2";
 import axios from "axios";
 export default {
   components: {
-    countTo,
+    // countTo,
   },
   data() {
     return {
@@ -180,7 +180,7 @@ export default {
 
 <template>
   <div class="row">
-    <div class="col-md-6 col-xl-3">
+    <!-- <div class="col-md-6 col-xl-3">
       <div class="card">
         <div class="card-body">
           <div class="float-end mt-2">
@@ -201,7 +201,7 @@ export default {
             </span>
             since last week
           </p>
-        </div>
+        </div>img-fluid w-100 d-block
       </div>
     </div>
     <div class="col-md-6 col-xl-3">
@@ -228,7 +228,6 @@ export default {
         </div>
       </div>
     </div>
-    <!-- end col-->
 
     <div class="col-md-6 col-xl-3">
       <div class="card">
@@ -276,8 +275,7 @@ export default {
           </p>
         </div>
       </div>
-    </div>
-    <!-- end col-->
+    </div> -->
   </div>
   <!-- end row-->
 </template>

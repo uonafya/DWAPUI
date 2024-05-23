@@ -1,20 +1,10 @@
 <script>
-//import VueApexCharts from 'vue-apexcharts';
-//import countTo from "vue-count-to";
-// import Activity from "./activity";
-// import Activity2 from "./activity2";
-// import Topfacilities from "./top-facilities";
-import Multiselect from "vue-multiselect";
+// import Multiselect from "vue-multiselect";
 import Swal from "sweetalert2";
 import axios from "axios";
 export default {
   components: {
-    //countTo,
-    // Activity,
-    // Activity2,
-    // Topfacilities,
-    Multiselect,
-    //apexchart: VueApexCharts,
+    // Multiselect,
   },
   data() {
     return {
@@ -94,11 +84,6 @@ export default {
             enabled: true,
           },
         },
-        // xaxis: {
-        //   title: {
-        //     text: 'Concordance Category'
-        //   }
-        // },
         yaxis: {
           title: {
             text: "Concordance (%)",
@@ -125,7 +110,7 @@ export default {
     fetchData() {
       Swal.fire({
         title: "Please Wait !",
-        html: "Loading data...", // add html attribute if you want or remove
+        html: "Loading data...",
         allowOutsideClick: false,
         showConfirmButton: false,
         willOpen: () => {
@@ -143,9 +128,7 @@ export default {
           const between90_100Data = response.data.map((item) => item.between_90_100);
           const more100Data = response.data.map((item) => item.more_100);
           this.chartOptions.xaxis.categories = categories;
-          //updating chart options dynamically
           this.chartOptions.xaxis.categories = categories;
-          // Call the $refs to update the chart with new options
           this.$refs.chart.updateOptions(this.chartOptions);
           this.series = [
             {
@@ -195,7 +178,7 @@ export default {
   <div class="col-xl-8">
     <div class="card">
       <div class="card-body">
-        <div class="float-end">
+        <!-- <div class="float-end">
           <b-dropdown
             variant="white"
             toggle-class="text-reset p-0"
@@ -212,8 +195,8 @@ export default {
             <a class="dropdown-item" href="#">Yearly</a>
             <a class="dropdown-item" href="#">Weekly</a>
           </b-dropdown>
-        </div>
-        <h4 class="card-title mb-4">Data Insights</h4>
+        </div> -->
+        <!-- <h4 class="card-title mb-4">Data Insights</h4>
 
         <div class="col-xl-12">
           <div class="card" style="background-color: beige; padding: 10px">
@@ -284,17 +267,8 @@ export default {
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
-      <!-- end card-body-->
     </div>
-    <!-- end card-->
-    <!--card 2-->
-    <!-- <div class="row">
-      <Topfacilities />
-      <Activity />
-      <Activity2 />
-    </div> -->
   </div>
-  <!-- end col-->
 </template>
