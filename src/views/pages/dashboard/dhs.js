@@ -1,4 +1,4 @@
-﻿[
+﻿var dhis_data=[
     {
         "Country Code": "KE",
         "Country Name": "Kenya",
@@ -37518,3 +37518,4 @@
         "CI Low": ""
     }
 ]
+export default dhis_data
