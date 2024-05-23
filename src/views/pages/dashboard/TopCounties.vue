@@ -8,7 +8,7 @@ export default {};
 <template>
   <div class="card">
     <div class="card-body">
-      <div class="float-end">
+      <!-- <div class="float-end">
         <b-dropdown
           right
           toggle-class="text-reset p-0"
@@ -46,7 +46,6 @@ export default {};
           ></b-progress>
         </div>
       </div>
-      <!-- end row-->
 
       <div class="row align-items-center no-gutters mt-3">
         <div class="col-sm-3">
@@ -63,7 +62,6 @@ export default {};
           ></b-progress>
         </div>
       </div>
-      <!-- end row-->
 
       <div class="row align-items-center no-gutters mt-3">
         <div class="col-sm-3">
@@ -80,7 +78,6 @@ export default {};
           ></b-progress>
         </div>
       </div>
-      <!-- end row-->
 
       <div class="row align-items-center no-gutters mt-3">
         <div class="col-sm-3">
@@ -96,7 +93,7 @@ export default {};
             height="6px"
           ></b-progress>
         </div>
-      </div>
+      </div> -->
       <!-- end row-->
     </div>
     <!-- end card-body-->

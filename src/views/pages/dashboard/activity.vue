@@ -7,7 +7,7 @@ export default {};
 
 <template>
   <div class="col-xl-4">
-    <div class="card">
+    <!-- <div class="card">
       <div class="card-body">
         <div class="float-end">
           <b-dropdown right toggle-class="p-0" variant="white" menu-class="dropdown-menu-end">
@@ -91,6 +91,6 @@ export default {};
           </li>
         </ol>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>

@@ -64,7 +64,7 @@ export default {
 <div class="col-xl-4">
     <div class="card">
         <div class="card-body">
-            <div class="float-end">
+            <!-- <div class="float-end">
                 <b-dropdown variant="white" toggle-class="p-0" menu-class="dropdown-menu-end">
                     <template v-slot:button-content>
                         <span class="text-muted">
@@ -76,11 +76,11 @@ export default {
                     <b-dropdown-item href="#">Revenue</b-dropdown-item>
                     <b-dropdown-item href="#">Join Date</b-dropdown-item>
                 </b-dropdown>
-            </div>
+            </div> -->
             <h4 class="card-title mb-4">Frequent Clients</h4>
 
             <div data-simplebar style="max-height: 336px;">
-                <div class="table-responsive">
+                <!-- <div class="table-responsive">
                     <table class="table table-borderless table-centered table-nowrap">
                         <tbody>
                             <tr v-for="(item, index) in users" :key="index">
@@ -108,7 +108,7 @@ export default {
                             </tr>
                         </tbody>
                     </table>
-                </div>
+                </div> -->
                 <!-- enbd table-responsive-->
             </div>
             <!-- data-sidebar-->
